@@ -269,6 +269,33 @@ svg .halo{paint-order:stroke;stroke:var(--surface2);stroke-width:4px;stroke-line
 .alpha button{width:30px;height:30px;border:1px solid var(--line);border-radius:6px;background:var(--surface2);font-family:var(--f-mono);font-weight:600;font-size:13px;cursor:pointer;color:var(--ink);padding:0}
 .alpha button:hover{border-color:var(--accent)}
 .alpha button.all{width:auto;padding:0 10px;font-family:var(--f-body)}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.wgrid .panel,.dgrid .panel{margin-top:12px}
+.wsvg{width:100%;max-width:300px;height:auto;display:block;margin:4px auto 6px;background:var(--surface2);border-radius:8px}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.dsvg{width:100%;max-width:220px;height:auto;display:block;margin:0 auto 6px;background:var(--surface2);border-radius:8px}
+.ctwo{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;align-items:start}
+.ctwo .panel{margin-top:12px}
+@media (max-width:820px){ .ctwo{grid-template-columns:1fr} }
+.lgrp h4{margin:14px 0 0;font-family:var(--f-display);font-size:14px;color:var(--sub)}
+.lgrp .links{margin-top:6px}
+.shsvg{width:150px;height:auto;display:block;margin:0 auto}
+svg .shp{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linejoin:round}
+.ctbl select{padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--surface);font-family:var(--f-mono);font-size:13.5px}
+svg .wlb{fill:var(--ink);font:600 11.5px var(--f-body)}
+svg .wlb2{fill:var(--sub);font:11px var(--f-body)}
+svg .dm{stroke:var(--sub);stroke-width:1;fill:none}
+svg .bu{fill:#f0a35e;stroke:#9a5b00;stroke-width:1.2}
+svg .df{stroke:#d62828;fill:#d62828;stroke-width:2}
+svg .dff{fill:#5a5f66;stroke:#d62828;stroke-width:1.5}
+svg .dfl{stroke:#d62828;fill:none;stroke-width:2}
+svg .dff2{fill:#d62828;opacity:.85}
+svg .df0{fill:var(--surface2);stroke:#d62828;stroke-width:2}
+svg .gnd{stroke:var(--sub);stroke-width:2}
+svg .rail{fill:#4a5560}
+svg .trl{fill:#f0a35e;stroke:#9a5b00;stroke-width:1.2}
+svg .rope{stroke:var(--ink);stroke-width:1.2}
+svg .hg{stroke:var(--ink);stroke-width:3}
 .psub.lv2{margin-top:8px;padding:8px;background:var(--surface2);border-radius:10px}
 .psub.lv2 button{font-size:13px;padding:5px 10px}
 .alpha button.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -356,6 +383,9 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/surcharge.js"></script>
 <script src="data/cad.js"></script>
 <script src="data/struct.js"></script>
+<script src="data/struct2.js"></script>
+<script src="data/links.js"></script>
+<script src="data/sheet.js"></script>
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
@@ -505,8 +535,8 @@ const TABS = [
   {id:"cad", n:"캐드"},
   {id:"codes", n:"설계기준·바로가기"}
 ];
-const S = { tab:"home", dj:"H", ff:{}, wt:"", sel:null, len:1, qty:1, extra:true, ab:"", abq:"", pr:PROC[0]?.id, prab:null, gr:0, cc:"bh", st:"methods", cadq:"", al:"", cs:"weight" };
-const CALC_SECS = [["weight","단중 계산","형강·강판·앵커볼트 무게"]];   // 나중에 할증 계산·단열재 두께 계산 등을 여기에 추가
+const S = { tab:"home", dj:"H", ff:{}, wt:"", sel:null, len:1, qty:1, extra:true, ab:"", abq:"", pr:PROC[0]?.id, prab:null, gr:0, cc:"bh", st:"methods", cadq:"", al:"", cs:"weight", ws:"types", crs:"cmp" };
+const CALC_SECS = [["weight","단중 계산","형강·강판·앵커볼트 무게"],["sheet","칼라시트 단중","지붕·벽 골판 (파형·두께)"]];   // 나중에 할증 계산·단열재 두께 계산 등을 여기에 추가
 function readHash(){
   const h = decodeURIComponent(location.hash.slice(1)); let [t, a, b] = h.split("/");
   if(t==="grades"){ b = a; a = "grades"; t = "struct"; }              // 예전 주소 호환
@@ -516,7 +546,7 @@ function readHash(){
   if(t==="process" && a && PROC.some(p=>p.id===a)) S.pr = a;
   if(t==="abbr") S.ab = (a && ACATS[a]) ? a : "";
   if(t==="calc"){ if(a && CALC_SECS.some(x=>x[0]===a)) S.cs = a; if(b && CALCS.some(c=>c.id===b)) S.cc = b; }
-  if(t==="struct" && a){ S.st = a; if(a==="grades" && b && GR[+b]) S.gr = +b; }
+  if(t==="struct" && a){ S.st = a; if(a==="grades" && b && GR[+b]) S.gr = +b; if(a==="weld" && b) S.ws = b; if(a==="crane" && b) S.crs = b; }
 }
 function go(tab, sub){ const h = sub!=null && sub!=="" ? `${tab}/${sub}` : tab; if(location.hash.slice(1)!==h) location.hash = h; else render(); }
 window.addEventListener("hashchange", () => { const old = S.tab; readHash(); render(); if(old!==S.tab) window.scrollTo({top:0}); });
@@ -556,6 +586,7 @@ function searchAll(q){
   (window.CAD||[]).forEach(g => g.rows.forEach(r => { if(m(r.join(" ") + " " + g.g)) out.cad.push({g, r}); }));
   CODES.forEach(c => c.items.forEach(i => { if(m(i.join(" "))) out.cd.push(i); }));
   SRCS.forEach(s => { if(m(s.n + " " + s.d)) out.cd.push([s.n, s.d]); });
+  (window.LINKS||[]).forEach(g => g.items.forEach(s => { if(m(s.n + " " + s.d + " " + g.g)) out.cd.push([s.n, s.d]); }));
   out.ab.sort((a,b) => (norm(b[0])===n) - (norm(a[0])===n));
   return out;
 }
@@ -584,10 +615,10 @@ function renderHome(){
    <button class="card" data-go="process"><span class="no">01</span><h3>제철 프로세스</h3><p>전체 흐름도와 단계별 도식으로 보는 원료 → 제선 → 제강 → 압연, 공정별 건축 검토 포인트</p></button>
    <button class="card" data-go="abbr"><span class="no">02</span><h3>설비 약어</h3><p>CGL·RH·TRT 등 제철 설비 약어 ${ABBR.length}개 — 공정별 분류·검색</p></button>
    <button class="card" data-go="danjung"><span class="no">03</span><h3>단중표 · 중량 계산</h3><p>치수 칸에 숫자만 넣어 찾기, 단면 도식, 표준품셈 할증 포함 중량 계산</p></button>
-   <button class="card" data-go="calc"><span class="no">04</span><h3>계산</h3><p>단중 계산 — 표에 없는 BH·각파이프·강관·PL·골판·앵커볼트를 치수로 계산</p></button>
-   <button class="card" data-go="struct"><span class="no">05</span><h3>구조</h3><p>설계법(ASD·USD·LRFD), 하중, 구조 시스템, 철골 접합부 도식, 강재 규격</p></button>
+   <button class="card" data-go="calc"><span class="no">04</span><h3>계산</h3><p>단중 계산(BH·각파이프·강관·PL·앵커볼트), 칼라시트 파형별 단중</p></button>
+   <button class="card" data-go="struct"><span class="no">05</span><h3>구조</h3><p>설계법, 하중, 구조 시스템, 접합부·용접·크레인 도식, 강재 규격</p></button>
    <button class="card" data-go="cad"><span class="no">06</span><h3>캐드</h3><p>AutoCAD 실무 단축키 — 그리기·수정·치수·도면층·기능키</p></button>
-   <button class="card" data-go="codes"><span class="no">07</span><h3>설계기준·바로가기</h3><p>KDS·KCS 코드 체계와 국가건설기준센터·KS·법령 원문 링크</p></button>
+   <button class="card" data-go="codes"><span class="no">07</span><h3>설계기준·바로가기</h3><p>세움터·법령·KCSC·물가·엔지니어링 대가 등 관련 사이트와 KDS·KCS 코드 체계</p></button>
   </div>
   <div class="sec"><h2>자주 찾는 검색</h2><div class="frow">${["H-400x400","SM355","SN355","CGL","RH","소둔","가스홀더","앵커","M20","PL-12","크레인"].map(w=>`<button class="chip" data-q="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`;
 }
@@ -849,8 +880,9 @@ function gradesBody(){
 
 /* ═════════ 설계기준·바로가기 ═════════ */
 function renderCodes(){
-  return `<div class="shead"><div><h2>설계기준·바로가기</h2><p>원문은 공식 사이트에서 — 이 사이트는 위치와 요약만 안내합니다.</p></div></div>
-  <div class="links">${SRCS.map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener"><b>${esc(s.n)} ↗</b><small>${esc(s.d)}</small></a>`).join("")}</div>
+  return `<div class="shead"><div><h2>설계기준·바로가기</h2><p>업무에 자주 쓰는 사이트와 KDS·KCS 코드 체계. 원문은 공식 사이트에서 확인하세요.</p></div></div>
+  ${linksHtml()}<h3 class="subh">그 밖의 바로가기</h3>
+  <div class="links">${SRCS.filter(s=>!(window.LINKS||[]).some(g=>g.items.some(x=>new URL(x.u).host===new URL(s.u).host))).map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener"><b>${esc(s.n)} ↗</b><small>${esc(s.d)}</small></a>`).join("")}</div>
   ${CODES.map(c=>`<div class="gcard"><div class="h"><b>${esc(c.grp)}</b></div>${c.items.map(i=>`<div class="code"><span class="k">${esc(i[0])}</span><div>${esc(i[1])}<small>${esc(i[2])}</small></div></div>`).join("")}</div>`).join("")}
   <p class="note">코드번호는 개편될 수 있습니다. 국가건설기준센터에서 코드번호 또는 제목으로 검색해 현행판(연도 표기)을 확인하세요. KS 원문은 한국표준협회 저작물이므로 이 사이트에 올리지 않습니다.</p>`;
 }
@@ -919,10 +951,12 @@ function calcRow(c, raw){
   if(!ok) return null;
   const o = c.o.map(x => x[2](r)); return {r, o, w: c.w(r, o)};
 }
+function calcHead(){ return `<div class="shead"><div><h2>계산</h2><p>설계검토에 쓰는 수치 계산 모음.</p></div></div>
+  <div class="psub">${CALC_SECS.map(([k,n,s])=>`<button class="${k===S.cs?"on":""}" data-go="calc" data-sub="${k}">${esc(n)}<small>${esc(s)}</small></button>`).join("")}</div>`; }
 function renderCalc(){
+  if(S.cs==="sheet") return calcHead() + sheetBody();
   const c = curC();
-  return `<div class="shead"><div><h2>계산</h2><p>설계검토에 쓰는 수치 계산 모음.</p></div></div>
-  <div class="psub">${CALC_SECS.map(([k,n,s])=>`<button class="${k===S.cs?"on":""}" data-go="calc" data-sub="${k}">${esc(n)}<small>${esc(s)}</small></button>`).join("")}</div>
+  return `${calcHead()}
   <p class="muted" style="margin:12px 0 0">단중표에 없는 규격은 치수를 넣어 계산합니다. 표 칸에 바로 입력하세요 (강재 비중 7.85).</p>
   <div class="psub lv2">${CALCS.map(x=>`<button class="${x.id===c.id?"on":""}" data-go="calc" data-sub="weight/${x.id}">${esc(x.n)}<small>${esc(x.sub)}</small></button>`).join("")}</div>
   <div class="ctop">
@@ -1036,7 +1070,7 @@ function loadsSvg(){
   return s + `</svg>`;
 }
 function renderStruct(){
-  const secs = [["methods","설계법"],["loads","하중"],["systems","구조 시스템"],["joints","철골 접합부"],["conn","접합 방식"],["grades","강재 규격"]];
+  const secs = [["methods","설계법"],["loads","하중"],["systems","구조 시스템"],["joints","철골 접합부"],["conn","접합 방식"],["weld","용접"],["crane","크레인"],["grades","강재 규격"]];
   const cur = secs.some(x=>x[0]===S.st) ? S.st : "methods";
   let body = "";
   if(cur==="methods"){
@@ -1064,12 +1098,16 @@ function renderStruct(){
     body = `<div class="jgrid">${SD.joints.map(j=>`<div class="panel"><h3>${esc(j.n)} <span class="muted mono">${esc(j.en)}</span></h3>${JOINT_SVG[j.id]()}<p style="margin:6px 0 8px;font-size:14px">${esc(j.d)}</p>
       <table class="t ptbl"><tbody>${j.parts.map(p=>`<tr><td><b>${esc(p[0])}</b><small>${esc(p[1])}</small></td><td class="txt">${esc(p[2])}</td></tr>`).join("")}</tbody></table>
       <p class="muted" style="margin:8px 0 2px"><b>검토 포인트</b></p><ul>${j.check.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>`).join("")}</div>`;
+  } else if(cur==="weld"){
+    body = weldBody();
+  } else if(cur==="crane"){
+    body = craneBody();
   } else if(cur==="grades"){
     body = gradesBody();
   } else {
     body = `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>접합 방식</th><th>영문</th><th style="min-width:320px">특징</th><th>주로 쓰는 곳</th></tr></thead><tbody>${SD.connTypes.map(c=>`<tr><td class="nw"><b>${esc(c[0])}</b></td><td class="mono nw">${esc(c[1])}</td><td class="txt">${esc(c[2])}</td><td>${esc(c[3])}</td></tr>`).join("")}</tbody></table></div>`;
   }
-  return `<div class="shead"><div><h2>구조</h2><p>구조설계의 기본 — 설계법, 하중, 구조 시스템, 철골 접합부, 강재 규격.</p></div></div>
+  return `<div class="shead"><div><h2>구조</h2><p>구조설계의 기본 — 설계법, 하중, 구조 시스템, 철골 접합부, 용접, 크레인, 강재 규격.</p></div></div>
   <div class="psub">${secs.map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="${k}">${n}</button>`).join("")}</div>${body}`;
 }
 
@@ -1090,6 +1128,151 @@ function fillCad(){
 }
 
 
+/* ═════════ 용접 도식 ═════════ */
+const S2 = window.STRUCT2 || {weld:{types:[],tests:[],defects:[]}, crane:{types:[],loads:[]}};
+const wsv = (b,l,vb="0 0 240 160") => `<svg class="wsvg" viewBox="${vb}" role="img" aria-label="${l}">${b}</svg>`;
+const tl = (x,y,s,a="middle",c="wlb") => `<text class="${c} halo" x="${x}" y="${y}" text-anchor="${a}">${s}</text>`;
+const WELD_SVG = {
+  fillet: () => wsv(`<rect class="col" x="20" y="104" width="200" height="16"/><rect class="col" x="113" y="20" width="14" height="84"/>
+    <path class="wl" d="M127 104 V74 L157 104 Z"/><path class="wl" d="M113 104 V74 L83 104 Z"/>
+    <line class="ld" x1="127" y1="104" x2="142" y2="89" stroke-dasharray="3 2"/>
+    <line class="dm" x1="127" y1="136" x2="157" y2="136"/><line class="dm" x1="127" y1="122" x2="127" y2="140"/><line class="dm" x1="157" y1="122" x2="157" y2="140"/>
+    ${tl(142,152,"각장 s")}<line class="ld" x1="142" y1="89" x2="176" y2="62"/>${tl(186,56,"목두께 a ≈ 0.7s")}`, "모살 용접"),
+  groove: () => wsv(`<path class="col" d="M12 64 H94 L114 104 H12 Z"/><path class="col" d="M228 64 H146 L126 104 H228 Z"/>
+    <path class="wl" d="M94 64 Q120 54 146 64 L126 104 L114 104 Z"/><rect class="bp" x="104" y="104" width="32" height="8"/>
+    <path class="dm" d="M100 46 L120 84 L140 46" fill="none"/>${tl(120,40,"개선각")}
+    ${tl(120,132,"루트 간격 · 뒷댐재")}<line class="ld" x1="120" y1="122" x2="120" y2="110"/>
+    ${tl(40,56,"모재","middle","wlb2")}${tl(200,56,"모재","middle","wlb2")}${tl(120,152,"V형 개선 (그 밖에 I·X·K·U·J형)","middle","wlb2")}`, "맞대기 용접"),
+  build: () => wsv(`<rect class="col" x="12" y="64" width="80" height="40"/><rect class="col" x="160" y="64" width="68" height="40"/>
+    <rect class="bu" x="92" y="64" width="26" height="40"/><path class="wl" d="M118 64 Q139 56 160 64 L160 104 L118 104 Z"/>
+    ${tl(105,50,"① 덧살(육성)")}${tl(150,128,"② 본 용접")}<line class="ld" x1="105" y1="56" x2="105" y2="70"/><line class="ld" x1="140" y1="116" x2="140" y2="96"/>
+    ${tl(120,152,"간극이 넓을 때 먼저 덧살로 좁힘","middle","wlb2")}`, "육성 용접"),
+  flare: () => wsv(`<circle class="col" cx="92" cy="96" r="28"/><circle class="col" cx="148" cy="96" r="28"/>
+    <path class="wl" d="M106 72 Q118 82 120 96 Q122 82 134 72 Q120 64 106 72 Z"/>
+    ${tl(120,52,"플레어 홈에 용접")}<line class="ld" x1="120" y1="58" x2="120" y2="74"/>${tl(120,148,"철근·경량형강 R부","middle","wlb2")}`, "플레어 용접")
+};
+const DEF_BASE = `<rect class="col" x="8" y="50" width="56" height="30"/><rect class="col" x="96" y="50" width="56" height="30"/><path class="wl" d="M60 50 Q80 40 100 50 L88 80 L72 80 Z"/>`;
+const DEF_SVG = {
+  crack: DEF_BASE + `<path class="dfl" d="M76 46 L82 54 L77 62 L84 72"/>`,
+  blow: DEF_BASE + `<circle class="df" cx="76" cy="58" r="2.5"/><circle class="df" cx="84" cy="64" r="2"/><circle class="df" cx="79" cy="70" r="2.2"/><circle class="df" cx="86" cy="55" r="1.8"/>`,
+  slag: DEF_BASE + `<path class="dff" d="M74 60 L82 57 L87 63 L80 68 L75 66 Z"/>`,
+  lof: DEF_BASE + `<line class="dfl" x1="64" y1="52" x2="71" y2="74" style="stroke-width:3"/>`,
+  ip: `<rect class="col" x="8" y="50" width="56" height="30"/><rect class="col" x="96" y="50" width="56" height="30"/><path class="wl" d="M60 50 Q80 40 100 50 L90 70 L70 70 Z"/><rect class="df0" x="70" y="70" width="20" height="10"/>`,
+  under: DEF_BASE + `<path class="dfl" d="M47 50 Q53 59 60 50"/>`,
+  over: DEF_BASE + `<path class="dff2" d="M60 49 Q50 41 38 49 Q48 46 60 50 Z"/>`,
+  pit: DEF_BASE + `<circle class="df0" cx="80" cy="45" r="3.5"/>`,
+  crater: `<rect class="col" x="8" y="50" width="56" height="30"/><rect class="col" x="96" y="50" width="56" height="30"/><path class="wl" d="M60 50 Q80 58 100 50 L88 80 L72 80 Z"/><path class="dfl" d="M78 53 L82 60 L79 66"/>`,
+  size: `<rect class="col" x="10" y="78" width="140" height="12"/><rect class="col" x="74" y="10" width="12" height="68"/><path class="wl" d="M86 78 V64 L100 78 Z"/><path class="dfl" d="M86 78 V50 L114 78" style="stroke-dasharray:3 2"/><text class="wlb2" x="118" y="60">설계 각장</text>`
+};
+/* ═════════ 크레인 도식 ═════════ */
+const csv = (b,l,vb="0 0 420 290") => `<svg class="jsvg" viewBox="${vb}" role="img" aria-label="${l}">${b}</svg>`;
+const hook = (x,y,len=60) => `<line class="rope" x1="${x}" y1="${y}" x2="${x}" y2="${y+len}"/><path class="ln2" d="M${x-6} ${y+len} h12 v6 h-12 z M${x} ${y+len+6} v6 q0 8 -7 8 q-6 0 -6 -6"/>`;
+const CRANE_SVG = {
+  ohc: () => csv(`<line class="gnd" x1="20" y1="262" x2="400" y2="262"/><path class="fr" d="M36 50 L210 22 L384 50"/>
+    <rect class="col" x="30" y="50" width="16" height="212"/><rect class="col" x="374" y="50" width="16" height="212"/>
+    <path class="bp" d="M46 140 H72 V148 L46 160 Z"/><path class="bp" d="M374 140 H348 V148 L374 160 Z"/>
+    <rect class="beam" x="54" y="112" width="18" height="28"/><rect class="beam" x="348" y="112" width="18" height="28"/>
+    <rect class="rail" x="59" y="106" width="8" height="6"/><rect class="rail" x="353" y="106" width="8" height="6"/>
+    <rect class="crn" x="50" y="92" width="34" height="14"/><rect class="crn" x="336" y="92" width="34" height="14"/><circle class="bt" cx="63" cy="104" r="3"/><circle class="bt" cx="357" cy="104" r="3"/>
+    <rect class="crn" x="80" y="80" width="260" height="14"/><rect class="trl" x="250" y="70" width="40" height="10"/>${hook(270,94,64)}`
+    + call(67,99,100,80,"새들(엔드트럭)","End Truck") + call(220,87,230,62,"크레인 브리지","Crane Bridge")
+    + call(63,108,100,124,"레일","Rail") + call(63,126,100,166,"런웨이(크레인) 거더","Runway Girder") + call(60,152,100,208,"브래킷","Bracket")
+    + call(38,236,100,248,"기둥","Column") + call(290,75,350,200,"트롤리·호이스트","Trolley · Hoist","end"), "오버헤드 크레인"),
+  sus: () => csv(`<line class="gnd" x1="20" y1="262" x2="400" y2="262"/><path class="fr" d="M36 70 L210 16 L384 70 Z"/><path class="br" d="M100 70 L100 50 M160 70 L160 32 M260 70 L260 32 M320 70 L320 50 M100 70 L160 32 L210 70 L260 32 L320 70"/>
+    <rect class="col" x="30" y="70" width="16" height="192"/><rect class="col" x="374" y="70" width="16" height="192"/>
+    <line class="hg" x1="100" y1="70" x2="100" y2="96"/><line class="hg" x1="320" y1="70" x2="320" y2="96"/>
+    <rect class="beam" x="90" y="96" width="20" height="20"/><rect class="beam" x="310" y="96" width="20" height="20"/>
+    <rect class="crn" x="84" y="116" width="32" height="14"/><rect class="crn" x="304" y="116" width="32" height="14"/><rect class="crn" x="100" y="130" width="220" height="12"/>
+    <rect class="trl" x="226" y="142" width="28" height="12"/>${hook(240,154,34)}${tl(210,62,"지붕 트러스 Roof Truss","middle","wlb2")}`
+    + call(100,84,130,170,"행거","Hanger") + call(100,106,130,210,"주행 빔 (I형강)","Runway Beam") + call(38,236,70,250,"기둥","Column")
+    + call(300,136,296,180,"크레인 브리지","Crane Bridge") + call(254,150,296,224,"호이스트","Hoist"), "서스펜션 크레인"),
+  hoist: () => csv(`<rect class="beam" x="20" y="36" width="380" height="12"/>${[80,200,320].map(x=>`<line class="hg" x1="${x}" y1="48" x2="${x}" y2="80"/>`).join("")}
+    <rect class="beam" x="30" y="80" width="280" height="6"/><rect class="bweb" x="30" y="86" width="280" height="10"/><rect class="beam" x="30" y="96" width="280" height="6"/>
+    <circle class="bt" cx="168" cy="98" r="5"/><circle class="bt" cx="200" cy="98" r="5"/><rect class="trl" x="160" y="104" width="48" height="22"/>${hook(184,126,60)}
+    <g transform="translate(316,150)"><rect class="beam" x="10" y="0" width="64" height="7"/><rect class="beam" x="39" y="7" width="6" height="40"/><rect class="beam" x="10" y="47" width="64" height="7"/>
+    <circle class="bt" cx="24" cy="41" r="6"/><circle class="bt" cx="60" cy="41" r="6"/><path class="trl" d="M18 54 H66 V76 H18 Z"/></g>${tl(358,140,"단면","middle","wlb2")}`
+    + call(60,40,100,22,"지붕보","Roof Beam") + call(200,66,232,22,"행거","Hanger") + call(120,92,40,150,"모노레일 (I형강)","Monorail Beam")
+    + call(204,116,240,170,"호이스트","Hoist") + call(340,191,300,250,"차륜 — 하부 플랜지 위","Wheels on Lower Flange","end"), "호이스트", "0 -24 420 314")
+};
+function weldBody(){
+  const W = S2.weld, cur = ["types","tests","defects"].includes(S.ws) ? S.ws : "types";
+  let b = `<div class="psub lv2">${[["types","용접 종류"],["tests","검사법"],["defects","결함 종류"]].map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="weld/${k}">${n}</button>`).join("")}</div>`;
+  if(cur==="types") b += `<div class="wgrid">${W.types.map(t=>`<div class="panel"><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3>${WELD_SVG[t.id]()}<p style="margin:6px 0;font-size:14px">${esc(t.d)}</p><p class="muted" style="margin:0">${esc(t.p)}</p><p class="muted" style="margin:4px 0 0"><b>주로 쓰는 곳</b> ${esc(t.use)}</p></div>`).join("")}</div>`;
+  else if(cur==="tests") b += `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>약호</th><th>검사법</th><th>영문</th><th>찾는 결함</th><th style="min-width:360px">방법 · 쓰임</th></tr></thead><tbody>${W.tests.map(r=>`<tr><td class="mono nw"><b>${esc(r[0])}</b></td><td class="nw"><b>${esc(r[1])}</b></td><td class="mono nw">${esc(r[2])}</td><td class="nw">${esc(r[3])}</td><td class="txt">${esc(r[4])}</td></tr>`).join("")}</tbody></table></div><p class="note">${esc(W.testNote)}</p>`;
+  else b += `<div class="dgrid">${W.defects.map(d=>`<div class="panel"><svg class="dsvg" viewBox="0 0 160 100" role="img" aria-label="${esc(d.n)}">${DEF_SVG[d.id]||""}</svg><h3>${esc(d.n)} <span class="muted mono">${esc(d.en)}</span></h3><p style="margin:0;font-size:13.5px">${esc(d.d)}</p><p class="muted" style="margin:4px 0 0">대책: ${esc(d.fix)}</p></div>`).join("")}</div><p class="muted" style="margin-top:6px">빨간색이 결함 위치입니다 (맞대기 용접 단면 기준, 각장 부족은 모살 용접).</p>`;
+  return b;
+}
+function craneBody(){
+  const C = S2.crane, ks = [["cmp","종류 비교"],...C.types.map(t=>[t.id,t.n]),["loads","크레인 하중"]];
+  const cur = ks.some(x=>x[0]===S.crs) ? S.crs : "cmp";
+  let b = `<div class="psub lv2">${ks.map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="crane/${k}">${esc(n)}</button>`).join("")}</div>`;
+  if(cur==="cmp") b += `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>구분</th>${C.types.map(t=>`<th><a href="#struct/crane/${t.id}">${esc(t.n)}</a><small>${esc(t.en)}</small></th>`).join("")}</tr></thead><tbody>
+      <tr><td class="nw">작동 방식</td>${C.types.map(t=>`<td class="txt">${esc(t.d)}</td>`).join("")}</tr>
+      <tr><td class="nw">건축물 연결</td>${C.types.map(t=>`<td class="txt">${esc(t.conn)}</td>`).join("")}</tr>
+      <tr><td class="nw">용량 · 쓰임</td>${C.types.map(t=>`<td class="txt">${esc(t.use)}</td>`).join("")}</tr></tbody></table></div>`;
+  else if(cur==="loads") b += `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>하중</th><th style="min-width:420px">내용</th></tr></thead><tbody>${C.loads.map(l=>`<tr><td class="nw"><b>${esc(l[0])}</b></td><td class="txt">${esc(l[1])}</td></tr>`).join("")}</tbody></table></div><p class="note">${esc(C.note)}</p>`;
+  else { const t = C.types.find(x=>x.id===cur);
+    b += `<div class="ctwo"><div class="panel">${CRANE_SVG[t.id]()}</div><div class="panel"><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3><p style="margin:0 0 8px;font-size:14.5px">${esc(t.d)}</p>
+      <p class="eqline">${esc(t.conn)}</p><p class="muted" style="margin:8px 0 2px"><b>용량 · 쓰임</b> ${esc(t.use)}</p>
+      <p class="muted" style="margin:8px 0 2px"><b>설계검토 포인트</b></p><ul>${t.check.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div></div>`; }
+  return b;
+}
+
+/* ═════════ 칼라시트 단중 ═════════ */
+const SH = window.SHEETS || [];
+const SHEET_DEF = [{p:"V-115", t:"0.5", A:"27.88"}, {p:"V-115", t:"0.8", A:"42.56"}, {p:"C-76", t:"0.5", A:"100"}];
+function srows(){ if(!Array.isArray(S.cr.sheet)) S.cr.sheet = SHEET_DEF.map(x=>({...x})); if(!S.cr.sheet.length) S.cr.sheet.push({p:"V-115", t:"0.5", A:""}); return S.cr.sheet; }
+function sheetSvg(p){
+  const W = 150, x0 = 5, y0 = 8, H = Math.max(6, Math.min(26, p.depth/168*26 + 6)), n = p.ribs, pitch = W/Math.max(n,1);
+  let d = `M${x0} ${y0+H}`;
+  if(/^C/.test(p.n)){ for(let i=0;i<n;i++){ const a = x0 + i*pitch; d += ` Q${a+pitch/4} ${y0} ${a+pitch/2} ${y0+H/2} T${a+pitch} ${y0+H}`; } }
+  else { for(let i=0;i<n;i++){ const a = x0 + i*pitch, tw = pitch*(p.depth>100?0.18:0.3), bw = pitch*(p.depth>100?0.35:0.5); d += ` L${a+(pitch-bw)/2} ${y0+H} L${a+(pitch-tw)/2} ${y0} L${a+(pitch+tw)/2} ${y0} L${a+(pitch+bw)/2} ${y0+H} L${a+pitch} ${y0+H}`; } }
+  return `<svg class="shsvg" viewBox="0 0 160 ${y0+H+6}"><path class="shp" d="${d}"/></svg>`;
+}
+function sheetBody(){
+  return `<p class="muted" style="margin:12px 0 0">파형과 두께를 고르고 면적을 넣으면 지붕·벽 강판 무게를 계산합니다.</p>
+  <div class="tbl-wrap ctbl"><table class="t"><thead><tr><th>파형</th><th>두께<small>mm</small></th><th class="in">면적<small>m²</small></th><th class="sep">M당 중량<small>kg/m</small></th><th>M2당 소요량<small>m/m²</small></th><th>단중<small>kg/m²</small></th><th class="sep">중량<small>kg</small></th><th></th></tr></thead>
+  <tbody id="sbody"></tbody><tfoot><tr><td colspan="6" style="text-align:right;font-family:var(--f-body)">합계</td><td class="num tot" id="stot"></td><td></td></tr></tfoot></table></div>
+  <div class="tools"><button class="btn" id="sadd">+ 줄 추가</button><button class="btn" id="sreset">예시로 되돌리기</button><button class="btn" id="sclear">모두 지우기</button></div>
+  <div class="panel"><h3>파형별 제원</h3><div class="tbl-wrap wide" style="margin-top:6px"><table class="t ctr"><thead><tr><th>파형</th><th>단면</th><th>평판폭</th><th>제품폭</th><th>유효폭</th><th>골간격</th><th>골깊이</th><th>골의 수</th><th>M2당 소요량</th></tr></thead><tbody>${SH.map(p=>`<tr><td class="mono"><b>${esc(p.n)}</b></td><td>${sheetSvg(p)}</td><td class="num">${p.flat}</td><td class="num">${p.prod}</td><td class="num">${p.eff}</td><td class="num">${p.pitch}</td><td class="num">${p.depth}</td><td class="num">${p.ribs}</td><td class="num">${fmt(1000/p.eff,3)}</td></tr>`).join("")}</tbody></table></div><p class="muted" style="margin:6px 0 0">치수 단위 mm. 제조사 카탈로그 기준 — 제품마다 다를 수 있습니다.</p></div>
+  <div class="panel"><h3>계산 방법</h3><ul>${(window.SHEET_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`;
+}
+function fillSheet(){
+  const body = $("#sbody"); if(!body) return;
+  body.innerHTML = srows().map((r,i) => { const p = SH.find(x=>x.n===r.p) || SH[0]; const ts = Object.keys(p.w);
+    return `<tr><td><select data-sr="${i}" data-sk="p">${SH.map(x=>`<option${x.n===p.n?" selected":""}>${x.n}</option>`).join("")}</select></td>
+      <td><select data-sr="${i}" data-sk="t">${ts.map(t=>`<option${t===String(r.t)?" selected":""}>${t}</option>`).join("")}</select></td>
+      <td class="in"><input type="text" inputmode="decimal" data-sr="${i}" data-sk="A" value="${esc(r.A ?? "")}" autocomplete="off"></td>
+      <td class="num sep" id="sm${i}"></td><td class="num" id="sq${i}"></td><td class="num main" id="su${i}"></td><td class="num sep main" id="sw${i}"></td><td><button class="btn sm" data-sdel="${i}" title="이 줄 삭제">×</button></td></tr>`; }).join("");
+  srows().forEach((_,i)=>updSheet(i));
+}
+function sheetCalc(r){ const p = SH.find(x=>x.n===r.p); if(!p) return null; const m = p.w[String(r.t)]; if(m==null) return null; const q = 1000/p.eff, u = m*q, A = num(r.A); return {m, q, u, w: A==null ? null : u*A}; }
+function updSheet(i){
+  const res = sheetCalc(srows()[i]);
+  $("#sm"+i).textContent = res ? fmt(res.m,3) : "−"; $("#sq"+i).textContent = res ? fmt(res.q,3) : "−";
+  $("#su"+i).textContent = res ? fmt(res.u,3) : "−"; $("#sw"+i).textContent = res && res.w!=null ? fmt(res.w,1) : "−";
+  let tot = 0; srows().forEach(r => { const q = sheetCalc(r); if(q && q.w!=null) tot += q.w; });
+  $("#stot").textContent = fmt(tot,1) + (tot >= 1000 ? `  (${fmt(tot/1000,3)} ton)` : "");
+}
+document.addEventListener("change", e => {
+  const s = e.target.closest?.("select[data-sk]"); if(!s) return; const i = +s.dataset.sr, r = srows()[i]; r[s.dataset.sk] = s.value;
+  if(s.dataset.sk==="p"){ const p = SH.find(x=>x.n===r.p); if(p && p.w[String(r.t)]==null) r.t = Object.keys(p.w)[0]; saveCalc(); fillSheet(); return; }
+  saveCalc(); updSheet(i);
+});
+document.addEventListener("input", e => { const inp = e.target.closest?.("#sbody input[data-sk]"); if(!inp) return; srows()[+inp.dataset.sr][inp.dataset.sk] = inp.value; saveCalc(); updSheet(+inp.dataset.sr); });
+document.addEventListener("click", e => {
+  if(e.target.closest("#sadd")){ const rs = srows(); rs.push({...(rs[rs.length-1] || SHEET_DEF[0])}); saveCalc(); fillSheet(); return; }
+  if(e.target.closest("#sreset")){ S.cr.sheet = SHEET_DEF.map(x=>({...x})); saveCalc(); fillSheet(); return; }
+  if(e.target.closest("#sclear")){ S.cr.sheet = [{p:"V-115", t:"0.5", A:""}]; saveCalc(); fillSheet(); return; }
+  const d = e.target.closest("[data-sdel]"); if(d){ const rs = srows(); rs.splice(+d.dataset.sdel,1); saveCalc(); fillSheet(); return; }
+});
+
+/* ═════════ 관련 사이트 ═════════ */
+function linksHtml(){
+  const L = window.LINKS || [];
+  return `<h3 class="subh">관련 사이트</h3>${L.map(g=>`<div class="lgrp"><h4>${esc(g.g)}</h4><div class="links">${g.items.map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener"><b>${esc(s.n)} ↗</b><small>${esc(s.d)}</small></a>`).join("")}</div></div>`).join("")}`;
+}
+
 /* ═════════ 렌더 ═════════ */
 function bindLocal(sel, fn){
   const el = $(sel); if(!el) return; let comp = false;
@@ -1107,7 +1290,7 @@ function render(){
   else if(S.tab==="process"){ v.innerHTML = renderProcess(); fillPrDesc(); }
 
   else if(S.tab==="codes") v.innerHTML = renderCodes();
-  else if(S.tab==="calc"){ v.innerHTML = renderCalc(); fillCalcTable(); }
+  else if(S.tab==="calc"){ v.innerHTML = renderCalc(); fillCalcTable(); fillSheet(); }
   else if(S.tab==="struct") v.innerHTML = renderStruct();
   else if(S.tab==="cad"){ v.innerHTML = renderCad(); fillCad(); bindLocal("#cadq", val => { S.cadq = val; fillCad(); }); }
 }
