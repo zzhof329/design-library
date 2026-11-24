@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="설계기준 라이브러리 — 제철플랜트 건축 설계검토용 강재 단중표, 강재 규격, 제철 프로세스와 설비 약어, KDS·KCS 설계기준 바로가기">
+<meta name="theme-color" content="#24415f">
+<link rel="icon" type="image/png" sizes="32x32" href="lib-favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="lib-icon-192.png">
+<link rel="apple-touch-icon" href="lib-apple-touch-icon.png">
+<title>설계기준 라이브러리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef1f4; --surface:#ffffff; --surface2:#f6f8fa; --ink:#18202b; --sub:#566273; --line:#d7dde4;
+  --steel:#24415f; --steel-ink:#ffffff; --accent:#c4561d; --accent-soft:#fbeee6; --link:#24415f;
+  --ok:#1d7a4a; --okbg:#e3f3ea; --warn:#9a5b00; --warnbg:#fdf1dc; --hl:#fff1a8;
+  --f-display:"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif;
+  --f-body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f141a; --surface:#18202a; --surface2:#1f2833; --ink:#e4e9ef; --sub:#9aa6b4; --line:#2c3846;
+  --steel:#1b3049; --steel-ink:#e8eef6; --accent:#e9874f; --accent-soft:#3a2416; --link:#9cc3ec;
+  --ok:#5cc98c; --okbg:#173326; --warn:#e8a94a; --warnbg:#38290f; --hl:#5a4b10; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f141a; --surface:#18202a; --surface2:#1f2833; --ink:#e4e9ef; --sub:#9aa6b4; --line:#2c3846;
+  --steel:#1b3049; --steel-ink:#e8eef6; --accent:#e9874f; --accent-soft:#3a2416; --link:#9cc3ec;
+  --ok:#5cc98c; --okbg:#173326; --warn:#e8a94a; --warnbg:#38290f; --hl:#5a4b10; color-scheme:dark }
+*{box-sizing:border-box} body{margin:0} [hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:48px}
+a{color:var(--link)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto}
+.top{position:sticky;top:0;z-index:5;background:var(--steel);color:var(--steel-ink);margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.top .in{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.brand{font-family:var(--f-display);font-weight:700;font-size:17px;white-space:nowrap;cursor:pointer;background:none;border:0;color:inherit;padding:0}
+.search{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.search input{flex:1;min-width:0;padding:7px 10px;border-radius:6px;border:0;background:#fff;color:#18202b}
+.sis{font-size:12.5px;opacity:.85;white-space:nowrap}
+.sis a{color:inherit}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:14px;box-shadow:inset 0 -2px 0 var(--line);position:sticky;top:var(--topH,54px);z-index:4;background:var(--bg);padding-top:6px}
+.tabs::-webkit-scrollbar{display:none}
+@media (max-width:820px){ .top{position:relative} .tabs{top:0} }
+.tab{flex:0 0 auto;padding:9px 14px 8px;cursor:pointer;border:0;background:transparent;color:var(--sub);font-family:var(--f-display);font-weight:600;border-bottom:3px solid transparent}
+.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .cnt{font-family:var(--f-mono);font-weight:400;font-size:11.5px;margin-left:5px;color:var(--sub)}
+.hero{margin-top:22px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:end}
+.hero h1{margin:0;font-family:var(--f-display);font-size:clamp(24px,4.2vw,34px);line-height:1.25;letter-spacing:-.02em;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{margin:8px 0 0;color:var(--sub);max-width:60ch}
+.facts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:96px}
+.fact b{display:block;font-family:var(--f-mono);font-size:20px;font-variant-numeric:tabular-nums}
+.fact span{font-size:12px;color:var(--sub)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:5px}
+.card:hover{border-color:var(--steel)}
+.card .no{font-family:var(--f-mono);font-size:12px;color:var(--accent);letter-spacing:.06em}
+.card h3{margin:0;font-family:var(--f-display);font-size:17px}
+.card p{margin:0;font-size:13px;color:var(--sub)}
+.sec{margin-top:26px}
+.sec h2{margin:0 0 4px;font-family:var(--f-display);font-size:19px}
+.sec > p{margin:0 0 10px;color:var(--sub);font-size:13.5px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:12px}
+.note{font-size:13px;color:var(--warn);background:var(--warnbg);border-radius:8px;padding:8px 12px;margin-top:12px}
+.muted{color:var(--sub);font-size:13px}
+.frow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:var(--surface);cursor:pointer;font-size:13px;color:var(--ink)}
+.chip.on{background:var(--steel);border-color:var(--steel);color:var(--steel-ink)}
+.chip .c{font-family:var(--f-mono);font-size:11px;opacity:.75}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.tools input[type=search]{flex:1 1 220px;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.shead{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:flex-end;justify-content:space-between;margin-top:18px}
+.shead h2{margin:0;font-family:var(--f-display);font-size:20px}
+.shead p{margin:2px 0 0;color:var(--sub);font-size:13.5px}
+.tbl-wrap{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-top:12px}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+.t th,.t td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.t th{position:sticky;top:0;background:var(--surface2);font-family:var(--f-display);font-weight:600;font-size:12.5px;color:var(--sub);z-index:1}
+.t td:first-child,.t th:first-child{text-align:left;font-family:var(--f-mono);font-size:13.5px}
+.t tbody tr{cursor:pointer}
+.t tbody tr:hover{background:var(--surface2)}
+.t tbody tr.sel{background:var(--accent-soft)}
+.t td.num{font-family:var(--f-mono)}
+mark{background:var(--hl);color:inherit;border-radius:2px;padding:0 1px}
+.calc{display:grid;grid-template-columns:minmax(0,1.2fr) repeat(3,minmax(0,1fr));gap:10px;align-items:end}
+.calc label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sub)}
+.calc input{padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font-family:var(--f-mono);width:100%}
+.calc .sel{font-family:var(--f-mono);font-size:15px;color:var(--ink);font-weight:500}
+.res{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:14px}
+.res b{font-family:var(--f-mono);font-size:18px;color:var(--accent)}
+.res label{display:inline-flex;gap:5px;align-items:center;color:var(--sub);font-size:13px}
+@media (max-width:640px){ .hero{grid-template-columns:1fr} .facts{justify-content:flex-start} .calc{grid-template-columns:1fr 1fr} }
+.abl{list-style:none;margin:12px 0 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.abl li{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line);align-items:baseline}
+.abl li:last-child{border-bottom:0}
+.abl .k{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+.abl .tg{font-size:11.5px;border-radius:4px;padding:1px 6px;background:var(--surface2);color:var(--sub);white-space:nowrap;cursor:pointer;border:0}
+@media (max-width:560px){ .abl li{grid-template-columns:84px minmax(0,1fr)} .abl .tg{grid-column:2;justify-self:start} }
+.psub{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:14px;padding-bottom:2px}
+.psub::-webkit-scrollbar{display:none}
+.psub button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:13.5px;color:var(--ink)}
+.psub button .n{font-family:var(--f-mono);color:var(--accent);font-size:11.5px;margin-right:5px}
+.psub button.on{background:var(--steel);color:var(--steel-ink);border-color:var(--steel)}
+.psub button.on .n{color:inherit;opacity:.8}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;counter-reset:f}
+.flow span{background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:13.5px}
+.flow i{color:var(--sub);font-style:normal}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){ .two{grid-template-columns:1fr} }
+.panel h3{margin:0 0 6px;font-family:var(--f-display);font-size:15px}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.panel.arch{border-left:4px solid var(--accent)}
+.abchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.abchip{font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line);border-radius:5px;padding:2px 8px;background:var(--surface);cursor:pointer;color:var(--ink)}
+.abchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.abdesc{margin-top:8px;font-size:14px;min-height:1.5em}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
+.gcard .h{padding:10px 14px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;border-bottom:1px solid var(--line)}
+.gcard .h b{font-family:var(--f-display);font-size:16px}
+.gcard .h span{font-family:var(--f-mono);font-size:12.5px;color:var(--accent)}
+.gcard .h p{margin:0;width:100%;font-size:12.5px;color:var(--sub)}
+.gcard .tbl-wrap{border:0;border-radius:0;margin:0;max-height:none}
+.gcard .t tbody tr{cursor:default}
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}
+.links a{display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--ink)}
+.links a:hover{border-color:var(--steel)}
+.links b{font-family:var(--f-display)} .links small{display:block;color:var(--sub);margin-top:3px;font-size:12.5px}
+.code{display:grid;grid-template-columns:130px minmax(0,1fr);gap:4px 14px;padding:9px 14px;border-bottom:1px solid var(--line);align-items:baseline}
+.code:last-child{border-bottom:0}
+.code .k{font-family:var(--f-mono);font-size:13.5px;color:var(--accent)}
+.code small{display:block;color:var(--sub);font-size:12.5px}
+@media (max-width:560px){ .code{grid-template-columns:1fr} }
+.sres h3{margin:18px 0 6px;font-family:var(--f-display);font-size:14px;color:var(--sub);display:flex;gap:10px;align-items:center}
+.sres h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.hit{display:flex;gap:12px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:6px;cursor:pointer;text-align:left;width:100%;color:var(--ink)}
+.hit:hover{border-color:var(--steel)}
+.hit .k{font-family:var(--f-mono);font-weight:500;min-width:96px;color:var(--accent)}
+.hit .v{flex:1;min-width:0;font-size:14px}
+.hit .x{font-family:var(--f-mono);font-size:12.5px;color:var(--sub);white-space:nowrap}
+.more{font-size:13px;color:var(--sub);margin:2px 0 0}
+footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+<header class="top" id="top"><div class="in">
+  <button class="brand" data-go="home">설계기준 라이브러리</button>
+  <div class="search"><input id="q" type="search" placeholder="통합 검색 — 예: H-300, SM355, CGL, 소둔, 앵커" autocomplete="off" aria-label="통합 검색"></div>
+  <span class="sis"><a href="https://zzhof329.github.io/law-archive/" target="_blank" rel="noopener">법규 아카이브 ↗</a></span>
+</div></header>
+<div class="wrap">
+  <nav class="tabs" id="tabs"></nav>
+  <main id="view"></main>
+  <footer>참고용 정리 자료이며 법적 효력이 없습니다. 설계 적용 전 KDS·KCS·KS 현행 원문으로 확인하세요. 단중표·설비약어 원본: 설계검토팀 참고자료. <span id="src"></span></footer>
+</div>
+
+<script src="data/danjung.js"></script>
+<script src="data/abbr.js"></script>
+<script src="data/process.js"></script>
+<script src="data/grades.js"></script>
+<script src="data/codes.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s ?? "").toLowerCase().replace(/[×*]/g,"x").replace(/\s+/g,"");
+function hl(text, q){
+  const t = esc(text); if(!q) return t;
+  const words = q.trim().split(/\s+/).filter(Boolean).map(w => w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/x/gi,"[x×*]"));
+  if(!words.length) return t;
+  try { return t.replace(new RegExp("(" + words.join("|") + ")","gi"), "<mark>$1</mark>"); } catch(e){ return t; }
+}
+const fmt = (n, d=3) => n == null ? "−" : (+n).toLocaleString("ko-KR",{maximumFractionDigits:d});
+
+/* ── 단중표 그룹 정의 (data/danjung.js 의 키) ── */
+const SEC = ["규격","단중 (kg/m)","도장 (m²/m)","할증"];
+const DJG = [
+  {k:"H",  n:"H형강",       u:"m", cols:SEC},
+  {k:"L",  n:"ㄱ형강",      u:"m", cols:SEC},
+  {k:"CH", n:"ㄷ형강",      u:"m", cols:SEC},
+  {k:"LC", n:"경량 C형강",  u:"m", cols:SEC},
+  {k:"CT", n:"CT형강",      u:"m", cols:SEC},
+  {k:"I",  n:"I형강",       u:"m", cols:SEC},
+  {k:"P",  n:"강관 (φ)",    u:"m", cols:SEC},
+  {k:"SQ", n:"각형강관",    u:"m", cols:SEC},
+  {k:"FB", n:"평강",        u:"m", cols:SEC},
+  {k:"RB", n:"환봉",        u:"m", cols:SEC},
+  {k:"RE", n:"이형철근",    u:"m", cols:SEC},
+  {k:"STS",n:"STS",         u:"m", cols:SEC},
+  {k:"PL", n:"강판 PL",     u:"m2", cols:["규격","단중 (kg/m²)"]},
+  {k:"FL", n:"바닥재·데크", u:"m2", cols:["규격","단중 (kg/m²)","도장 (m²/m²)","할증"]},
+  {k:"TC", n:"TC볼트",      u:"ea", cols:["규격","단중 (kg/EA)"]},
+  {k:"HT", n:"고장력 육각볼트", u:"ea", cols:["규격","단중 (kg/EA)"]},
+  {k:"AB", n:"앵커볼트",    u:"m", cols:["호칭","단중 (kg/m)","너트 등 (kg/EA)*"], note:"* 원본에 제목이 없는 열 — 호칭별 너트(1개) 중량으로 보이나 원본 확인 필요"},
+  {k:"W",  n:"용접 환산",   u:"m", cols:["용접 (각장·형식)","환산계수"], note:"F: 필릿, K·V·X: 개선(그루브) 형식. 원본 '용접환산계수' 값 그대로 — 단위·기준은 원본 참고"}
+];
+const DJ = window.DJ_ROWS || {};
+DJG.forEach(g => g.rows = DJ[g.k] || []);
+const DJ_TOTAL = DJG.reduce((a,g)=>a+g.rows.length,0);
+
+const ABBR = window.ABBR || [], ACATS = window.ABBR_CATS || {};
+const PROC = window.PROCESS || [], GR = window.GRADES || [], CODES = window.CODES || [], SRCS = window.SOURCES || [];
+const abbrMap = {}; ABBR.forEach(a => (abbrMap[a[0]] ||= []).push(a));
+
+/* ── 상태 / 라우팅 ── */
+const TABS = [
+  {id:"home", n:"홈"},
+  {id:"process", n:"제철 프로세스", c:PROC.length},
+  {id:"abbr", n:"설비 약어", c:ABBR.length},
+  {id:"danjung", n:"단중표", c:DJ_TOTAL},
+  {id:"grades", n:"강재 규격", c:GR.length},
+  {id:"codes", n:"설계기준·바로가기"}
+];
+const S = { tab:"home", dj:"H", djq:"", sel:null, len:1, qty:1, area:1, extra:true, ab:"", abq:"", pr:PROC[0]?.id, prab:null };
+function readHash(){
+  const h = decodeURIComponent(location.hash.slice(1)); const [t, a] = h.split("/");
+  if(TABS.some(x=>x.id===t)) S.tab = t; else S.tab = "home";
+  if(t==="danjung" && a && DJG.some(g=>g.k===a)) S.dj = a;
+  if(t==="process" && a && PROC.some(p=>p.id===a)) S.pr = a;
+  if(t==="abbr" && a && ACATS[a]) S.ab = a;
+}
+function go(tab, sub){ const h = sub ? `${tab}/${sub}` : tab; if(location.hash.slice(1)!==h) location.hash = h; else render(); }
+window.addEventListener("hashchange", () => { readHash(); render(); window.scrollTo({top:0}); });
+
+function renderTabs(){
+  $("#tabs").innerHTML = TABS.map(t => `<button class="tab${S.tab===t.id?" on":""}" data-go="${t.id}">${t.n}${t.c?`<span class="cnt">${t.c}</span>`:""}</button>`).join("");
+}
+document.addEventListener("click", e => {
+  const g = e.target.closest("[data-go]"); if(g){ $("#q").value=""; go(g.dataset.go, g.dataset.sub); return; }
+});
+
+/* ── 통합 검색 (입력창은 다시 그리지 않음 — 한글 조합 보호) ── */
+let composing = false;
+$("#q").addEventListener("compositionstart", () => composing = true);
+$("#q").addEventListener("compositionend", () => { composing = false; searchNow(); });
+$("#q").addEventListener("input", () => { if(!composing) searchNow(); });
+let searchTimer;
+function searchNow(){ clearTimeout(searchTimer); searchTimer = setTimeout(render, 80); }
+
+function searchAll(q){
+  const n = norm(q); if(!n) return null;
+  const words = q.trim().toLowerCase().split(/\s+/).map(norm).filter(Boolean);
+  const m = s => { const t = norm(s); return words.every(w => t.includes(w)); };
+  const out = {dj:[], ab:[], gr:[], pr:[], cd:[]};
+  DJG.forEach(g => g.rows.forEach(r => { if(m(r[0]) || m(g.n + " " + r[0])) out.dj.push({g, r}); }));
+  ABBR.forEach(a => { if(m(a[0] + " " + a[1])) out.ab.push(a); });
+  GR.forEach(g => g.rows.forEach(r => { if(m(r[0] + " " + g.ks + " " + g.g)) out.gr.push({g, r}); }));
+  PROC.forEach(p => { const txt = [p.name,p.en,p.sum,...p.flow,...p.facts,...p.arch].join(" "); if(m(txt)) out.pr.push(p); });
+  CODES.forEach(c => c.items.forEach(i => { if(m(i.join(" "))) out.cd.push(i); }));
+  SRCS.forEach(s => { if(m(s.n + " " + s.d)) out.cd.push([s.n, s.d, "", s.u]); });
+  // 약어는 정확히 일치하는 것을 먼저
+  out.ab.sort((a,b) => (norm(b[0])===n) - (norm(a[0])===n));
+  return out;
+}
+function renderSearch(q){
+  const r = searchAll(q);
+  const total = r.dj.length + r.ab.length + r.gr.length + r.pr.length + r.cd.length;
+  const lim = (arr, n, f) => arr.slice(0,n).map(f).join("") + (arr.length>n ? `<p class="more">외 ${arr.length-n}건 — 해당 탭에서 더 보기</p>` : "");
+  let h = `<div class="shead"><div><h2>“${esc(q)}” 검색 결과</h2><p>${total}건</p></div></div><div class="sres">`;
+  if(!total) h += `<div class="panel muted">찾는 항목이 없습니다. 규격은 <b>H-300</b>, <b>300x300</b>처럼, 약어는 <b>CGL</b>처럼 입력해 보세요.</div>`;
+  if(r.ab.length) h += `<h3>설비 약어 ${r.ab.length}</h3>` + lim(r.ab, 12, a => `<button class="hit" data-abq="${esc(a[0])}"><span class="k">${hl(a[0],q)}</span><span class="v">${hl(a[1],q)}</span><span class="x">${esc(ACATS[a[2]]||"")}</span></button>`);
+  if(r.dj.length) h += `<h3>단중표 ${r.dj.length}</h3>` + lim(r.dj, 15, ({g,r:row}) => `<button class="hit" data-dj="${g.k}" data-name="${esc(row[0])}"><span class="k">${hl(row[0],q)}</span><span class="v">${esc(g.n)}</span><span class="x">${fmt(row[1])} ${g.u==="ea"?"kg/EA":g.u==="m2"?"kg/m²":"kg/m"}</span></button>`);
+  if(r.gr.length) h += `<h3>강재 규격 ${r.gr.length}</h3>` + lim(r.gr, 10, ({g,r:row}) => `<button class="hit" data-go="grades"><span class="k">${hl(row[0],q)}</span><span class="v">${esc(g.g)} · ${esc(g.ks)}</span><span class="x">${esc(row.slice(1).filter(Boolean).join(" / "))}</span></button>`);
+  if(r.pr.length) h += `<h3>제철 프로세스 ${r.pr.length}</h3>` + lim(r.pr, 8, p => `<button class="hit" data-go="process" data-sub="${p.id}"><span class="k">${p.no}</span><span class="v"><b>${esc(p.name)}</b> — ${hl(p.sum,q)}</span></button>`);
+  if(r.cd.length) h += `<h3>설계기준·바로가기 ${r.cd.length}</h3>` + lim(r.cd, 10, i => `<button class="hit" data-go="codes"><span class="k">${hl(i[0],q)}</span><span class="v">${hl(i[1],q)}</span></button>`);
+  return h + "</div>";
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-abq]"); if(a){ S.abq = a.dataset.abq; S.ab=""; $("#q").value=""; go("abbr"); return; }
+  const d = e.target.closest("[data-dj]"); if(d){ S.dj = d.dataset.dj; S.djq = ""; const g = DJG.find(x=>x.k===S.dj); S.sel = g.rows.findIndex(r=>r[0]===d.dataset.name); $("#q").value=""; go("danjung", S.dj); return; }
+});
+
+/* ── 홈 ── */
+function renderHome(){
+  return `<section class="hero"><div><h1>제철플랜트 설계검토를 위한<br><em>설계기준</em> 라이브러리</h1>
+  <p>강재 단중·규격, 제철 공정과 설비 약어, KDS·KCS 설계기준을 한곳에서 찾습니다. 위 검색창에 규격·약어·키워드를 입력하세요.</p></div>
+  <div class="facts"><div class="fact"><b>${DJ_TOTAL.toLocaleString()}</b><span>단중 항목</span></div><div class="fact"><b>${ABBR.length}</b><span>설비 약어</span></div><div class="fact"><b>${PROC.length}</b><span>제철 공정</span></div></div></section>
+  <div class="cards">
+   <button class="card" data-go="process"><span class="no">01</span><h3>제철 프로세스</h3><p>원료 → 소결·코크스 → 제선 → 제강·연주 → 압연 흐름과 공정별 건축 검토 포인트, 관련 약어</p></button>
+   <button class="card" data-go="abbr"><span class="no">02</span><h3>설비 약어</h3><p>CGL·RH·TRT 등 제철 설비 약어 ${ABBR.length}개 — 공정별 분류·검색</p></button>
+   <button class="card" data-go="danjung"><span class="no">03</span><h3>단중표 · 중량 계산</h3><p>형강·강관·PL·볼트·철근 단중, 도장면적, 할증 — 길이·수량 넣으면 중량 계산</p></button>
+   <button class="card" data-go="grades"><span class="no">04</span><h3>강재 규격</h3><p>SS·SM·SN·SHN·강관·고장력볼트·철근 강종별 항복·인장강도</p></button>
+   <button class="card" data-go="codes"><span class="no">05</span><h3>설계기준·바로가기</h3><p>KDS·KCS 코드 체계와 국가건설기준센터·KS·법령 원문 링크</p></button>
+  </div>
+  <div class="sec"><h2>자주 찾는 검색</h2><div class="frow">${["H-400x400","SM355","SN355","CGL","RH","소둔","가스홀더","앵커","M20","PL-12","크레인"].map(w=>`<button class="chip" data-q="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`;
+}
+document.addEventListener("click", e => { const c = e.target.closest("[data-q]"); if(c){ $("#q").value = c.dataset.q; render(); $("#q").focus(); } });
+
+/* ── 단중표 ── */
+function djUnit(g){ return g.u==="ea" ? "EA" : g.u==="m2" ? "m²" : "m"; }
+function renderDanjung(){
+  const g = DJG.find(x=>x.k===S.dj) || DJG[0];
+  return `<div class="shead"><div><h2>단중표</h2><p>행을 누르면 아래에서 중량을 계산합니다. 원본: ${esc(window.DJ_SRC||"단중표.xlsx")}</p></div></div>
+  <div class="frow" id="djchips">${DJG.map(x=>`<button class="chip${x.k===g.k?" on":""}" data-djg="${x.k}">${esc(x.n)} <span class="c">${x.rows.length}</span></button>`).join("")}</div>
+  <div class="tools"><input type="search" id="djq" placeholder="${esc(g.n)} 안에서 찾기 — 예: 300x300, x9" value="${esc(S.djq)}" autocomplete="off"></div>
+  ${g.note?`<p class="muted" style="margin:8px 0 0">${esc(g.note)}</p>`:""}
+  <div class="tbl-wrap"><table class="t"><thead><tr>${g.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody id="djbody"></tbody></table></div>
+  <div class="panel" id="calc"></div>`;
+}
+function fillDjBody(){
+  const g = DJG.find(x=>x.k===S.dj); const q = S.djq; const n = norm(q);
+  const body = $("#djbody"); if(!body) return;
+  const rows = g.rows.map((r,i)=>[r,i]).filter(([r]) => !n || norm(r[0]).includes(n));
+  body.innerHTML = rows.length ? rows.map(([r,i]) => `<tr data-i="${i}" class="${i===S.sel?"sel":""}">${g.cols.map((c,j)=> j===0 ? `<td>${hl(r[0],q)}</td>` : `<td class="num">${r[j]==null?"−":fmt(r[j],4)}</td>`).join("")}</tr>`).join("")
+    : `<tr><td colspan="${g.cols.length}" class="muted" style="text-align:left">없음</td></tr>`;
+  const selRow = body.querySelector("tr.sel"); if(selRow) selRow.scrollIntoView({block:"nearest"});
+  fillCalc();
+}
+function fillCalc(){
+  const g = DJG.find(x=>x.k===S.dj); const box = $("#calc"); if(!box) return;
+  const r = g.rows[S.sel];
+  if(!r){ box.innerHTML = `<span class="muted">표에서 규격을 선택하면 중량·도장면적을 계산합니다.</span>`; return; }
+  if(g.k==="W"){ box.innerHTML = `<div class="calc"><label>선택<span class="sel">${esc(r[0])}</span></label><label>용접 길이 (m)<input type="number" id="c-len" min="0" step="0.1" value="${S.len}"></label></div><div class="res">환산값 <b id="c-w">${fmt(r[1]*S.len)}</b> <span class="muted">= 길이 × 환산계수 ${fmt(r[1])}</span></div>`; return bindCalc(); }
+  const ea = g.u==="ea", m2 = g.u==="m2";
+  const lenLbl = ea ? "" : m2 ? `<label>면적 (m²/개)<input type="number" id="c-len" min="0" step="0.01" value="${S.len}"></label>` : `<label>길이 (m/개)<input type="number" id="c-len" min="0" step="0.1" value="${S.len}"></label>`;
+  const k = r[3] || null, hasPaint = /^도장/.test(g.cols[2]||"") && r[2]!=null;
+  box.innerHTML = `<div class="calc"><label>선택<span class="sel">${esc(r[0])}</span></label>${lenLbl}<label>수량 (개)<input type="number" id="c-qty" min="0" step="1" value="${S.qty}"></label>${k?`<label>할증<span class="sel">× ${fmt(k)}</span></label>`:""}</div>
+  <div class="res"><span>중량 <b id="c-w"></b> kg</span><span id="c-wt" class="muted"></span>${hasPaint?`<span>도장면적 <b id="c-p"></b> m²</span>`:""}${k?`<label><input type="checkbox" id="c-x" ${S.extra?"checked":""}> 할증 포함</label>`:""}</div>`;
+  bindCalc();
+}
+function bindCalc(){
+  const g = DJG.find(x=>x.k===S.dj); const r = g.rows[S.sel];
+  const upd = () => {
+    const L = parseFloat($("#c-len")?.value) || (g.u==="ea" ? 1 : 0), Q = parseFloat($("#c-qty")?.value) || (g.k==="W"?1:0);
+    if($("#c-len")) S.len = L; if($("#c-qty")) S.qty = Q; if($("#c-x")) S.extra = $("#c-x").checked;
+    if(g.k==="W"){ $("#c-w").textContent = fmt(r[1]*L); return; }
+    const base = r[1] * (g.u==="ea" ? 1 : L) * Q, kk = (S.extra && r[3]) ? r[3] : 1, w = base*kk;
+    $("#c-w").textContent = fmt(w, 2);
+    $("#c-wt").textContent = w >= 1000 ? `(${fmt(w/1000,3)} ton)` : "";
+    if($("#c-p")) $("#c-p").textContent = fmt(r[2]*L*Q, 2);
+  };
+  ["#c-len","#c-qty","#c-x"].forEach(s => $(s)?.addEventListener("input", upd));
+  upd();
+}
+document.addEventListener("click", e => {
+  const c = e.target.closest("[data-djg]"); if(c){ S.dj = c.dataset.djg; S.djq=""; S.sel=null; go("danjung", S.dj); return; }
+  const tr = e.target.closest("#djbody tr[data-i]"); if(tr){ S.sel = +tr.dataset.i; document.querySelectorAll("#djbody tr.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); fillCalc(); }
+});
+
+/* ── 설비 약어 ── */
+function renderAbbr(){
+  return `<div class="shead"><div><h2>제철 설비 약어</h2><p>원본: 설비약어.pdf (OCR 오류 정정, 공정 분류 추가). 같은 약어가 여러 뜻일 수 있습니다.</p></div></div>
+  <div class="frow"><button class="chip${!S.ab?" on":""}" data-abc="">전체 <span class="c">${ABBR.length}</span></button>${Object.entries(ACATS).map(([k,v])=>`<button class="chip${S.ab===k?" on":""}" data-abc="${k}">${esc(v)} <span class="c">${ABBR.filter(a=>a[2]===k).length}</span></button>`).join("")}</div>
+  <div class="tools"><input type="search" id="abq" placeholder="약어 또는 뜻으로 찾기 — 예: CGL, 소둔, Furnace" value="${esc(S.abq)}" autocomplete="off"></div>
+  <ul class="abl" id="ablist"></ul>`;
+}
+function fillAbbr(){
+  const q = S.abq, words = q.trim().toLowerCase().split(/\s+/).map(norm).filter(Boolean);
+  let list = ABBR.filter(a => (!S.ab || a[2]===S.ab) && words.every(w => norm(a[0]+" "+a[1]).includes(w)));
+  const n = norm(q); if(n) list.sort((a,b) => (norm(b[0])===n) - (norm(a[0])===n) || (norm(b[0]).startsWith(n)) - (norm(a[0]).startsWith(n)));
+  $("#ablist").innerHTML = list.length ? list.map(a => `<li><span class="k">${hl(a[0],q)}</span><span>${hl(a[1],q)}</span><button class="tg" data-abc="${a[2]}">${esc(ACATS[a[2]]||"")}</button></li>`).join("") : `<li><span></span><span class="muted">없음</span></li>`;
+}
+document.addEventListener("click", e => { const c = e.target.closest("[data-abc]"); if(c){ S.ab = c.dataset.abc; go("abbr", S.ab || undefined); } });
+
+/* ── 제철 프로세스 ── */
+function renderProcess(){
+  const p = PROC.find(x=>x.id===S.pr) || PROC[0];
+  const chips = p.abbr.filter(k => abbrMap[k]);
+  return `<div class="shead"><div><h2>제철 프로세스</h2><p>원료가 제품이 되기까지 — 공정을 고르면 흐름, 핵심 내용, 건축 설계검토 포인트, 관련 약어를 보여줍니다.</p></div></div>
+  <div class="psub">${PROC.map(x=>`<button class="${x.id===p.id?"on":""}" data-go="process" data-sub="${x.id}"><span class="n">${x.no}</span>${esc(x.name)}</button>`).join("")}</div>
+  <div class="panel"><h3>${esc(p.name)} <span class="muted" style="font-family:var(--f-mono);font-weight:400">${esc(p.en)}</span></h3><p style="margin:0">${esc(p.sum)}</p>
+   <div class="flow">${p.flow.map((f,i)=>(i?`<i>→</i>`:"")+`<span>${esc(f)}</span>`).join("")}</div></div>
+  <div class="two"><div class="panel"><h3>핵심 내용</h3><ul>${p.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
+   <div class="panel arch"><h3>건축 설계검토 포인트</h3><ul>${p.arch.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div></div>
+  <div class="panel"><h3>이 공정의 설비 약어 <span class="muted" style="font-weight:400">${chips.length}개 — 눌러서 뜻 보기</span></h3>
+   <div class="abchips">${chips.map(k=>`<button class="abchip${S.prab===k?" on":""}" data-prab="${esc(k)}">${esc(k)}</button>`).join("")}</div>
+   <div class="abdesc" id="prdesc"></div>
+   <p class="muted" style="margin:8px 0 0"><a href="#abbr/${p.cat}">${esc(ACATS[p.cat]||"")} 약어 전체 보기 →</a></p></div>
+  <p class="note">공정 설명은 일반 공개 지식 기준의 개요입니다. 개별 설비의 사양·배치는 해당 프로젝트 설계도서를 따르세요.</p>`;
+}
+function fillPrDesc(){
+  const box = $("#prdesc"); if(!box) return;
+  const list = S.prab ? (abbrMap[S.prab]||[]) : [];
+  box.innerHTML = list.length ? list.map(a=>`<div><b style="font-family:var(--f-mono);color:var(--accent)">${esc(a[0])}</b> — ${esc(a[1])}</div>`).join("") : `<span class="muted">약어를 누르면 뜻이 여기에 나옵니다.</span>`;
+}
+document.addEventListener("click", e => { const c = e.target.closest("[data-prab]"); if(c){ S.prab = S.prab===c.dataset.prab ? null : c.dataset.prab; document.querySelectorAll(".abchip").forEach(x=>x.classList.toggle("on", x.dataset.prab===S.prab)); fillPrDesc(); } });
+
+/* ── 강재 규격 ── */
+function renderGrades(){
+  return `<div class="shead"><div><h2>강재 규격</h2><p>강종별 항복강도(Fy)·인장강도(Fu), 단위 MPa. t = 판두께(mm).</p></div></div>
+  <p class="note">정리값입니다. KS는 개정이 잦으므로 설계 적용 전 KS 원문(e-나라표준인증)과 KDS 14 31 05(강구조 재료) 원문으로 확인하세요.</p>
+  ${GR.map(g=>`<div class="gcard"><div class="h"><b>${esc(g.g)}</b><span>${esc(g.ks)}</span>${g.note?`<p>${esc(g.note)}</p>`:""}</div>
+   <div class="tbl-wrap"><table class="t"><thead><tr>${g.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${g.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="num"':""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`).join("")}`;
+}
+
+/* ── 설계기준·바로가기 ── */
+function renderCodes(){
+  return `<div class="shead"><div><h2>설계기준·바로가기</h2><p>원문은 공식 사이트에서 — 이 사이트는 위치와 요약만 안내합니다.</p></div></div>
+  <div class="links">${SRCS.map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener"><b>${esc(s.n)} ↗</b><small>${esc(s.d)}</small></a>`).join("")}</div>
+  ${CODES.map(c=>`<div class="gcard"><div class="h"><b>${esc(c.grp)}</b></div>${c.items.map(i=>`<div class="code"><span class="k">${esc(i[0])}</span><div>${esc(i[1])}<small>${esc(i[2])}</small></div></div>`).join("")}</div>`).join("")}
+  <p class="note">코드번호는 개편될 수 있습니다. 국가건설기준센터에서 코드번호 또는 제목으로 검색해 현행판(연도 표기)을 확인하세요. KS 원문은 한국표준협회 저작물이므로 이 사이트에 올리지 않습니다.</p>`;
+}
+
+/* ── 렌더 ── */
+function render(){
+  renderTabs();
+  const q = $("#q").value.trim();
+  const v = $("#view");
+  if(q){ v.innerHTML = renderSearch(q); return; }
+  if(S.tab==="home") v.innerHTML = renderHome();
+  else if(S.tab==="danjung"){ v.innerHTML = renderDanjung(); fillDjBody(); bindLocal("#djq", val => { S.djq = val; fillDjBody(); }); }
+  else if(S.tab==="abbr"){ v.innerHTML = renderAbbr(); fillAbbr(); bindLocal("#abq", val => { S.abq = val; fillAbbr(); }); }
+  else if(S.tab==="process"){ v.innerHTML = renderProcess(); fillPrDesc(); }
+  else if(S.tab==="grades") v.innerHTML = renderGrades();
+  else if(S.tab==="codes") v.innerHTML = renderCodes();
+}
+// 탭 안 검색창: 입력창은 그대로 두고 목록만 갱신 (한글 조합 보호)
+function bindLocal(sel, fn){
+  const el = $(sel); if(!el) return; let comp = false;
+  el.addEventListener("compositionstart", () => comp = true);
+  el.addEventListener("compositionend", () => { comp = false; fn(el.value); });
+  el.addEventListener("input", () => { if(!comp) fn(el.value); });
+}
+function setTopH(){ document.documentElement.style.setProperty("--topH", $("#top").offsetHeight + "px"); }
+window.addEventListener("resize", setTopH);
+$("#src").textContent = window.DJ_SRC ? `단중표 기준: ${window.DJ_SRC}` : "";
+readHash(); render(); setTopH();
+</script>
+</body>
+</html>
