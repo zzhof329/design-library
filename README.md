@@ -25,7 +25,7 @@
 
 | 바꿀 것 | 방법 | 다시 올릴 파일 |
 |---|---|---|
-| 단중표 엑셀 | `도구\단중표_변환.ps1` 실행 | `data/danjung.js` |
+| 단중표 | `도구\단중표_변환3.ps1` 실행 | `data/danjung.js` |
 | 화면 | 새 `원본\화면N.html` 저장 → `도구\사이트_만들기2.ps1` 실행 | `index.html` |
 | 약어·공정·강재·기준 | `data/*.js` 수정 | 바뀐 `data/*.js` |
 
@@ -36,8 +36,9 @@ GitHub 저장소 화면에서 **Add file → Upload files** 로 바뀐 파일만
 | 파일 | 내용 |
 |---|---|
 | `index.html` | 화면 |
-| `data/danjung.js` | 단중표 (단중표.xlsx 에서 자동 생성) |
-| `data/abbr.js` | 설비 약어 (설비약어.pdf, OCR 정정) |
-| `data/process.js` | 제철 프로세스 |
+| `data/danjung.js` | 단중표 |
+| `data/abbr3.js` | 설비 약어 |
+| `data/process2.js` | 제철 프로세스 |
 | `data/grades.js` | 강재 규격 |
 | `data/codes.js` | 설계기준 코드·바로가기 |
+| `data/surcharge.js` | 표준품셈 강재 할증률 |

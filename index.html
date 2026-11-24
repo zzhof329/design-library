@@ -10,12 +10,12 @@
 <link rel="apple-touch-icon" href="lib-apple-touch-icon.png">
 <title>설계기준 라이브러리</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
   --bg:#eef1f4; --surface:#ffffff; --surface2:#f6f8fa; --ink:#18202b; --sub:#566273; --line:#d7dde4;
   --steel:#24415f; --steel-ink:#ffffff; --accent:#c4561d; --accent-soft:#fbeee6; --link:#24415f;
-  --ok:#1d7a4a; --okbg:#e3f3ea; --warn:#9a5b00; --warnbg:#fdf1dc; --hl:#fff1a8;
+  --ok:#1d7a4a; --okbg:#e3f3ea; --warn:#9a5b00; --warnbg:#fdf1dc; --hl:#fff1a8; --water:#2f6fa8;
   --f-display:"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif;
   --f-body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
@@ -23,11 +23,11 @@
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#0f141a; --surface:#18202a; --surface2:#1f2833; --ink:#e4e9ef; --sub:#9aa6b4; --line:#2c3846;
   --steel:#1b3049; --steel-ink:#e8eef6; --accent:#e9874f; --accent-soft:#3a2416; --link:#9cc3ec;
-  --ok:#5cc98c; --okbg:#173326; --warn:#e8a94a; --warnbg:#38290f; --hl:#5a4b10; color-scheme:dark } }
+  --ok:#5cc98c; --okbg:#173326; --warn:#e8a94a; --warnbg:#38290f; --hl:#5a4b10; --water:#7fb4e6; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#0f141a; --surface:#18202a; --surface2:#1f2833; --ink:#e4e9ef; --sub:#9aa6b4; --line:#2c3846;
   --steel:#1b3049; --steel-ink:#e8eef6; --accent:#e9874f; --accent-soft:#3a2416; --link:#9cc3ec;
-  --ok:#5cc98c; --okbg:#173326; --warn:#e8a94a; --warnbg:#38290f; --hl:#5a4b10; color-scheme:dark }
+  --ok:#5cc98c; --okbg:#173326; --warn:#e8a94a; --warnbg:#38290f; --hl:#5a4b10; --water:#7fb4e6; color-scheme:dark }
 *{box-sizing:border-box} body{margin:0} [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:48px}
 a{color:var(--link)}
@@ -63,8 +63,9 @@ button,input,select{font:inherit;color:inherit}
 .card p{margin:0;font-size:13px;color:var(--sub)}
 .sec{margin-top:26px}
 .sec h2{margin:0 0 4px;font-family:var(--f-display);font-size:19px}
-.sec > p{margin:0 0 10px;color:var(--sub);font-size:13.5px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:12px}
+.panel h3{margin:0 0 6px;font-family:var(--f-display);font-size:15px}
+.panel ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
 .note{font-size:13px;color:var(--warn);background:var(--warnbg);border-radius:8px;padding:8px 12px;margin-top:12px}
 .muted{color:var(--sub);font-size:13px}
 .frow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:12px}
@@ -76,55 +77,143 @@ button,input,select{font:inherit;color:inherit}
 .shead{display:flex;flex-wrap:wrap;gap:6px 20px;align-items:flex-end;justify-content:space-between;margin-top:18px}
 .shead h2{margin:0;font-family:var(--f-display);font-size:20px}
 .shead p{margin:2px 0 0;color:var(--sub);font-size:13.5px}
-.tbl-wrap{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-top:12px}
-table.t{border-collapse:collapse;width:100%;font-size:14px}
-.t th,.t td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.btn{border:1px solid var(--line);background:var(--surface);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink)}
+.btn:hover{border-color:var(--steel)}
+mark{background:var(--hl);color:inherit;border-radius:2px;padding:0 1px}
+
+/* 표: 내용 폭만큼만 (넓게 퍼지지 않게) */
+.tbl-wrap{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:10px;background:var(--surface);width:fit-content;max-width:100%}
+table.t{border-collapse:collapse;font-size:14px}
+.t th,.t td{padding:6px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .t th{position:sticky;top:0;background:var(--surface2);font-family:var(--f-display);font-weight:600;font-size:12.5px;color:var(--sub);z-index:1}
 .t td:first-child,.t th:first-child{text-align:left;font-family:var(--f-mono);font-size:13.5px}
-.t tbody tr{cursor:pointer}
-.t tbody tr:hover{background:var(--surface2)}
-.t tbody tr.sel{background:var(--accent-soft)}
 .t td.num{font-family:var(--f-mono)}
-mark{background:var(--hl);color:inherit;border-radius:2px;padding:0 1px}
-.calc{display:grid;grid-template-columns:minmax(0,1.2fr) repeat(3,minmax(0,1fr));gap:10px;align-items:end}
+.t td.dm{font-family:var(--f-mono);font-size:13px;color:var(--sub)}
+.t th.dm{font-family:var(--f-mono);color:var(--accent)}
+.t th.sep,.t td.sep{border-left:1px solid var(--line)}
+.t.pick tbody tr{cursor:pointer}
+.t.pick tbody tr:hover{background:var(--surface2)}
+.t tbody tr.sel{background:var(--accent-soft)}
+
+/* 단중표 */
+.djtop{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px;margin-top:12px;align-items:stretch}
+.djtop .panel{margin-top:0}
+@media (max-width:700px){ .djtop{grid-template-columns:1fr} }
+.fhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fhead h3{margin:0}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-top:10px}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--sub)}
+.fld .k{font-family:var(--f-mono);font-weight:600;color:var(--accent);margin-right:5px}
+.fld input,.fld select{padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font-family:var(--f-mono);font-size:15px;width:100%}
+.fld input:focus,.fld select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.secfig{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.secfig figcaption{font-size:12.5px;color:var(--sub);text-align:center;margin-top:2px}
+.secsvg{width:100%;max-width:250px;height:auto;display:block}
+svg .sh{fill:var(--surface2);stroke:var(--ink);stroke-width:1.6;fill-rule:evenodd}
+svg .wl{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.4}
+svg .dim line{stroke:var(--sub);stroke-width:1}
+svg .dim .ext{stroke-dasharray:2 2;stroke-width:.8}
+svg .dim .tk{stroke-width:1.6}
+svg .dim text{fill:var(--sub);font:600 13px var(--f-mono)}
+svg .dim.on line{stroke:var(--accent)}
+svg .dim.on text{fill:var(--accent)}
+svg .pt{fill:var(--accent);font:600 11.5px var(--f-body)}
+svg .ld{stroke:var(--accent);stroke-width:1}
+svg .cap{fill:var(--sub);font:11px var(--f-body)}
+.djmain{display:grid;grid-template-columns:auto minmax(240px,290px);gap:12px;align-items:start;margin-top:12px;justify-content:start}
+.djmain .panel{margin-top:0;position:sticky;top:calc(var(--topH,54px) + 56px)}
+@media (max-width:860px){ .djmain{grid-template-columns:1fr} .djmain .panel{position:static} }
+.cnt-line{font-size:12.5px;color:var(--sub);margin:12px 0 0}
+.calc{display:grid;gap:8px}
 .calc label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sub)}
 .calc input{padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font-family:var(--f-mono);width:100%}
 .calc .sel{font-family:var(--f-mono);font-size:15px;color:var(--ink);font-weight:500}
-.res{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:14px}
+.res{display:grid;gap:4px;margin-top:6px;font-size:14px;border-top:1px solid var(--line);padding-top:8px}
 .res b{font-family:var(--f-mono);font-size:18px;color:var(--accent)}
-.res label{display:inline-flex;gap:5px;align-items:center;color:var(--sub);font-size:13px}
-@media (max-width:640px){ .hero{grid-template-columns:1fr} .facts{justify-content:flex-start} .calc{grid-template-columns:1fr 1fr} }
+.res label{display:inline-flex;flex-direction:row;gap:6px;align-items:center;color:var(--ink);font-size:13px}
+details.sc{margin-top:12px}
+details.sc summary{cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:14px}
+details.sc .tbl-wrap{margin-top:8px;max-height:none}
+details.sc ol{margin:8px 0 0;padding-left:18px;font-size:13px;color:var(--sub)}
+
+/* 약어 */
 .abl{list-style:none;margin:12px 0 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px}
 .abl li{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;padding:8px 12px;border-bottom:1px solid var(--line);align-items:baseline}
 .abl li:last-child{border-bottom:0}
 .abl .k{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
 .abl .tg{font-size:11.5px;border-radius:4px;padding:1px 6px;background:var(--surface2);color:var(--sub);white-space:nowrap;cursor:pointer;border:0}
 @media (max-width:560px){ .abl li{grid-template-columns:84px minmax(0,1fr)} .abl .tg{grid-column:2;justify-self:start} }
-.psub{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:14px;padding-bottom:2px}
-.psub::-webkit-scrollbar{display:none}
-.psub button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:13.5px;color:var(--ink)}
+
+/* 버튼형 하위 메뉴 */
+.psub{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.psub button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:13.5px;color:var(--ink);text-align:left}
+.psub button small{display:block;font-family:var(--f-mono);font-weight:400;font-size:11px;color:var(--sub)}
 .psub button .n{font-family:var(--f-mono);color:var(--accent);font-size:11.5px;margin-right:5px}
 .psub button.on{background:var(--steel);color:var(--steel-ink);border-color:var(--steel)}
-.psub button.on .n{color:inherit;opacity:.8}
-.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;counter-reset:f}
-.flow span{background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:13.5px}
-.flow i{color:var(--sub);font-style:normal}
+.psub button.on small,.psub button.on .n{color:inherit;opacity:.8}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-top:12px;overflow:hidden}
+.gcard .h{padding:10px 14px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;border-bottom:1px solid var(--line)}
+.gcard .h b{font-family:var(--f-display);font-size:16px}
+.gcard .h span{font-family:var(--f-mono);font-size:12.5px;color:var(--accent)}
+.gcard .h p{margin:0;width:100%;font-size:12.5px;color:var(--sub)}
+.gcard .tbl-wrap{border:0;border-radius:0;max-height:none}
+
+/* 제철 프로세스 */
+.ovw,.stg{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ovw svg{display:block;width:100%;min-width:780px;height:auto}
+.stg svg{display:block;width:100%;min-width:600px;max-width:820px;margin:0 auto;height:auto}
+.pn{cursor:pointer}
+.pn rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.pn:hover rect{stroke:var(--steel)}
+.pn .no{fill:var(--accent);font:500 11px var(--f-mono)}
+.pn .nm{fill:var(--ink);font:700 14px var(--f-display)}
+.pn .sb{fill:var(--sub);font:11px var(--f-body)}
+.pn.on rect{fill:var(--steel);stroke:var(--steel)}
+.pn.on .nm,.pn.on .sb,.pn.on .no{fill:var(--steel-ink)}
+svg .ar{stroke:var(--sub);stroke-width:1.6;fill:none}
+svg .ar2{stroke:var(--sub);stroke-width:1.3;fill:none;stroke-dasharray:4 3}
+svg .ahs{fill:var(--sub)}
+svg .ahp{fill:var(--accent)}
+svg .lb3{fill:var(--sub);font:11.5px var(--f-body)}
+svg .ub{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2}
+svg .ut{fill:var(--ink);font:600 13px var(--f-display)}
+svg .pr{fill:var(--okbg);stroke:var(--ok);stroke-width:1.2}
+svg .prt{fill:var(--ink);font:600 12.5px var(--f-display)}
+svg .eq{fill:var(--surface2);stroke:var(--ink);stroke-width:1.5}
+svg .ht{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+svg .ln{stroke:var(--ink);stroke-width:1.5;fill:none}
+svg .fa{stroke:var(--accent);stroke-width:2.2;fill:none}
+svg .wt{stroke:var(--water);stroke-width:1.5;fill:none}
+svg .wf{fill:var(--water);opacity:.25}
+svg .lb{fill:var(--ink);font:600 12.5px var(--f-body)}
+svg .lb2{fill:var(--sub);font:11px var(--f-body)}
+.stage-h{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.stage-h h3{margin:0;font-family:var(--f-display);font-size:19px}
+.stage-h .no{font-family:var(--f-mono);color:var(--accent)}
+.stage-h .en{font-family:var(--f-mono);color:var(--sub);font-size:13px}
+.easy{margin-top:8px;font-size:15.5px}
+.like{margin-top:8px;background:var(--accent-soft);border-radius:8px;padding:8px 12px;font-size:14px}
+.like b{color:var(--accent);margin-right:6px}
+.io{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;margin-top:12px}
+.io .bx{background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.io .bx b{display:block;font-size:12px;color:var(--sub);margin-bottom:3px}
+.io .bx.out{background:var(--okbg);border-color:transparent}
+.io .bx div{font-size:14px}
+.io .to{font-size:22px;color:var(--accent)}
+@media (max-width:560px){ .io{grid-template-columns:1fr} .io .to{transform:rotate(90deg);justify-self:center} }
+.steps{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;counter-reset:s}
+.steps span{background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:13.5px;counter-increment:s}
+.steps span::before{content:counter(s) ". ";font-family:var(--f-mono);color:var(--accent)}
+.steps i{color:var(--sub);font-style:normal}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 @media (max-width:760px){ .two{grid-template-columns:1fr} }
-.panel h3{margin:0 0 6px;font-family:var(--f-display);font-size:15px}
-.panel ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
 .panel.arch{border-left:4px solid var(--accent)}
 .abchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .abchip{font-family:var(--f-mono);font-size:12.5px;border:1px solid var(--line);border-radius:5px;padding:2px 8px;background:var(--surface);cursor:pointer;color:var(--ink)}
 .abchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .abdesc{margin-top:8px;font-size:14px;min-height:1.5em}
-.gcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
-.gcard .h{padding:10px 14px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;border-bottom:1px solid var(--line)}
-.gcard .h b{font-family:var(--f-display);font-size:16px}
-.gcard .h span{font-family:var(--f-mono);font-size:12.5px;color:var(--accent)}
-.gcard .h p{margin:0;width:100%;font-size:12.5px;color:var(--sub)}
-.gcard .tbl-wrap{border:0;border-radius:0;margin:0;max-height:none}
-.gcard .t tbody tr{cursor:default}
+
+/* 바로가기 */
 .links{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}
 .links a{display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-decoration:none;color:var(--ink)}
 .links a:hover{border-color:var(--steel)}
@@ -154,14 +243,15 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <div class="wrap">
   <nav class="tabs" id="tabs"></nav>
   <main id="view"></main>
-  <footer>참고용 정리 자료이며 법적 효력이 없습니다. 설계 적용 전 KDS·KCS·KS 현행 원문으로 확인하세요. 단중표·설비약어 원본: 설계검토팀 참고자료. <span id="src"></span></footer>
+  <footer>참고용 정리 자료이며 법적 효력이 없습니다. 설계 적용 전 KDS·KCS·KS·표준품셈 현행 원문으로 확인하세요. 할증률: 2025 건설공사 표준품셈.</footer>
 </div>
 
 <script src="data/danjung.js"></script>
-<script src="data/abbr.js"></script>
-<script src="data/process.js"></script>
+<script src="data/abbr3.js"></script>
+<script src="data/process2.js"></script>
 <script src="data/grades.js"></script>
 <script src="data/codes.js"></script>
+<script src="data/surcharge.js"></script>
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
@@ -175,37 +265,126 @@ function hl(text, q){
 }
 const fmt = (n, d=3) => n == null ? "−" : (+n).toLocaleString("ko-KR",{maximumFractionDigits:d});
 
-/* ── 단중표 그룹 정의 (data/danjung.js 의 키) ── */
-const SEC = ["규격","단중 (kg/m)","도장 (m²/m)","할증"];
+/* ═════════ 단면 도식 (SVG) ═════════ */
+const tk = (x,y) => `<line class="tk" x1="${x-4}" y1="${y+4}" x2="${x+4}" y2="${y-4}"/>`;
+// 가로 치수선: x1~x2, 높이 y, 보조선은 ext(모양 끝 y)에서
+function dH(x1,x2,y,lab,k,o={}){
+  let s = `<g class="dim" data-k="${k}">`;
+  if(o.ext!=null){ const d = o.ext < y ? 5 : -5; s += `<line class="ext" x1="${x1}" y1="${o.ext}" x2="${x1}" y2="${y+d}"/><line class="ext" x1="${x2}" y1="${o.ext}" x2="${x2}" y2="${y+d}"/>`; }
+  s += `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/>${tk(x1,y)}${tk(x2,y)}`;
+  return s + `<text x="${o.lx ?? (x1+x2)/2}" y="${o.ly ?? (y+16)}" text-anchor="${o.a || "middle"}">${lab}</text></g>`;
+}
+function dV(y1,y2,x,lab,k,o={}){
+  let s = `<g class="dim" data-k="${k}">`;
+  if(o.ext!=null){ const d = o.ext > x ? -5 : 5; s += `<line class="ext" x1="${o.ext}" y1="${y1}" x2="${x+d}" y2="${y1}"/><line class="ext" x1="${o.ext}" y1="${y2}" x2="${x+d}" y2="${y2}"/>`; }
+  s += `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}"/>${tk(x,y1)}${tk(x,y2)}`;
+  return s + `<text x="${o.lx ?? (x-7)}" y="${o.ly ?? ((y1+y2)/2+4)}" text-anchor="${o.a || "end"}">${lab}</text></g>`;
+}
+// 얇은 두께: 선을 바깥으로 연장해서 표시
+function tH(x1,x2,y,lab,k,lx){ return `<g class="dim" data-k="${k}"><line x1="${x1-16}" y1="${y}" x2="${x2+16}" y2="${y}"/>${tk(x1,y)}${tk(x2,y)}<text x="${lx ?? x2+20}" y="${y+4}" text-anchor="start">${lab}</text></g>`; }
+function tV(y1,y2,x,lab,k,ly){ return `<g class="dim" data-k="${k}"><line x1="${x}" y1="${y1-14}" x2="${x}" y2="${y2+14}"/>${tk(x,y1)}${tk(x,y2)}<text x="${x+7}" y="${ly ?? (y1+y2)/2+4}" text-anchor="start">${lab}</text></g>`; }
+const part = (x,y,tx,ty,lab,a="start") => `<line class="ld" x1="${x}" y1="${y}" x2="${tx}" y2="${ty}"/><circle cx="${x}" cy="${y}" r="2" class="wl"/><text class="pt" x="${tx + (a==="start"?3:-3)}" y="${ty+4}" text-anchor="${a}">${lab}</text>`;
+const svgw = (body, label) => `<svg class="secsvg" viewBox="0 0 250 215" role="img" aria-label="${label}">${body}</svg>`;
+const SEC = {
+  H: (narrow) => { const a = narrow ? 92 : 72, b = narrow ? 168 : 188;
+    return svgw(`<path class="sh" d="M${a} 25 H${b} V37 H133 V153 H${b} V165 H${a} V153 H123 V37 H${a} Z"/>`
+      + part(150,31,170,12,"플랜지") + part(123,110,96,118,"웨브","end")
+      + dV(25,165,40,"H","H",{ext:a}) + dH(a,b,188,"B","B",{ext:165,ly:206})
+      + tH(123,133,80,"t1","t1") + tV(153,165,b+16,"t2","t2"), narrow?"I형강 단면":"H형강 단면"); },
+  CT: () => svgw(`<path class="sh" d="M72 25 H188 V37 H133 V165 H123 V37 H72 Z"/>`
+      + part(160,31,176,12,"플랜지") + part(123,120,96,128,"웨브","end")
+      + dV(25,165,40,"H","H",{ext:72}) + dH(72,188,188,"B","B",{ext:37,ly:206})
+      + tH(123,133,95,"t1","t1") + tV(25,37,204,"t2","t2"), "CT형강 단면"),
+  CH: () => svgw(`<path class="sh" d="M82 25 H172 V37 H93 V153 H172 V165 H82 Z"/>`
+      + part(150,31,166,12,"플랜지") + part(93,120,112,128,"웨브")
+      + dV(25,165,50,"H","H",{ext:82}) + dH(82,172,188,"B","B",{ext:165,ly:206})
+      + tH(82,93,85,"t1","t1",113) + tV(153,165,190,"t2","t2"), "ㄷ형강 단면"),
+  L: () => svgw(`<path class="sh" d="M82 25 H94 V153 H202 V165 H82 Z"/>`
+      + dV(25,165,52,"A","A",{ext:82}) + dH(82,202,188,"B","B",{ext:165,ly:206})
+      + tH(82,94,60,"t","t",114) + `<text class="cap" x="150" y="100" text-anchor="middle">ㄱ형강 (등변·부등변)</text>`, "ㄱ형강 단면"),
+  LC: () => svgw(`<path class="sh" d="M82 25 H162 V62 H156 V31 H88 V159 H156 V128 H162 V165 H82 Z"/>`
+      + part(130,28,140,10,"플랜지") + part(88,110,104,118,"웨브") + part(159,50,186,64,"립")
+      + dV(25,165,52,"H","H",{ext:82}) + dH(82,162,188,"A","A",{ext:165,ly:206})
+      + dV(25,62,196,"C","C",{ext:162,lx:203,a:"start"}) + tH(82,88,85,"t","t",104), "경량 C형강 단면"),
+  P: () => svgw(`<path class="sh" d="M60 95 a62 62 0 1 0 124 0 a62 62 0 1 0 -124 0 Z M71 95 a51 51 0 1 0 102 0 a51 51 0 1 0 -102 0 Z"/>`
+      + dH(60,184,186,"D","D",{ext:95,ly:204}) + tH(173,184,95,"t","t",200) + `<text class="cap" x="122" y="99" text-anchor="middle">외경 D</text>`, "강관 단면"),
+  SQ: () => svgw(`<path class="sh" d="M72 25 H172 V165 H72 Z M82 35 V155 H162 V35 Z"/>`
+      + dV(25,165,46,"A","A",{ext:72}) + dH(72,172,188,"B","B",{ext:165,ly:206}) + tH(72,82,95,"t","t",100), "각형강관 단면"),
+  FB: () => svgw(`<path class="sh" d="M40 82 H200 V108 H40 Z"/>`
+      + dH(40,200,140,"B","B",{ext:108,ly:158}) + tV(82,108,218,"t","t"), "평강 단면"),
+  RB: () => svgw(`<circle class="sh" cx="122" cy="92" r="56"/>`
+      + dH(66,178,178,"D","D",{ext:92,ly:196}), "환봉 단면"),
+  RE: () => { let ribs=""; for(let x=46;x<=196;x+=15) ribs += `<line class="ld" x1="${x}" y1="80" x2="${x+9}" y2="110"/>`;
+    return svgw(`<path class="sh" d="M36 80 H206 V110 H36 Z"/>${ribs}<line class="ld" x1="36" y1="95" x2="206" y2="95" stroke-dasharray="3 3"/>`
+      + dV(80,110,222,"D","D",{ext:206,lx:228,a:"start"}) + `<text class="cap" x="121" y="140" text-anchor="middle">이형철근 (옆에서 본 모양) — D10, D13 …</text>`, "이형철근"); },
+  PL: () => svgw(`<path class="sh" d="M30 90 L60 70 H220 L190 90 Z"/><path class="sh" d="M30 90 H190 V104 H30 Z"/><path class="sh" d="M190 90 L220 70 V84 L190 104 Z"/>`
+      + tV(90,104,232,"t","t") + `<text class="cap" x="125" y="140" text-anchor="middle">강판 — 단중은 1 m² 당</text>`, "강판"),
+  BOLT: (tc) => svgw(`<path class="sh" d="M30 62 H52 V128 H30 Z"/><path class="sh" d="M52 80 H196 V110 H52 Z"/>${[0,1,2,3,4,5,6,7,8].map(i=>`<line class="ld" x1="${132+i*7}" y1="80" x2="${136+i*7}" y2="110"/>`).join("")}`
+      + (tc ? `<path class="sh" d="M196 88 H214 V102 H196 Z"/><text class="pt" x="205" y="80" text-anchor="middle">핀테일</text>` : "")
+      + part(40,62,40,44,"머리") + dV(80,110,tc?232:218,"d","d",{ext:196,lx:tc?238:224,a:"start"})
+      + dH(52,196,152,"L","L",{ext:110,ly:170}) + `<text class="cap" x="124" y="196" text-anchor="middle">L = 머리 아래 길이${tc?" (핀테일 제외)":""}</text>`, tc?"TC볼트":"고장력 육각볼트"),
+  AB: () => svgw(`<path class="sh" d="M110 22 H122 V150 Q122 166 138 166 H170 V178 H138 Q110 178 110 150 Z"/><path class="sh" d="M100 46 H132 V58 H100 Z"/>${[0,1,2,3].map(i=>`<line class="ld" x1="110" y1="${26+i*5}" x2="122" y2="${29+i*5}"/>`).join("")}`
+      + part(132,52,150,40,"너트") + tH(110,122,100,"d","d") + `<text class="cap" x="125" y="206" text-anchor="middle">앵커볼트 (J형 예시) — 단중은 1 m 당</text>`, "앵커볼트"),
+  W: () => svgw(`<path class="sh" d="M30 140 H220 V156 H30 Z"/><path class="sh" d="M118 40 H130 V140 H118 Z"/><path class="wl" d="M130 140 V112 L158 140 Z"/><path class="wl" d="M118 140 V112 L90 140 Z"/>`
+      + dH(130,158,176,"s","s",{ext:156,ly:194}) + `<text class="cap" x="125" y="30" text-anchor="middle">F 필릿 · V·X·K 개선(그루브) 용접</text>`, "용접")
+};
+
+/* ═════════ 단중표 그룹 ═════════ */
+const F4 = [["H","높이"],["B","플랜지 폭"],["t1","웨브 두께"],["t2","플랜지 두께"]];
 const DJG = [
-  {k:"H",  n:"H형강",       u:"m", cols:SEC},
-  {k:"L",  n:"ㄱ형강",      u:"m", cols:SEC},
-  {k:"CH", n:"ㄷ형강",      u:"m", cols:SEC},
-  {k:"LC", n:"경량 C형강",  u:"m", cols:SEC},
-  {k:"CT", n:"CT형강",      u:"m", cols:SEC},
-  {k:"I",  n:"I형강",       u:"m", cols:SEC},
-  {k:"P",  n:"강관 (φ)",    u:"m", cols:SEC},
-  {k:"SQ", n:"각형강관",    u:"m", cols:SEC},
-  {k:"FB", n:"평강",        u:"m", cols:SEC},
-  {k:"RB", n:"환봉",        u:"m", cols:SEC},
-  {k:"RE", n:"이형철근",    u:"m", cols:SEC},
-  {k:"STS",n:"STS",         u:"m", cols:SEC},
-  {k:"PL", n:"강판 PL",     u:"m2", cols:["규격","단중 (kg/m²)"]},
-  {k:"FL", n:"바닥재·데크", u:"m2", cols:["규격","단중 (kg/m²)","도장 (m²/m²)","할증"]},
-  {k:"TC", n:"TC볼트",      u:"ea", cols:["규격","단중 (kg/EA)"]},
-  {k:"HT", n:"고장력 육각볼트", u:"ea", cols:["규격","단중 (kg/EA)"]},
-  {k:"AB", n:"앵커볼트",    u:"m", cols:["호칭","단중 (kg/m)","너트 등 (kg/EA)*"], note:"* 원본에 제목이 없는 열 — 호칭별 너트(1개) 중량으로 보이나 원본 확인 필요"},
-  {k:"W",  n:"용접 환산",   u:"m", cols:["용접 (각장·형식)","환산계수"], note:"F: 필릿, K·V·X: 개선(그루브) 형식. 원본 '용접환산계수' 값 그대로 — 단위·기준은 원본 참고"}
+  {k:"H",  n:"H형강",       u:"m",  f:F4, d:()=>SEC.H(false), paint:true},
+  {k:"I",  n:"I형강",       u:"m",  f:F4, d:()=>SEC.H(true), paint:true},
+  {k:"CH", n:"ㄷ형강",      u:"m",  f:F4, d:SEC.CH, paint:true},
+  {k:"CT", n:"CT형강",      u:"m",  f:F4, d:SEC.CT, paint:true},
+  {k:"L",  n:"ㄱ형강",      u:"m",  f:[["A","변 A"],["B","변 B"],["t","두께"]], d:SEC.L, paint:true},
+  {k:"LC", n:"경량 C형강",  u:"m",  f:[["H","높이"],["A","플랜지 폭"],["C","립 길이"],["t","두께"]], d:SEC.LC, paint:true},
+  {k:"P",  n:"강관",        u:"m",  f:[["D","외경"],["t","두께"]], d:SEC.P, paint:true},
+  {k:"SQ", n:"각형강관",    u:"m",  f:[["A","변 A"],["B","변 B"],["t","두께"]], d:SEC.SQ, paint:true},
+  {k:"FB", n:"평강",        u:"m",  f:[["B","폭"],["t","두께"]], d:SEC.FB, paint:true},
+  {k:"RB", n:"환봉",        u:"m",  f:[["D","지름"]], d:SEC.RB, paint:true},
+  {k:"RE", n:"이형철근",    u:"m",  f:[["D","호칭"]], d:SEC.RE, paint:true},
+  {k:"STS",n:"STS",         u:"m",  f:[["D","외경·폭"],["t","두께"]], d:SEC.P, paint:true},
+  {k:"PL", n:"강판 PL",     u:"m2", f:[["t","두께"]], d:SEC.PL, paint:false},
+  {k:"FL", n:"바닥재·데크", u:"m2", f:[["t","두께"]], d:null, paint:true},
+  {k:"TC", n:"TC볼트",      u:"ea", f:[["d","호칭 지름"],["L","길이"]], d:()=>SEC.BOLT(true)},
+  {k:"HT", n:"고장력 육각볼트", u:"ea", f:[["d","호칭 지름"],["L","길이"]], d:()=>SEC.BOLT(false)},
+  {k:"AB", n:"앵커볼트",    u:"m",  f:[["d","호칭 지름"]], d:SEC.AB, extra:"너트 등 (kg/EA)", note:"표준품셈에 앵커볼트 별도 할증 항목 없음 (일반볼트 5% 참고)."},
+  {k:"W",  n:"용접 환산",   u:"m",  f:[["s","크기"]], d:SEC.W, wtype:true, note:"F: 필릿, K·V·X: 개선(그루브) 형식."}
 ];
 const DJ = window.DJ_ROWS || {};
-DJG.forEach(g => g.rows = DJ[g.k] || []);
+DJG.forEach(g => { g.rows = (DJ[g.k] || []).map(r => ({r, n: nums(g, r[0])})); });
 const DJ_TOTAL = DJG.reduce((a,g)=>a+g.rows.length,0);
+function nums(g, name){
+  const m = (String(name).match(/\d+(?:\.\d+)?/g) || []).map(Number);
+  if(g.k==="RE") return [m[0]];
+  if(g.k==="AB" || g.k==="PL" || g.k==="FL" || g.k==="RB" || g.k==="W") return [m[0]];
+  return m.slice(0, g.f.length);
+}
+// 2025 표준품셈 강재류 할증률
+function rate(g, row){
+  const name = row.r[0], n = row.n;
+  switch(g.k){
+    case "H": case "I": case "CH": case "CT": return n[0] >= 100 ? [7,"대형형강 (100mm 이상)"] : [5,"소형형강"];
+    case "L": return Math.max(n[0]||0, n[1]||0) >= 100 ? [7,"대형형강 (100mm 이상)"] : [5,"소형형강"];
+    case "LC": return [5,"경량형강"];
+    case "SQ": return [5,"각파이프"];
+    case "P": return [5,"강관 (옥외 기준, 옥내는 10% 이내)"];
+    case "FB": return [5,"평강·대강"];
+    case "RB": return [5,"원형철근·봉강"];
+    case "RE": return [3,"이형철근"];
+    case "STS": return /φ/.test(name) ? [5,"스테인리스강관"] : [5,"평강·대강"];
+    case "PL": return [10,"강판"];
+    case "FL": return /CH\.PL/.test(name) ? [10,"강판"] : null;
+    case "TC": case "HT": return [3,"고장력볼트"];
+    default: return null;
+  }
+}
 
 const ABBR = window.ABBR || [], ACATS = window.ABBR_CATS || {};
 const PROC = window.PROCESS || [], GR = window.GRADES || [], CODES = window.CODES || [], SRCS = window.SOURCES || [];
 const abbrMap = {}; ABBR.forEach(a => (abbrMap[a[0]] ||= []).push(a));
 
-/* ── 상태 / 라우팅 ── */
+/* ═════════ 상태 / 라우팅 ═════════ */
 const TABS = [
   {id:"home", n:"홈"},
   {id:"process", n:"제철 프로세스", c:PROC.length},
@@ -214,44 +393,51 @@ const TABS = [
   {id:"grades", n:"강재 규격", c:GR.length},
   {id:"codes", n:"설계기준·바로가기"}
 ];
-const S = { tab:"home", dj:"H", djq:"", sel:null, len:1, qty:1, area:1, extra:true, ab:"", abq:"", pr:PROC[0]?.id, prab:null };
+const S = { tab:"home", dj:"H", ff:{}, wt:"", sel:null, len:1, qty:1, extra:true, ab:"", abq:"", pr:PROC[0]?.id, prab:null, gr:0 };
 function readHash(){
   const h = decodeURIComponent(location.hash.slice(1)); const [t, a] = h.split("/");
-  if(TABS.some(x=>x.id===t)) S.tab = t; else S.tab = "home";
-  if(t==="danjung" && a && DJG.some(g=>g.k===a)) S.dj = a;
+  S.tab = TABS.some(x=>x.id===t) ? t : "home";
+  if(t==="danjung" && a && DJG.some(g=>g.k===a)){ if(S.dj!==a){ S.ff={}; S.wt=""; S.sel=null; } S.dj = a; }
   if(t==="process" && a && PROC.some(p=>p.id===a)) S.pr = a;
-  if(t==="abbr" && a && ACATS[a]) S.ab = a;
+  if(t==="abbr") S.ab = (a && ACATS[a]) ? a : "";
+  if(t==="grades" && a && GR[+a]) S.gr = +a;
 }
-function go(tab, sub){ const h = sub ? `${tab}/${sub}` : tab; if(location.hash.slice(1)!==h) location.hash = h; else render(); }
-window.addEventListener("hashchange", () => { readHash(); render(); window.scrollTo({top:0}); });
-
+function go(tab, sub){ const h = sub!=null && sub!=="" ? `${tab}/${sub}` : tab; if(location.hash.slice(1)!==h) location.hash = h; else render(); }
+window.addEventListener("hashchange", () => { const old = S.tab; readHash(); render(); if(old!==S.tab) window.scrollTo({top:0}); });
 function renderTabs(){
   $("#tabs").innerHTML = TABS.map(t => `<button class="tab${S.tab===t.id?" on":""}" data-go="${t.id}">${t.n}${t.c?`<span class="cnt">${t.c}</span>`:""}</button>`).join("");
 }
 document.addEventListener("click", e => {
   const g = e.target.closest("[data-go]"); if(g){ $("#q").value=""; go(g.dataset.go, g.dataset.sub); return; }
+  const c = e.target.closest("[data-q]"); if(c){ $("#q").value = c.dataset.q; render(); $("#q").focus(); return; }
+  const a = e.target.closest("[data-abq]"); if(a){ S.abq = a.dataset.abq; $("#q").value=""; go("abbr"); return; }
+  const d = e.target.closest("[data-dj]"); if(d){ const g = DJG.find(x=>x.k===d.dataset.dj); S.dj = g.k; S.ff={}; S.wt=""; S.sel = g.rows.findIndex(x=>x.r[0]===d.dataset.name); $("#q").value=""; go("danjung", S.dj); return; }
+  const dg = e.target.closest("[data-djg]"); if(dg){ go("danjung", dg.dataset.djg); return; }
+  const tr = e.target.closest("#djbody tr[data-i]"); if(tr){ S.sel = +tr.dataset.i; document.querySelectorAll("#djbody tr.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); fillCalc(); return; }
+  if(e.target.closest("#ffreset")){ S.ff={}; S.wt=""; document.querySelectorAll("#finder input").forEach(i=>i.value=""); const ws=$("#wtype"); if(ws) ws.value=""; fillDjBody(); return; }
+  const ac = e.target.closest("[data-abc]"); if(ac){ go("abbr", ac.dataset.abc); return; }
+  const pa = e.target.closest("[data-prab]"); if(pa){ S.prab = S.prab===pa.dataset.prab ? null : pa.dataset.prab; document.querySelectorAll(".abchip").forEach(x=>x.classList.toggle("on", x.dataset.prab===S.prab)); fillPrDesc(); return; }
+  const pn = e.target.closest("[data-pr]"); if(pn){ go("process", pn.dataset.pr); return; }
 });
+document.addEventListener("keydown", e => { const pn = e.target.closest?.("[data-pr]"); if(pn && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); go("process", pn.dataset.pr); } });
 
-/* ── 통합 검색 (입력창은 다시 그리지 않음 — 한글 조합 보호) ── */
-let composing = false;
+/* ═════════ 통합 검색 (입력창은 다시 그리지 않음 — 한글 조합 보호) ═════════ */
+let composing = false, searchTimer;
 $("#q").addEventListener("compositionstart", () => composing = true);
 $("#q").addEventListener("compositionend", () => { composing = false; searchNow(); });
 $("#q").addEventListener("input", () => { if(!composing) searchNow(); });
-let searchTimer;
 function searchNow(){ clearTimeout(searchTimer); searchTimer = setTimeout(render, 80); }
-
 function searchAll(q){
   const n = norm(q); if(!n) return null;
   const words = q.trim().toLowerCase().split(/\s+/).map(norm).filter(Boolean);
   const m = s => { const t = norm(s); return words.every(w => t.includes(w)); };
   const out = {dj:[], ab:[], gr:[], pr:[], cd:[]};
-  DJG.forEach(g => g.rows.forEach(r => { if(m(r[0]) || m(g.n + " " + r[0])) out.dj.push({g, r}); }));
+  DJG.forEach(g => g.rows.forEach(row => { if(m(row.r[0]) || m(g.n + " " + row.r[0])) out.dj.push({g, r:row.r}); }));
   ABBR.forEach(a => { if(m(a[0] + " " + a[1])) out.ab.push(a); });
-  GR.forEach(g => g.rows.forEach(r => { if(m(r[0] + " " + g.ks + " " + g.g)) out.gr.push({g, r}); }));
-  PROC.forEach(p => { const txt = [p.name,p.en,p.sum,...p.flow,...p.facts,...p.arch].join(" "); if(m(txt)) out.pr.push(p); });
+  GR.forEach((g,gi) => g.rows.forEach(r => { if(m(r[0] + " " + g.ks + " " + g.g)) out.gr.push({g, gi, r}); }));
+  PROC.forEach(p => { const txt = [p.name,p.en,p.easy,p.like,...p.in,...p.out,...p.flow,...p.facts,...p.arch].join(" "); if(m(txt)) out.pr.push(p); });
   CODES.forEach(c => c.items.forEach(i => { if(m(i.join(" "))) out.cd.push(i); }));
-  SRCS.forEach(s => { if(m(s.n + " " + s.d)) out.cd.push([s.n, s.d, "", s.u]); });
-  // 약어는 정확히 일치하는 것을 먼저
+  SRCS.forEach(s => { if(m(s.n + " " + s.d)) out.cd.push([s.n, s.d]); });
   out.ab.sort((a,b) => (norm(b[0])===n) - (norm(a[0])===n));
   return out;
 }
@@ -259,90 +445,136 @@ function renderSearch(q){
   const r = searchAll(q);
   const total = r.dj.length + r.ab.length + r.gr.length + r.pr.length + r.cd.length;
   const lim = (arr, n, f) => arr.slice(0,n).map(f).join("") + (arr.length>n ? `<p class="more">외 ${arr.length-n}건 — 해당 탭에서 더 보기</p>` : "");
+  const unit = g => g.u==="ea"?"kg/EA":g.u==="m2"?"kg/m²":"kg/m";
   let h = `<div class="shead"><div><h2>“${esc(q)}” 검색 결과</h2><p>${total}건</p></div></div><div class="sres">`;
-  if(!total) h += `<div class="panel muted">찾는 항목이 없습니다. 규격은 <b>H-300</b>, <b>300x300</b>처럼, 약어는 <b>CGL</b>처럼 입력해 보세요.</div>`;
+  if(!total) h += `<div class="panel muted">찾는 항목이 없습니다. 규격은 <b>H-300</b>, <b>300x300</b>처럼, 약어는 <b>CGL</b>처럼 입력해 보세요. 단중표 탭에서는 치수 칸에 숫자만 넣어 찾을 수 있습니다.</div>`;
   if(r.ab.length) h += `<h3>설비 약어 ${r.ab.length}</h3>` + lim(r.ab, 12, a => `<button class="hit" data-abq="${esc(a[0])}"><span class="k">${hl(a[0],q)}</span><span class="v">${hl(a[1],q)}</span><span class="x">${esc(ACATS[a[2]]||"")}</span></button>`);
-  if(r.dj.length) h += `<h3>단중표 ${r.dj.length}</h3>` + lim(r.dj, 15, ({g,r:row}) => `<button class="hit" data-dj="${g.k}" data-name="${esc(row[0])}"><span class="k">${hl(row[0],q)}</span><span class="v">${esc(g.n)}</span><span class="x">${fmt(row[1])} ${g.u==="ea"?"kg/EA":g.u==="m2"?"kg/m²":"kg/m"}</span></button>`);
-  if(r.gr.length) h += `<h3>강재 규격 ${r.gr.length}</h3>` + lim(r.gr, 10, ({g,r:row}) => `<button class="hit" data-go="grades"><span class="k">${hl(row[0],q)}</span><span class="v">${esc(g.g)} · ${esc(g.ks)}</span><span class="x">${esc(row.slice(1).filter(Boolean).join(" / "))}</span></button>`);
-  if(r.pr.length) h += `<h3>제철 프로세스 ${r.pr.length}</h3>` + lim(r.pr, 8, p => `<button class="hit" data-go="process" data-sub="${p.id}"><span class="k">${p.no}</span><span class="v"><b>${esc(p.name)}</b> — ${hl(p.sum,q)}</span></button>`);
+  if(r.dj.length) h += `<h3>단중표 ${r.dj.length}</h3>` + lim(r.dj, 15, ({g,r:row}) => `<button class="hit" data-dj="${g.k}" data-name="${esc(row[0])}"><span class="k">${hl(row[0],q)}</span><span class="v">${esc(g.n)}</span><span class="x">${fmt(row[1])} ${unit(g)}</span></button>`);
+  if(r.gr.length) h += `<h3>강재 규격 ${r.gr.length}</h3>` + lim(r.gr, 10, ({g,gi,r:row}) => `<button class="hit" data-go="grades" data-sub="${gi}"><span class="k">${hl(row[0],q)}</span><span class="v">${esc(g.g)} · ${esc(g.ks)}</span><span class="x">${esc(row.slice(1).filter(Boolean).join(" / "))}</span></button>`);
+  if(r.pr.length) h += `<h3>제철 프로세스 ${r.pr.length}</h3>` + lim(r.pr, 8, p => `<button class="hit" data-go="process" data-sub="${p.id}"><span class="k">${p.no}</span><span class="v"><b>${esc(p.name)}</b> — ${hl(p.easy,q)}</span></button>`);
   if(r.cd.length) h += `<h3>설계기준·바로가기 ${r.cd.length}</h3>` + lim(r.cd, 10, i => `<button class="hit" data-go="codes"><span class="k">${hl(i[0],q)}</span><span class="v">${hl(i[1],q)}</span></button>`);
   return h + "</div>";
 }
-document.addEventListener("click", e => {
-  const a = e.target.closest("[data-abq]"); if(a){ S.abq = a.dataset.abq; S.ab=""; $("#q").value=""; go("abbr"); return; }
-  const d = e.target.closest("[data-dj]"); if(d){ S.dj = d.dataset.dj; S.djq = ""; const g = DJG.find(x=>x.k===S.dj); S.sel = g.rows.findIndex(r=>r[0]===d.dataset.name); $("#q").value=""; go("danjung", S.dj); return; }
-});
 
-/* ── 홈 ── */
+/* ═════════ 홈 ═════════ */
 function renderHome(){
   return `<section class="hero"><div><h1>제철플랜트 설계검토를 위한<br><em>설계기준</em> 라이브러리</h1>
   <p>강재 단중·규격, 제철 공정과 설비 약어, KDS·KCS 설계기준을 한곳에서 찾습니다. 위 검색창에 규격·약어·키워드를 입력하세요.</p></div>
   <div class="facts"><div class="fact"><b>${DJ_TOTAL.toLocaleString()}</b><span>단중 항목</span></div><div class="fact"><b>${ABBR.length}</b><span>설비 약어</span></div><div class="fact"><b>${PROC.length}</b><span>제철 공정</span></div></div></section>
   <div class="cards">
-   <button class="card" data-go="process"><span class="no">01</span><h3>제철 프로세스</h3><p>원료 → 소결·코크스 → 제선 → 제강·연주 → 압연 흐름과 공정별 건축 검토 포인트, 관련 약어</p></button>
+   <button class="card" data-go="process"><span class="no">01</span><h3>제철 프로세스</h3><p>전체 흐름도와 단계별 도식으로 보는 원료 → 제선 → 제강 → 압연, 공정별 건축 검토 포인트</p></button>
    <button class="card" data-go="abbr"><span class="no">02</span><h3>설비 약어</h3><p>CGL·RH·TRT 등 제철 설비 약어 ${ABBR.length}개 — 공정별 분류·검색</p></button>
-   <button class="card" data-go="danjung"><span class="no">03</span><h3>단중표 · 중량 계산</h3><p>형강·강관·PL·볼트·철근 단중, 도장면적, 할증 — 길이·수량 넣으면 중량 계산</p></button>
+   <button class="card" data-go="danjung"><span class="no">03</span><h3>단중표 · 중량 계산</h3><p>치수 칸에 숫자만 넣어 찾기, 단면 도식, 표준품셈 할증 포함 중량 계산</p></button>
    <button class="card" data-go="grades"><span class="no">04</span><h3>강재 규격</h3><p>SS·SM·SN·SHN·강관·고장력볼트·철근 강종별 항복·인장강도</p></button>
    <button class="card" data-go="codes"><span class="no">05</span><h3>설계기준·바로가기</h3><p>KDS·KCS 코드 체계와 국가건설기준센터·KS·법령 원문 링크</p></button>
   </div>
   <div class="sec"><h2>자주 찾는 검색</h2><div class="frow">${["H-400x400","SM355","SN355","CGL","RH","소둔","가스홀더","앵커","M20","PL-12","크레인"].map(w=>`<button class="chip" data-q="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`;
 }
-document.addEventListener("click", e => { const c = e.target.closest("[data-q]"); if(c){ $("#q").value = c.dataset.q; render(); $("#q").focus(); } });
 
-/* ── 단중표 ── */
-function djUnit(g){ return g.u==="ea" ? "EA" : g.u==="m2" ? "m²" : "m"; }
+/* ═════════ 단중표 ═════════ */
+const curG = () => DJG.find(x=>x.k===S.dj) || DJG[0];
+const unitW = g => g.u==="ea" ? "kg/EA" : g.u==="m2" ? "kg/m²" : "kg/m";
 function renderDanjung(){
-  const g = DJG.find(x=>x.k===S.dj) || DJG[0];
-  return `<div class="shead"><div><h2>단중표</h2><p>행을 누르면 아래에서 중량을 계산합니다. 원본: ${esc(window.DJ_SRC||"단중표.xlsx")}</p></div></div>
-  <div class="frow" id="djchips">${DJG.map(x=>`<button class="chip${x.k===g.k?" on":""}" data-djg="${x.k}">${esc(x.n)} <span class="c">${x.rows.length}</span></button>`).join("")}</div>
-  <div class="tools"><input type="search" id="djq" placeholder="${esc(g.n)} 안에서 찾기 — 예: 300x300, x9" value="${esc(S.djq)}" autocomplete="off"></div>
-  ${g.note?`<p class="muted" style="margin:8px 0 0">${esc(g.note)}</p>`:""}
-  <div class="tbl-wrap"><table class="t"><thead><tr>${g.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody id="djbody"></tbody></table></div>
-  <div class="panel" id="calc"></div>`;
+  const g = curG();
+  const fields = g.f.map(([k,l]) => `<label class="fld"><span><span class="k">${k}</span>${esc(l)} (mm)</span><input type="text" inputmode="decimal" data-f="${k}" value="${esc(S.ff[k]??"")}" placeholder="예: ${esc(sample(g,k))}" autocomplete="off"></label>`).join("")
+    + (g.wtype ? `<label class="fld"><span><span class="k">형식</span>용접</span><select id="wtype"><option value="">전체</option>${["F","K","V","X"].map(t=>`<option${S.wt===t?" selected":""}>${t}</option>`).join("")}</select></label>` : "");
+  const sc = window.SURCHARGE || [];
+  return `<div class="shead"><div><h2>단중표</h2><p>치수 칸에 숫자만 넣으면 찾습니다 (x 입력 불필요). 행을 누르면 중량 계산 칸에 나옵니다.</p></div></div>
+  <div class="frow">${DJG.map(x=>`<button class="chip${x.k===g.k?" on":""}" data-djg="${x.k}">${esc(x.n)} <span class="c">${x.rows.length}</span></button>`).join("")}</div>
+  <div class="djtop">
+    <div class="panel" id="finder"><div class="fhead"><h3>${esc(g.n)} — 치수로 찾기</h3><button class="btn" id="ffreset">초기화</button></div>
+      <div class="fgrid">${fields}</div>
+      <p class="muted" style="margin:10px 0 0">빈 칸은 조건 없음. 입력한 값과 같은 치수만 남습니다.${g.note?`<br>${esc(g.note)}`:""}</p></div>
+    <figure class="panel secfig">${g.d ? g.d() : `<p class="muted">이 항목은 단면 도식이 없습니다.</p>`}<figcaption>칸을 누르면 해당 치수가 표시됩니다</figcaption></figure>
+  </div>
+  <p class="cnt-line" id="djcnt"></p>
+  <div class="djmain">
+    <div class="tbl-wrap"><table class="t pick"><thead><tr>${djHead(g)}</tr></thead><tbody id="djbody"></tbody></table></div>
+    <div class="panel" id="calc"></div>
+  </div>
+  <details class="sc"><summary>강재 할증률 기준 — ${esc(window.SURCHARGE_SRC||"표준품셈")}</summary>
+    <div class="tbl-wrap"><table class="t"><thead><tr><th>종류</th><th>할증률 (%)</th></tr></thead><tbody>${sc.map(r=>`<tr><td style="font-family:var(--f-body)">${esc(r[0])}</td><td class="num">${esc(r[1])}</td></tr>`).join("")}</tbody></table></div>
+    <ol>${(window.SURCHARGE_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ol></details>`;
+}
+function sample(g,k){ const r = g.rows[Math.min(g.rows.length-1, Math.floor(g.rows.length/2))]; if(!r) return ""; const i = g.f.findIndex(f=>f[0]===k); return r.n[i] ?? ""; }
+function djHead(g){
+  let h = `<th>규격</th>` + g.f.map(([k],i)=>`<th class="dm${i===0?" sep":""}">${k}</th>`).join("") + `<th class="sep">단중 (${unitW(g)})</th>`;
+  if(g.paint) h += `<th>도장 (${g.u==="m2"?"m²/m²":"m²/m"})</th>`;
+  if(g.extra) h += `<th>${esc(g.extra)}</th>`;
+  if(g.k!=="W" && g.k!=="AB") h += `<th>할증 (품셈)</th>`;
+  return h;
+}
+function djFilter(g){
+  const conds = g.f.map(([k],i)=>[i, parseFloat(String(S.ff[k]??"").replace(",","."))]).filter(([,v])=>!isNaN(v));
+  return g.rows.map((row,i)=>[row,i]).filter(([row]) =>
+    conds.every(([i,v]) => row.n[i]!=null && Math.abs(row.n[i]-v) < 1e-6) &&
+    (!g.wtype || !S.wt || row.r[0].toUpperCase().endsWith(S.wt)));
 }
 function fillDjBody(){
-  const g = DJG.find(x=>x.k===S.dj); const q = S.djq; const n = norm(q);
-  const body = $("#djbody"); if(!body) return;
-  const rows = g.rows.map((r,i)=>[r,i]).filter(([r]) => !n || norm(r[0]).includes(n));
-  body.innerHTML = rows.length ? rows.map(([r,i]) => `<tr data-i="${i}" class="${i===S.sel?"sel":""}">${g.cols.map((c,j)=> j===0 ? `<td>${hl(r[0],q)}</td>` : `<td class="num">${r[j]==null?"−":fmt(r[j],4)}</td>`).join("")}</tr>`).join("")
-    : `<tr><td colspan="${g.cols.length}" class="muted" style="text-align:left">없음</td></tr>`;
+  const g = curG(), body = $("#djbody"); if(!body) return;
+  const rows = djFilter(g);
+  $("#djcnt").textContent = rows.length === g.rows.length ? `${g.n} 전체 ${g.rows.length}개` : `${g.rows.length}개 중 ${rows.length}개`;
+  const span = g.f.length + 2 + (g.paint?1:0) + (g.extra?1:0) + (g.k!=="W"&&g.k!=="AB"?1:0);
+  body.innerHTML = rows.length ? rows.map(([row,i]) => {
+    const r = row.r, rt = rate(g,row);
+    let c = `<td>${esc(r[0])}</td>` + g.f.map((f,j)=>`<td class="dm${j===0?" sep":""}">${row.n[j]!=null?fmt(row.n[j]):"−"}</td>`).join("") + `<td class="num sep">${fmt(r[1],4)}</td>`;
+    if(g.paint) c += `<td class="num">${r[2]==null?"−":fmt(r[2],3)}</td>`;
+    if(g.extra) c += `<td class="num">${r[2]==null?"−":fmt(r[2],3)}</td>`;
+    if(g.k!=="W" && g.k!=="AB") c += `<td class="num" title="${rt?esc(rt[1]):"표준품셈 해당 항목 없음"}">${rt?rt[0]+"%":"−"}</td>`;
+    return `<tr data-i="${i}" class="${i===S.sel?"sel":""}">${c}</tr>`;
+  }).join("") : `<tr><td colspan="${span}" class="muted" style="font-family:var(--f-body)">조건에 맞는 규격이 없습니다. 칸 값을 확인하거나 초기화하세요.</td></tr>`;
   const selRow = body.querySelector("tr.sel"); if(selRow) selRow.scrollIntoView({block:"nearest"});
   fillCalc();
 }
+function bindFinder(){
+  document.querySelectorAll("#finder input[data-f]").forEach(inp => {
+    let comp = false;
+    const upd = () => { S.ff[inp.dataset.f] = inp.value.trim(); fillDjBody(); };
+    inp.addEventListener("compositionstart", ()=>comp=true);
+    inp.addEventListener("compositionend", ()=>{ comp=false; upd(); });
+    inp.addEventListener("input", ()=>{ if(!comp) upd(); });
+    inp.addEventListener("focus", ()=>markDim(inp.dataset.f));
+    inp.addEventListener("blur", ()=>markDim(null));
+  });
+  const ws = $("#wtype"); if(ws) ws.addEventListener("change", ()=>{ S.wt = ws.value; fillDjBody(); });
+}
+function markDim(k){ document.querySelectorAll(".secsvg .dim").forEach(d => d.classList.toggle("on", d.dataset.k===k)); }
+document.addEventListener("mouseover", e => { const th = e.target.closest?.("th.dm"); if(th) markDim(th.textContent); });
+document.addEventListener("mouseout", e => { if(e.target.closest?.("th.dm")) markDim(null); });
 function fillCalc(){
-  const g = DJG.find(x=>x.k===S.dj); const box = $("#calc"); if(!box) return;
-  const r = g.rows[S.sel];
-  if(!r){ box.innerHTML = `<span class="muted">표에서 규격을 선택하면 중량·도장면적을 계산합니다.</span>`; return; }
-  if(g.k==="W"){ box.innerHTML = `<div class="calc"><label>선택<span class="sel">${esc(r[0])}</span></label><label>용접 길이 (m)<input type="number" id="c-len" min="0" step="0.1" value="${S.len}"></label></div><div class="res">환산값 <b id="c-w">${fmt(r[1]*S.len)}</b> <span class="muted">= 길이 × 환산계수 ${fmt(r[1])}</span></div>`; return bindCalc(); }
-  const ea = g.u==="ea", m2 = g.u==="m2";
-  const lenLbl = ea ? "" : m2 ? `<label>면적 (m²/개)<input type="number" id="c-len" min="0" step="0.01" value="${S.len}"></label>` : `<label>길이 (m/개)<input type="number" id="c-len" min="0" step="0.1" value="${S.len}"></label>`;
-  const k = r[3] || null, hasPaint = /^도장/.test(g.cols[2]||"") && r[2]!=null;
-  box.innerHTML = `<div class="calc"><label>선택<span class="sel">${esc(r[0])}</span></label>${lenLbl}<label>수량 (개)<input type="number" id="c-qty" min="0" step="1" value="${S.qty}"></label>${k?`<label>할증<span class="sel">× ${fmt(k)}</span></label>`:""}</div>
-  <div class="res"><span>중량 <b id="c-w"></b> kg</span><span id="c-wt" class="muted"></span>${hasPaint?`<span>도장면적 <b id="c-p"></b> m²</span>`:""}${k?`<label><input type="checkbox" id="c-x" ${S.extra?"checked":""}> 할증 포함</label>`:""}</div>`;
+  const g = curG(), box = $("#calc"); if(!box) return;
+  const row = g.rows[S.sel];
+  if(!row){ box.innerHTML = `<h3>중량 계산</h3><span class="muted">표에서 규격을 누르면 길이·수량으로 중량, 도장면적, 표준품셈 할증을 계산합니다.</span>`; return; }
+  const r = row.r;
+  if(g.k==="W"){ box.innerHTML = `<h3>용접 환산</h3><div class="calc"><label>선택<span class="sel">${esc(r[0])}</span></label><label>용접 길이 (m)<input type="number" id="c-len" min="0" step="0.1" value="${S.len}"></label></div><div class="res"><span>환산값 <b id="c-w"></b></span><span class="muted">= 길이 × 환산계수 ${fmt(r[1])}</span></div>`; return bindCalc(); }
+  const ea = g.u==="ea", m2 = g.u==="m2", rt = rate(g,row), hasPaint = g.paint && r[2]!=null;
+  box.innerHTML = `<h3>중량 계산</h3><div class="calc"><label>선택<span class="sel">${esc(r[0])}</span></label>
+    ${ea ? "" : `<label>${m2?"면적 (m²/개)":"길이 (m/개)"}<input type="number" id="c-len" min="0" step="${m2?"0.01":"0.1"}" value="${S.len}"></label>`}
+    <label>수량 (개)<input type="number" id="c-qty" min="0" step="1" value="${S.qty}"></label></div>
+    <div class="res"><span>중량 <b id="c-w"></b> kg <span id="c-wt" class="muted"></span></span>
+    ${hasPaint?`<span>도장면적 <b id="c-p"></b> m²</span>`:""}
+    ${rt?`<label><input type="checkbox" id="c-x" ${S.extra?"checked":""}> 할증 ${rt[0]}% 포함</label><span class="muted">표준품셈: ${esc(rt[1])}</span>`:`<span class="muted">${g.k==="AB"?"표준품셈 앵커볼트 별도 항목 없음 (일반볼트 5% 참고)":"표준품셈 할증 항목 없음"}</span>`}</div>`;
   bindCalc();
 }
 function bindCalc(){
-  const g = DJG.find(x=>x.k===S.dj); const r = g.rows[S.sel];
+  const g = curG(), row = g.rows[S.sel]; if(!row) return; const r = row.r, rt = rate(g,row);
   const upd = () => {
-    const L = parseFloat($("#c-len")?.value) || (g.u==="ea" ? 1 : 0), Q = parseFloat($("#c-qty")?.value) || (g.k==="W"?1:0);
+    const L = $("#c-len") ? (parseFloat($("#c-len").value) || 0) : 1, Q = $("#c-qty") ? (parseFloat($("#c-qty").value) || 0) : 1;
     if($("#c-len")) S.len = L; if($("#c-qty")) S.qty = Q; if($("#c-x")) S.extra = $("#c-x").checked;
     if(g.k==="W"){ $("#c-w").textContent = fmt(r[1]*L); return; }
-    const base = r[1] * (g.u==="ea" ? 1 : L) * Q, kk = (S.extra && r[3]) ? r[3] : 1, w = base*kk;
+    const k = (rt && S.extra) ? 1 + rt[0]/100 : 1, w = r[1] * L * Q * k;
     $("#c-w").textContent = fmt(w, 2);
     $("#c-wt").textContent = w >= 1000 ? `(${fmt(w/1000,3)} ton)` : "";
     if($("#c-p")) $("#c-p").textContent = fmt(r[2]*L*Q, 2);
   };
-  ["#c-len","#c-qty","#c-x"].forEach(s => $(s)?.addEventListener("input", upd));
+  ["#c-len","#c-qty"].forEach(s => $(s)?.addEventListener("input", upd));
+  $("#c-x")?.addEventListener("change", upd);
   upd();
 }
-document.addEventListener("click", e => {
-  const c = e.target.closest("[data-djg]"); if(c){ S.dj = c.dataset.djg; S.djq=""; S.sel=null; go("danjung", S.dj); return; }
-  const tr = e.target.closest("#djbody tr[data-i]"); if(tr){ S.sel = +tr.dataset.i; document.querySelectorAll("#djbody tr.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); fillCalc(); }
-});
 
-/* ── 설비 약어 ── */
+/* ═════════ 설비 약어 ═════════ */
 function renderAbbr(){
-  return `<div class="shead"><div><h2>제철 설비 약어</h2><p>원본: 설비약어.pdf (OCR 오류 정정, 공정 분류 추가). 같은 약어가 여러 뜻일 수 있습니다.</p></div></div>
+  return `<div class="shead"><div><h2>제철 설비 약어</h2><p>공정별로 분류했습니다. 같은 약어가 여러 뜻일 수 있습니다.</p></div></div>
   <div class="frow"><button class="chip${!S.ab?" on":""}" data-abc="">전체 <span class="c">${ABBR.length}</span></button>${Object.entries(ACATS).map(([k,v])=>`<button class="chip${S.ab===k?" on":""}" data-abc="${k}">${esc(v)} <span class="c">${ABBR.filter(a=>a[2]===k).length}</span></button>`).join("")}</div>
   <div class="tools"><input type="search" id="abq" placeholder="약어 또는 뜻으로 찾기 — 예: CGL, 소둔, Furnace" value="${esc(S.abq)}" autocomplete="off"></div>
   <ul class="abl" id="ablist"></ul>`;
@@ -353,40 +585,131 @@ function fillAbbr(){
   const n = norm(q); if(n) list.sort((a,b) => (norm(b[0])===n) - (norm(a[0])===n) || (norm(b[0]).startsWith(n)) - (norm(a[0]).startsWith(n)));
   $("#ablist").innerHTML = list.length ? list.map(a => `<li><span class="k">${hl(a[0],q)}</span><span>${hl(a[1],q)}</span><button class="tg" data-abc="${a[2]}">${esc(ACATS[a[2]]||"")}</button></li>`).join("") : `<li><span></span><span class="muted">없음</span></li>`;
 }
-document.addEventListener("click", e => { const c = e.target.closest("[data-abc]"); if(c){ S.ab = c.dataset.abc; go("abbr", S.ab || undefined); } });
 
-/* ── 제철 프로세스 ── */
+/* ═════════ 제철 프로세스 — 전체 흐름도 ═════════ */
+const mk = id => `<defs><marker id="${id}s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahs"/></marker><marker id="${id}p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahp"/></marker></defs>`;
+function overview(sel){
+  const W = 118, H = 64, Y = 78, xs = [16,150,284,418,552,686];
+  const sub = {raw:"하역·저장", sinter:"원료 덩어리화", iron:"쇳물 만들기", steel:"강으로·굳히기", hot:"늘이기", cold:"얇게·도금"};
+  const order = ["raw","sinter","iron","steel","hot","cold"];
+  const flowLb = ["철광석·석탄","소결광·코크스","용선 (쇳물)","슬래브","열연코일"];
+  let s = `<svg viewBox="0 0 960 268" role="img" aria-label="제철 전체 공정 흐름도">${mk("ov")}`;
+  // 전기로 경로
+  s += `<rect x="418" y="8" width="118" height="30" rx="6" class="ub"/><text class="ut" x="477" y="28" text-anchor="middle">고철 → 전기로</text><path class="ar2" d="M477 38 V${Y-2}" marker-end="url(#ovs)"/>`;
+  order.forEach((id,i) => {
+    const p = PROC.find(x=>x.id===id); const x = xs[i];
+    s += `<g class="pn${sel===id?" on":""}" data-pr="${id}" tabindex="0" role="button" aria-label="${p.name}"><rect x="${x}" y="${Y}" width="${W}" height="${H}" rx="8"/><text class="no" x="${x+10}" y="${Y+17}">${p.no}</text><text class="nm" x="${x+W/2}" y="${Y+37}" text-anchor="middle">${p.name.replace(" (고로)","")}</text><text class="sb" x="${x+W/2}" y="${Y+54}" text-anchor="middle">${sub[id]}</text></g>`;
+    if(i < order.length-1){ const x1 = x+W, x2 = xs[i+1]; s += `<path class="ar" d="M${x1+2} ${Y+H/2} H${x2-3}" marker-end="url(#ovs)"/><text class="lb3" x="${(x1+x2)/2}" y="${Y-8}" text-anchor="middle">${flowLb[i]}</text>`; }
+  });
+  // 제품
+  s += `<path class="ar" d="M${xs[5]+W+2} ${Y+H/2} H818" marker-end="url(#ovs)"/>`;
+  s += `<rect x="820" y="${Y-18}" width="128" height="100" rx="8" class="pr"/><text class="prt" x="884" y="${Y+2}" text-anchor="middle">제품</text>`;
+  ["열연코일·후판","선재·형강","냉연·도금강판","전기강판·STS"].forEach((t,i)=>{ s += `<text class="lb3" x="884" y="${Y+22+i*16}" text-anchor="middle">${t}</text>`; });
+  s += `<path class="ar2" d="M${xs[4]+W/2} ${Y+H} V${Y+H+16} H884 V${Y+84}" marker-end="url(#ovs)"/><text class="lb3" x="778" y="${Y+H+12}" text-anchor="middle">후판·선재는 바로 제품</text>`;
+  // 에너지·환경
+  const uy = 214;
+  s += `<g class="pn${sel==="util"?" on":""}" data-pr="util" tabindex="0" role="button" aria-label="에너지·환경"><rect x="16" y="${uy}" width="788" height="44" rx="8"/><text class="no" x="28" y="${uy+27}">07</text><text class="nm" x="60" y="${uy+28}">에너지·환경</text><text class="sb" x="180" y="${uy+28}">부생가스로 발전 · 산소·용수 공급 · 집진·수처리</text></g>`;
+  [[150,"COG"],[284,"BFG"],[418,"LDG"]].forEach(([x,t])=>{ s += `<path class="ar2" d="M${x+W/2} ${Y+H+2} V${uy-3}" marker-end="url(#ovs)"/><text class="lb3" x="${x+W/2+6}" y="${Y+H+42}">${t}</text>`; });
+  s += `<path class="ar2" d="M706 ${uy-2} V${Y+H+3}" marker-end="url(#ovs)"/><text class="lb3" x="712" y="${Y+H+42}">전기·산소·물</text>`;
+  return s + `</svg>`;
+}
+
+/* ═════════ 단계별 도식 ═════════ */
+const A = "url(#stp)";
+const STAGE = {
+  raw: () => `<path class="wf" d="M8 176 H232 V196 H8 Z"/><path class="wt" d="M8 178 q10 -5 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0"/>
+    <path class="eq" d="M20 150 H150 L136 176 H34 Z"/><rect class="ht" x="40" y="132" width="80" height="18" rx="2"/><text class="lb2" x="80" y="145" text-anchor="middle">철광석·석탄</text>
+    <path class="ln" d="M172 176 V48 M186 176 V48 M150 48 H236"/><rect class="eq" x="156" y="40" width="40" height="18"/><path class="ln" d="M110 48 H150"/><path class="eq" d="M104 70 h14 l-3 14 h-8 z"/><path class="ln" d="M111 48 V70"/>
+    <text class="lb" x="180" y="30" text-anchor="middle">언로더</text><text class="lb2" x="80" y="208" text-anchor="middle">① 원료부두 하역</text>
+    <path class="fa" d="M200 120 H262" marker-end="${A}"/><circle class="ln" cx="214" cy="128" r="4"/><circle class="ln" cx="234" cy="128" r="4"/><text class="lb2" x="232" y="112" text-anchor="middle">벨트컨베이어</text>
+    <path class="ht" d="M270 176 L318 120 L366 176 Z"/><path class="ht" d="M336 176 L384 126 L432 176 Z"/><path class="ln" d="M300 96 L410 96 M355 96 V176"/><rect class="eq" x="345" y="86" width="20" height="14"/>
+    <text class="lb" x="355" y="76" text-anchor="middle">스태커·리클레이머</text><text class="lb2" x="350" y="196" text-anchor="middle">② 야드 저장</text>
+    <path class="eq" d="M446 176 V130 A60 54 0 0 1 566 130 V176 Z"/><text class="lb" x="506" y="150" text-anchor="middle">밀폐형 저장</text><text class="lb2" x="506" y="196" text-anchor="middle">③ 돔·사일로 (비산먼지 저감)</text>
+    <path class="fa" d="M572 140 H630" marker-end="${A}"/><text class="lb" x="600" y="128" text-anchor="middle">공정으로</text><text class="lb2" x="600" y="160" text-anchor="middle">④ 배합·불출</text>`,
+  sinter: () => `<path class="eq" d="M26 52 H66 L58 84 H34 Z"/><text class="lb2" x="46" y="44" text-anchor="middle">원료 호퍼</text>
+    <rect class="eq" x="24" y="96" width="270" height="30" rx="15"/><circle class="ln" cx="40" cy="111" r="10"/><circle class="ln" cx="278" cy="111" r="10"/><rect class="ht" x="60" y="96" width="210" height="10"/>
+    <rect class="ht" x="70" y="70" width="56" height="26"/><path class="fa" d="M82 92 q4 -10 8 0 q4 -10 8 0 q4 -10 8 0"/><text class="lb" x="98" y="62" text-anchor="middle">점화로</text>
+    <text class="lb" x="160" y="158" text-anchor="middle">소결기 (가루 광석을 구움)</text><path class="ln" d="M100 127 V138 M150 127 V138 M200 127 V138"/><text class="lb2" x="160" y="176" text-anchor="middle">아래로 공기를 빨아들이며 소성</text>
+    <path class="fa" d="M296 111 H332" marker-end="${A}"/><path class="ht" d="M338 130 l10 -18 l14 6 l8 -14 l14 12 l10 14 Z"/><text class="lb" x="362" y="150" text-anchor="middle">소결광</text>
+    <rect class="eq" x="410" y="58" width="130" height="112"/>${[0,1,2,3,4,5,6,7].map(i=>`<rect class="ht" x="${418+i*15}" y="66" width="8" height="96"/>`).join("")}
+    <text class="lb" x="475" y="186" text-anchor="middle">코크스로 (석탄을 쪄서 코크스)</text>
+    <path class="fa" d="M475 56 V28" marker-end="${A}"/><text class="lb" x="482" y="26">COG → 정제·연료</text>
+    <path class="fa" d="M542 140 H566" marker-end="${A}"/><rect class="ht" x="570" y="128" width="56" height="26" rx="3"/><circle class="ln" cx="582" cy="160" r="6"/><circle class="ln" cx="614" cy="160" r="6"/><text class="lb" x="598" y="118" text-anchor="middle">소화 (CDQ)</text><text class="lb2" x="598" y="186" text-anchor="middle">→ 코크스</text>`,
+  iron: () => `<path class="fa" d="M150 22 L246 38" marker-end="${A}"/><text class="lb" x="96" y="20">장입: 소결광·코크스</text>
+    <path class="eq" d="M252 34 H300 L330 118 L318 176 H234 L222 118 Z"/><path class="ht" d="M240 140 H312 L316 170 H236 Z"/><text class="lb" x="276" y="104" text-anchor="middle">고로</text><text class="lb2" x="276" y="120" text-anchor="middle">환원·용융</text>
+    <path class="fa" d="M276 34 V10" marker-end="${A}"/><text class="lb" x="284" y="14">BFG → TRT 발전</text>
+    ${[0,1,2].map(i=>`<path class="eq" d="M${430+i*46} 176 V74 a18 18 0 0 1 36 0 V176 Z"/>`).join("")}<text class="lb" x="497" y="60" text-anchor="middle">열풍로</text><text class="lb2" x="497" y="194" text-anchor="middle">바람을 1,100~1,250℃로 데움</text>
+    <path class="fa" d="M428 132 H334" marker-end="${A}"/><text class="lb" x="380" y="124" text-anchor="middle">열풍</text><text class="lb2" x="380" y="148" text-anchor="middle">+ 미분탄(PCI)</text>
+    <path class="fa" d="M236 164 L190 176" marker-end="${A}"/><ellipse class="ht" cx="120" cy="178" rx="64" ry="14"/><circle class="ln" cx="80" cy="196" r="6"/><circle class="ln" cx="160" cy="196" r="6"/><text class="lb" x="120" y="160" text-anchor="middle">용선 → 토페도카(TLC)</text>
+    <path class="fa" d="M318 170 L338 190" marker-end="${A}"/><text class="lb2" x="336" y="208" text-anchor="middle">슬래그 → 수재·시멘트 원료</text>`,
+  steel: () => `<ellipse class="ht" cx="44" cy="170" rx="36" ry="11"/><text class="lb2" x="44" y="196" text-anchor="middle">용선 (TLC)</text><text class="lb2" x="44" y="148" text-anchor="middle">예비처리</text>
+    <path class="fa" d="M82 166 H116" marker-end="${A}"/>
+    <path class="eq" d="M136 56 H196 L212 118 Q212 176 166 176 Q120 176 120 118 Z"/><path class="ht" d="M124 130 H208 Q206 170 166 170 Q126 170 124 130 Z"/><path class="ln" d="M166 8 V96"/><text class="lb" x="174" y="22">O₂ 랜스</text><text class="lb" x="166" y="196" text-anchor="middle">전로 (산소로 탄소 제거)</text>
+    <path class="fa" d="M214 150 H246" marker-end="${A}"/>
+    <rect class="eq" x="256" y="30" width="56" height="44" rx="4"/><path class="ln" d="M270 74 V128 M298 74 V128"/><text class="lb" x="284" y="22" text-anchor="middle">RH 정련</text>
+    <path class="eq" d="M250 116 H318 L310 176 H258 Z"/><path class="ht" d="M254 128 H314 L308 170 H260 Z"/><text class="lb2" x="284" y="196" text-anchor="middle">래들 (성분 조정)</text>
+    <path class="fa" d="M318 120 Q340 96 362 92" marker-end="${A}"/>
+    <path class="eq" d="M362 78 H444 L436 98 H370 Z"/><text class="lb" x="403" y="70" text-anchor="middle">턴디시</text><rect class="ht" x="398" y="98" width="12" height="22"/><text class="lb2" x="416" y="114">몰드</text>
+    <path class="fa" d="M404 120 Q404 176 470 176 H596" style="stroke-width:7;opacity:.55"/>
+    <text class="lb" x="500" y="150" text-anchor="middle">연속주조 (굳히며 뽑아냄)</text><path class="ln" d="M548 162 V190" style="stroke-dasharray:3 2"/><text class="lb2" x="548" y="204" text-anchor="middle">절단</text>
+    <rect class="ht" x="590" y="168" width="44" height="16"/><text class="lb" x="612" y="200" text-anchor="middle">슬래브</text>`,
+  hot: () => `<rect class="eq" x="14" y="88" width="120" height="58" rx="4"/><path class="fa" d="M34 130 q5 -14 10 0 q5 -14 10 0 M74 130 q5 -14 10 0 q5 -14 10 0" /><text class="lb" x="74" y="78" text-anchor="middle">가열로</text><text class="lb2" x="74" y="172" text-anchor="middle">약 1,200℃로 재가열</text>
+    <path class="fa" d="M134 150 H600" style="stroke-width:5;opacity:.6"/>
+    <path class="wt" d="M158 124 V142 M166 124 V142 M174 124 V142 M158 158 V176 M166 158 V176 M174 158 V176"/><text class="lb2" x="166" y="196" text-anchor="middle">스케일 제거</text>
+    <rect class="eq" x="196" y="96" width="44" height="108" rx="3" style="fill:none"/><circle class="eq" cx="218" cy="130" r="18"/><circle class="eq" cx="218" cy="170" r="18"/><text class="lb" x="218" y="86" text-anchor="middle">조압연</text>
+    ${[0,1,2,3,4,5].map(i=>`<circle class="eq" cx="${282+i*30}" cy="139" r="10"/><circle class="eq" cx="${282+i*30}" cy="161" r="10"/>`).join("")}<text class="lb" x="357" y="114" text-anchor="middle">사상압연 (6~7스탠드)</text><text class="lb2" x="357" y="196" text-anchor="middle">점점 얇게</text>
+    ${[0,1,2,3,4,5,6].map(i=>`<path class="wt" d="M${458+i*16} 116 V140"/>`).join("")}<text class="lb" x="506" y="104" text-anchor="middle">런아웃테이블 냉각</text>
+    <circle class="ht" cx="612" cy="150" r="22"/><circle class="ln" cx="612" cy="150" r="13"/><circle class="ln" cx="612" cy="150" r="5"/><text class="lb" x="636" y="196" text-anchor="end">권취 → 열연코일</text>`,
+  cold: () => `<circle class="eq" cx="34" cy="120" r="20"/><circle class="ln" cx="34" cy="120" r="8"/><text class="lb2" x="34" y="160" text-anchor="middle">열연코일</text>
+    <path class="fa" d="M54 112 H130 V150 H162" style="stroke-width:3"/><rect class="eq" x="74" y="128" width="78" height="40"/><rect class="wf" x="76" y="140" width="74" height="26"/><text class="lb" x="113" y="186" text-anchor="middle">산세 (녹 제거)</text>
+    <path class="fa" d="M162 150 H302" style="stroke-width:3"/>${[0,1,2,3].map(i=>`<circle class="eq" cx="${184+i*32}" cy="139" r="10"/><circle class="eq" cx="${184+i*32}" cy="161" r="10"/>`).join("")}<text class="lb" x="232" y="118" text-anchor="middle">냉간압연</text><text class="lb2" x="232" y="190" text-anchor="middle">상온에서 더 얇게</text>
+    <rect class="ht" x="312" y="30" width="96" height="146" rx="4"/><path class="fa" d="M302 150 H324 V44 H340 V164 H356 V44 H372 V164 H388 V44 H400 V150 H430" style="stroke-width:2"/><text class="lb" x="360" y="22" text-anchor="middle">연속소둔 (열처리)</text>
+    <path class="fa" d="M430 150 Q450 60 470 60 L494 168 L518 60 Q540 60 556 120" style="stroke-width:2"/><rect class="eq" x="470" y="140" width="52" height="40" rx="4"/><rect class="ht" x="472" y="150" width="48" height="28"/><text class="lb" x="496" y="196" text-anchor="middle">도금 (아연 욕조)</text>
+    <path class="fa" d="M556 120 H580" style="stroke-width:2"/><circle class="ht" cx="604" cy="120" r="22"/><circle class="ln" cx="604" cy="120" r="9"/><text class="lb" x="604" y="164" text-anchor="middle">제품 코일</text>`,
+  util: () => `<rect class="eq" x="24" y="56" width="86" height="120"/><ellipse class="eq" cx="67" cy="56" rx="43" ry="10"/><text class="lb" x="67" y="120" text-anchor="middle">가스홀더</text><text class="lb2" x="67" y="196" text-anchor="middle">COG·BFG·LDG 저장</text>
+    <path class="fa" d="M112 130 H158" marker-end="${A}"/>
+    <rect class="eq" x="164" y="96" width="110" height="80"/><rect class="eq" x="240" y="34" width="16" height="62"/><text class="lb" x="219" y="140" text-anchor="middle">발전소</text><text class="lb2" x="219" y="196" text-anchor="middle">→ 전기·증기</text>
+    <rect class="eq" x="306" y="40" width="20" height="136" rx="6"/><rect class="eq" x="334" y="70" width="20" height="106" rx="6"/><rect class="eq" x="362" y="56" width="20" height="120" rx="6"/><text class="lb" x="344" y="30" text-anchor="middle">산소공장 (ASU)</text><text class="lb2" x="344" y="196" text-anchor="middle">→ 고로·제강에 산소</text>
+    <path class="eq" d="M416 176 Q430 120 420 60 H492 Q482 120 496 176 Z"/><path class="wt" d="M440 52 q4 -10 0 -20 M456 52 q4 -10 0 -20 M472 52 q4 -10 0 -20"/><text class="lb" x="456" y="130" text-anchor="middle">냉각탑</text><text class="lb2" x="456" y="196" text-anchor="middle">냉각수 순환</text>
+    <ellipse class="eq" cx="550" cy="150" rx="36" ry="12"/><rect class="wf" x="514" y="138" width="72" height="12"/><ellipse class="eq" cx="604" cy="126" rx="24" ry="9"/><text class="lb" x="572" y="100" text-anchor="middle">수처리·집진</text><text class="lb2" x="566" y="196" text-anchor="middle">배수·배기 관리</text>`
+};
+function stageSvg(id){ return `<svg viewBox="0 0 640 214" role="img" aria-label="${esc(PROC.find(p=>p.id===id)?.name||"")} 도식"><defs><marker id="stp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahp"/></marker></defs>${STAGE[id] ? STAGE[id]() : ""}</svg>`; }
+
 function renderProcess(){
   const p = PROC.find(x=>x.id===S.pr) || PROC[0];
   const chips = p.abbr.filter(k => abbrMap[k]);
-  return `<div class="shead"><div><h2>제철 프로세스</h2><p>원료가 제품이 되기까지 — 공정을 고르면 흐름, 핵심 내용, 건축 설계검토 포인트, 관련 약어를 보여줍니다.</p></div></div>
-  <div class="psub">${PROC.map(x=>`<button class="${x.id===p.id?"on":""}" data-go="process" data-sub="${x.id}"><span class="n">${x.no}</span>${esc(x.name)}</button>`).join("")}</div>
-  <div class="panel"><h3>${esc(p.name)} <span class="muted" style="font-family:var(--f-mono);font-weight:400">${esc(p.en)}</span></h3><p style="margin:0">${esc(p.sum)}</p>
-   <div class="flow">${p.flow.map((f,i)=>(i?`<i>→</i>`:"")+`<span>${esc(f)}</span>`).join("")}</div></div>
-  <div class="two"><div class="panel"><h3>핵심 내용</h3><ul>${p.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
+  return `<div class="shead"><div><h2>제철 프로세스</h2><p>철광석이 강판이 되기까지 — 흐름도에서 공정을 누르면 아래에 설명과 도식이 나옵니다.</p></div></div>
+  <div class="panel"><h3>전체 흐름</h3><div class="ovw">${overview(p.id)}</div></div>
+  <div class="panel"><div class="stage-h"><span class="no">${p.no}</span><h3>${esc(p.name)}</h3><span class="en">${esc(p.en)}</span></div>
+    <div class="easy">${esc(p.easy)}</div><div class="like"><b>쉽게 말하면</b>${esc(p.like)}</div>
+    <div class="io"><div class="bx"><b>들어가는 것</b><div>${p.in.map(esc).join("<br>")}</div></div><span class="to">→</span><div class="bx out"><b>나오는 것</b><div>${p.out.map(esc).join("<br>")}</div></div></div></div>
+  <div class="panel"><h3>${esc(p.name)} 도식</h3><div class="stg">${stageSvg(p.id)}</div>
+    <div class="steps">${p.flow.map((f,i)=>(i?`<i>→</i>`:"")+`<span>${esc(f)}</span>`).join("")}</div></div>
+  <div class="two"><div class="panel"><h3>알아두면 좋은 것</h3><ul>${p.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
    <div class="panel arch"><h3>건축 설계검토 포인트</h3><ul>${p.arch.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div></div>
   <div class="panel"><h3>이 공정의 설비 약어 <span class="muted" style="font-weight:400">${chips.length}개 — 눌러서 뜻 보기</span></h3>
    <div class="abchips">${chips.map(k=>`<button class="abchip${S.prab===k?" on":""}" data-prab="${esc(k)}">${esc(k)}</button>`).join("")}</div>
    <div class="abdesc" id="prdesc"></div>
    <p class="muted" style="margin:8px 0 0"><a href="#abbr/${p.cat}">${esc(ACATS[p.cat]||"")} 약어 전체 보기 →</a></p></div>
-  <p class="note">공정 설명은 일반 공개 지식 기준의 개요입니다. 개별 설비의 사양·배치는 해당 프로젝트 설계도서를 따르세요.</p>`;
+  <p class="note">공정 설명·도식은 일반 공개 지식 기준의 개념도입니다. 개별 설비의 사양·배치는 해당 프로젝트 설계도서를 따르세요.</p>`;
 }
 function fillPrDesc(){
   const box = $("#prdesc"); if(!box) return;
   const list = S.prab ? (abbrMap[S.prab]||[]) : [];
   box.innerHTML = list.length ? list.map(a=>`<div><b style="font-family:var(--f-mono);color:var(--accent)">${esc(a[0])}</b> — ${esc(a[1])}</div>`).join("") : `<span class="muted">약어를 누르면 뜻이 여기에 나옵니다.</span>`;
 }
-document.addEventListener("click", e => { const c = e.target.closest("[data-prab]"); if(c){ S.prab = S.prab===c.dataset.prab ? null : c.dataset.prab; document.querySelectorAll(".abchip").forEach(x=>x.classList.toggle("on", x.dataset.prab===S.prab)); fillPrDesc(); } });
 
-/* ── 강재 규격 ── */
+/* ═════════ 강재 규격 (버튼으로 하나씩) ═════════ */
 function renderGrades(){
-  return `<div class="shead"><div><h2>강재 규격</h2><p>강종별 항복강도(Fy)·인장강도(Fu), 단위 MPa. t = 판두께(mm).</p></div></div>
-  <p class="note">정리값입니다. KS는 개정이 잦으므로 설계 적용 전 KS 원문(e-나라표준인증)과 KDS 14 31 05(강구조 재료) 원문으로 확인하세요.</p>
-  ${GR.map(g=>`<div class="gcard"><div class="h"><b>${esc(g.g)}</b><span>${esc(g.ks)}</span>${g.note?`<p>${esc(g.note)}</p>`:""}</div>
-   <div class="tbl-wrap"><table class="t"><thead><tr>${g.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${g.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="num"':""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>`).join("")}`;
+  const g = GR[S.gr] || GR[0];
+  return `<div class="shead"><div><h2>강재 규격</h2><p>강종별 항복강도(Fy)·인장강도(Fu), 단위 MPa. t = 판두께(mm). 버튼을 눌러 종류를 고르세요.</p></div></div>
+  <div class="psub">${GR.map((x,i)=>`<button class="${i===S.gr?"on":""}" data-go="grades" data-sub="${i}">${esc(x.g)}<small>${esc(x.ks)}</small></button>`).join("")}</div>
+  <div class="gcard"><div class="h"><b>${esc(g.g)}</b><span>${esc(g.ks)}</span>${g.note?`<p>${esc(g.note)}</p>`:""}</div>
+   <div class="tbl-wrap"><table class="t"><thead><tr>${g.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${g.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="num"':""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+  <p class="note">정리값입니다. KS는 개정이 잦으므로 설계 적용 전 KS 원문(e-나라표준인증)과 KDS 14 31 05(강구조 재료) 원문으로 확인하세요.</p>`;
 }
 
-/* ── 설계기준·바로가기 ── */
+/* ═════════ 설계기준·바로가기 ═════════ */
 function renderCodes(){
   return `<div class="shead"><div><h2>설계기준·바로가기</h2><p>원문은 공식 사이트에서 — 이 사이트는 위치와 요약만 안내합니다.</p></div></div>
   <div class="links">${SRCS.map(s=>`<a href="${esc(s.u)}" target="_blank" rel="noopener"><b>${esc(s.n)} ↗</b><small>${esc(s.d)}</small></a>`).join("")}</div>
@@ -394,29 +717,27 @@ function renderCodes(){
   <p class="note">코드번호는 개편될 수 있습니다. 국가건설기준센터에서 코드번호 또는 제목으로 검색해 현행판(연도 표기)을 확인하세요. KS 원문은 한국표준협회 저작물이므로 이 사이트에 올리지 않습니다.</p>`;
 }
 
-/* ── 렌더 ── */
-function render(){
-  renderTabs();
-  const q = $("#q").value.trim();
-  const v = $("#view");
-  if(q){ v.innerHTML = renderSearch(q); return; }
-  if(S.tab==="home") v.innerHTML = renderHome();
-  else if(S.tab==="danjung"){ v.innerHTML = renderDanjung(); fillDjBody(); bindLocal("#djq", val => { S.djq = val; fillDjBody(); }); }
-  else if(S.tab==="abbr"){ v.innerHTML = renderAbbr(); fillAbbr(); bindLocal("#abq", val => { S.abq = val; fillAbbr(); }); }
-  else if(S.tab==="process"){ v.innerHTML = renderProcess(); fillPrDesc(); }
-  else if(S.tab==="grades") v.innerHTML = renderGrades();
-  else if(S.tab==="codes") v.innerHTML = renderCodes();
-}
-// 탭 안 검색창: 입력창은 그대로 두고 목록만 갱신 (한글 조합 보호)
+/* ═════════ 렌더 ═════════ */
 function bindLocal(sel, fn){
   const el = $(sel); if(!el) return; let comp = false;
   el.addEventListener("compositionstart", () => comp = true);
   el.addEventListener("compositionend", () => { comp = false; fn(el.value); });
   el.addEventListener("input", () => { if(!comp) fn(el.value); });
 }
+function render(){
+  renderTabs();
+  const q = $("#q").value.trim(), v = $("#view");
+  if(q){ v.innerHTML = renderSearch(q); return; }
+  if(S.tab==="home") v.innerHTML = renderHome();
+  else if(S.tab==="danjung"){ v.innerHTML = renderDanjung(); bindFinder(); fillDjBody(); }
+  else if(S.tab==="abbr"){ v.innerHTML = renderAbbr(); fillAbbr(); bindLocal("#abq", val => { S.abq = val; fillAbbr(); }); }
+  else if(S.tab==="process"){ v.innerHTML = renderProcess(); fillPrDesc(); }
+  else if(S.tab==="grades") v.innerHTML = renderGrades();
+  else if(S.tab==="codes") v.innerHTML = renderCodes();
+}
 function setTopH(){ document.documentElement.style.setProperty("--topH", $("#top").offsetHeight + "px"); }
 window.addEventListener("resize", setTopH);
-$("#src").textContent = window.DJ_SRC ? `단중표 기준: ${window.DJ_SRC}` : "";
+
 readHash(); render(); setTopH();
 </script>
 </body>
