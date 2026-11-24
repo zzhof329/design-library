@@ -96,8 +96,9 @@ table.t{border-collapse:collapse;font-size:14px}
 .t tbody tr.sel{background:var(--accent-soft)}
 
 /* 단중표 */
-.djtop{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px;margin-top:12px;align-items:stretch}
+.djtop{display:grid;grid-template-columns:minmax(0,1fr) 250px minmax(220px,270px);gap:12px;margin-top:12px;align-items:stretch}
 .djtop .panel{margin-top:0}
+@media (max-width:940px){ .djtop{grid-template-columns:minmax(0,1fr) 250px} .djtop #calc{grid-column:1 / -1} }
 @media (max-width:700px){ .djtop{grid-template-columns:1fr} }
 .fhead{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .fhead h3{margin:0}
@@ -120,10 +121,18 @@ svg .dim.on text{fill:var(--accent)}
 svg .pt{fill:var(--accent);font:600 11.5px var(--f-body)}
 svg .ld{stroke:var(--accent);stroke-width:1}
 svg .cap{fill:var(--sub);font:11px var(--f-body)}
-.djmain{display:grid;grid-template-columns:auto minmax(240px,290px);gap:12px;align-items:start;margin-top:12px;justify-content:start}
-.djmain .panel{margin-top:0;position:sticky;top:calc(var(--topH,54px) + 56px)}
-@media (max-width:860px){ .djmain{grid-template-columns:1fr} .djmain .panel{position:static} }
-.cnt-line{font-size:12.5px;color:var(--sub);margin:12px 0 0}
+.djgrid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;align-items:flex-start}
+.djgrid .tbl-wrap{max-height:none}
+.djgrid .t th{position:static;white-space:normal;line-height:1.25;vertical-align:bottom}
+.djgrid .t th,.djgrid .t td{padding:5px 8px}
+.djgrid .t td:first-child{font-size:13px}
+.cnt-line{font-size:12.5px;color:var(--sub);margin:14px 0 0}
+/* 강재 규격: 가운데 정렬, 용어 설명 */
+.gcard .t th,.gcard .t td,.gcard .t th:first-child,.gcard .t td:first-child{text-align:center}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px 18px;margin:8px 0 0}
+.gloss div{font-size:13.5px;line-height:1.6}
+.gloss b{display:inline-block;min-width:64px;font-family:var(--f-mono);color:var(--accent);margin-right:6px}
+.gloss .old{font-family:var(--f-mono);font-size:12.5px}
 .calc{display:grid;gap:8px}
 .calc label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--sub)}
 .calc input{padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);font-family:var(--f-mono);width:100%}
@@ -348,7 +357,7 @@ const DJG = [
   {k:"FL", n:"바닥재·데크", u:"m2", f:[["t","두께"]], d:null, paint:true},
   {k:"TC", n:"TC볼트",      u:"ea", f:[["d","호칭 지름"],["L","길이"]], d:()=>SEC.BOLT(true)},
   {k:"HT", n:"고장력 육각볼트", u:"ea", f:[["d","호칭 지름"],["L","길이"]], d:()=>SEC.BOLT(false)},
-  {k:"AB", n:"앵커볼트",    u:"m",  f:[["d","호칭 지름"]], d:SEC.AB, extra:"너트 등 (kg/EA)", note:"표준품셈에 앵커볼트 별도 할증 항목 없음 (일반볼트 5% 참고)."},
+  {k:"AB", n:"앵커볼트",    u:"m",  f:[["d","호칭 지름"]], d:SEC.AB, extra:"너트 등<br>kg/EA", note:"표준품셈에 앵커볼트 별도 할증 항목 없음 (일반볼트 5% 참고)."},
   {k:"W",  n:"용접 환산",   u:"m",  f:[["s","크기"]], d:SEC.W, wtype:true, note:"F: 필릿, K·V·X: 개선(그루브) 형식."}
 ];
 const DJ = window.DJ_ROWS || {};
@@ -413,7 +422,7 @@ document.addEventListener("click", e => {
   const a = e.target.closest("[data-abq]"); if(a){ S.abq = a.dataset.abq; $("#q").value=""; go("abbr"); return; }
   const d = e.target.closest("[data-dj]"); if(d){ const g = DJG.find(x=>x.k===d.dataset.dj); S.dj = g.k; S.ff={}; S.wt=""; S.sel = g.rows.findIndex(x=>x.r[0]===d.dataset.name); $("#q").value=""; go("danjung", S.dj); return; }
   const dg = e.target.closest("[data-djg]"); if(dg){ go("danjung", dg.dataset.djg); return; }
-  const tr = e.target.closest("#djbody tr[data-i]"); if(tr){ S.sel = +tr.dataset.i; document.querySelectorAll("#djbody tr.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); fillCalc(); return; }
+  const tr = e.target.closest("#djgrid tr[data-i]"); if(tr){ S.sel = +tr.dataset.i; document.querySelectorAll("#djgrid tr.sel").forEach(x=>x.classList.remove("sel")); tr.classList.add("sel"); fillCalc(); return; }
   if(e.target.closest("#ffreset")){ S.ff={}; S.wt=""; document.querySelectorAll("#finder input").forEach(i=>i.value=""); const ws=$("#wtype"); if(ws) ws.value=""; fillDjBody(); return; }
   const ac = e.target.closest("[data-abc]"); if(ac){ go("abbr", ac.dataset.abc); return; }
   const pa = e.target.closest("[data-prab]"); if(pa){ S.prab = S.prab===pa.dataset.prab ? null : pa.dataset.prab; document.querySelectorAll(".abchip").forEach(x=>x.classList.toggle("on", x.dataset.prab===S.prab)); fillPrDesc(); return; }
@@ -479,29 +488,27 @@ function renderDanjung(){
   const fields = g.f.map(([k,l]) => `<label class="fld"><span><span class="k">${k}</span>${esc(l)} (mm)</span><input type="text" inputmode="decimal" data-f="${k}" value="${esc(S.ff[k]??"")}" placeholder="예: ${esc(sample(g,k))}" autocomplete="off"></label>`).join("")
     + (g.wtype ? `<label class="fld"><span><span class="k">형식</span>용접</span><select id="wtype"><option value="">전체</option>${["F","K","V","X"].map(t=>`<option${S.wt===t?" selected":""}>${t}</option>`).join("")}</select></label>` : "");
   const sc = window.SURCHARGE || [];
-  return `<div class="shead"><div><h2>단중표</h2><p>치수 칸에 숫자만 넣으면 찾습니다 (x 입력 불필요). 행을 누르면 중량 계산 칸에 나옵니다.</p></div></div>
+  return `<div class="shead"><div><h2>단중표</h2><p>치수 칸에 숫자만 넣으면 찾습니다 (x 입력 불필요). 행을 누르면 위 중량 계산 칸에 나옵니다.</p></div></div>
   <div class="frow">${DJG.map(x=>`<button class="chip${x.k===g.k?" on":""}" data-djg="${x.k}">${esc(x.n)} <span class="c">${x.rows.length}</span></button>`).join("")}</div>
   <div class="djtop">
     <div class="panel" id="finder"><div class="fhead"><h3>${esc(g.n)} — 치수로 찾기</h3><button class="btn" id="ffreset">초기화</button></div>
       <div class="fgrid">${fields}</div>
       <p class="muted" style="margin:10px 0 0">빈 칸은 조건 없음. 입력한 값과 같은 치수만 남습니다.${g.note?`<br>${esc(g.note)}`:""}</p></div>
     <figure class="panel secfig">${g.d ? g.d() : `<p class="muted">이 항목은 단면 도식이 없습니다.</p>`}<figcaption>칸을 누르면 해당 치수가 표시됩니다</figcaption></figure>
-  </div>
-  <p class="cnt-line" id="djcnt"></p>
-  <div class="djmain">
-    <div class="tbl-wrap"><table class="t pick"><thead><tr>${djHead(g)}</tr></thead><tbody id="djbody"></tbody></table></div>
     <div class="panel" id="calc"></div>
   </div>
+  <p class="cnt-line" id="djcnt"></p>
+  <div class="djgrid" id="djgrid"></div>
   <details class="sc"><summary>강재 할증률 기준 — ${esc(window.SURCHARGE_SRC||"표준품셈")}</summary>
     <div class="tbl-wrap"><table class="t"><thead><tr><th>종류</th><th>할증률 (%)</th></tr></thead><tbody>${sc.map(r=>`<tr><td style="font-family:var(--f-body)">${esc(r[0])}</td><td class="num">${esc(r[1])}</td></tr>`).join("")}</tbody></table></div>
     <ol>${(window.SURCHARGE_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ol></details>`;
 }
 function sample(g,k){ const r = g.rows[Math.min(g.rows.length-1, Math.floor(g.rows.length/2))]; if(!r) return ""; const i = g.f.findIndex(f=>f[0]===k); return r.n[i] ?? ""; }
 function djHead(g){
-  let h = `<th>규격</th>` + g.f.map(([k],i)=>`<th class="dm${i===0?" sep":""}">${k}</th>`).join("") + `<th class="sep">단중 (${unitW(g)})</th>`;
-  if(g.paint) h += `<th>도장 (${g.u==="m2"?"m²/m²":"m²/m"})</th>`;
-  if(g.extra) h += `<th>${esc(g.extra)}</th>`;
-  if(g.k!=="W" && g.k!=="AB") h += `<th>할증 (품셈)</th>`;
+  let h = `<th>규격</th>` + g.f.map(([k],i)=>`<th class="dm${i===0?" sep":""}">${k}</th>`).join("") + `<th class="sep">단중<br>${unitW(g)}</th>`;
+  if(g.paint) h += `<th>도장<br>${g.u==="m2"?"m²/m²":"m²/m"}</th>`;
+  if(g.extra) h += `<th>${g.extra}</th>`;
+  if(g.k!=="W" && g.k!=="AB") h += `<th>할증<br>품셈</th>`;
   return h;
 }
 function djFilter(g){
@@ -511,21 +518,29 @@ function djFilter(g){
     (!g.wtype || !S.wt || row.r[0].toUpperCase().endsWith(S.wt)));
 }
 function fillDjBody(){
-  const g = curG(), body = $("#djbody"); if(!body) return;
+  const g = curG(), grid = $("#djgrid"); if(!grid) return;
   const rows = djFilter(g);
   $("#djcnt").textContent = rows.length === g.rows.length ? `${g.n} 전체 ${g.rows.length}개` : `${g.rows.length}개 중 ${rows.length}개`;
   const span = g.f.length + 2 + (g.paint?1:0) + (g.extra?1:0) + (g.k!=="W"&&g.k!=="AB"?1:0);
-  body.innerHTML = rows.length ? rows.map(([row,i]) => {
+  const rowHtml = ([row,i]) => {
     const r = row.r, rt = rate(g,row);
     let c = `<td>${esc(r[0])}</td>` + g.f.map((f,j)=>`<td class="dm${j===0?" sep":""}">${row.n[j]!=null?fmt(row.n[j]):"−"}</td>`).join("") + `<td class="num sep">${fmt(r[1],4)}</td>`;
     if(g.paint) c += `<td class="num">${r[2]==null?"−":fmt(r[2],3)}</td>`;
     if(g.extra) c += `<td class="num">${r[2]==null?"−":fmt(r[2],3)}</td>`;
     if(g.k!=="W" && g.k!=="AB") c += `<td class="num" title="${rt?esc(rt[1]):"표준품셈 해당 항목 없음"}">${rt?rt[0]+"%":"−"}</td>`;
     return `<tr data-i="${i}" class="${i===S.sel?"sel":""}">${c}</tr>`;
-  }).join("") : `<tr><td colspan="${span}" class="muted" style="font-family:var(--f-body)">조건에 맞는 규격이 없습니다. 칸 값을 확인하거나 초기화하세요.</td></tr>`;
-  const selRow = body.querySelector("tr.sel"); if(selRow) selRow.scrollIntoView({block:"nearest"});
+  };
+  const head = `<thead><tr>${djHead(g)}</tr></thead>`;
+  const draw = k => { const per = Math.ceil(rows.length / k); let out = "";
+    for(let c = 0; c < k; c++){ const part = rows.slice(c*per, (c+1)*per); if(!part.length) break; out += `<div class="tbl-wrap"><table class="t pick">${head}<tbody>${part.map(rowHtml).join("")}</tbody></table></div>`; }
+    grid.innerHTML = out; };
+  if(!rows.length){ grid.innerHTML = `<div class="tbl-wrap"><table class="t">${head}<tbody><tr><td colspan="${span}" class="muted" style="font-family:var(--f-body)">조건에 맞는 규격이 없습니다. 칸 값을 확인하거나 초기화하세요.</td></tr></tbody></table></div>`; fillCalc(); return; }
+  draw(1);
+  if(rows.length > 10){ const w = grid.firstElementChild.offsetWidth, avail = grid.clientWidth;
+    const k = Math.max(1, Math.min(3, Math.floor((avail + 12) / (w + 12)), Math.ceil(rows.length / 6))); if(k > 1) draw(k); }
   fillCalc();
 }
+let djResizeT; window.addEventListener("resize", () => { clearTimeout(djResizeT); djResizeT = setTimeout(() => { if(S.tab==="danjung" && !$("#q").value.trim()) fillDjBody(); }, 150); });
 function bindFinder(){
   document.querySelectorAll("#finder input[data-f]").forEach(inp => {
     let comp = false;
@@ -706,6 +721,16 @@ function renderGrades(){
   <div class="psub">${GR.map((x,i)=>`<button class="${i===S.gr?"on":""}" data-go="grades" data-sub="${i}">${esc(x.g)}<small>${esc(x.ks)}</small></button>`).join("")}</div>
   <div class="gcard"><div class="h"><b>${esc(g.g)}</b><span>${esc(g.ks)}</span>${g.note?`<p>${esc(g.note)}</p>`:""}</div>
    <div class="tbl-wrap"><table class="t"><thead><tr>${g.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${g.rows.map(r=>`<tr>${r.map((c,i)=>`<td${i?' class="num"':""}>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div>
+  <div class="panel"><h3>표 읽는 법</h3><div class="gloss">
+    <div><b>Fy</b>항복강도 — 강재가 힘을 받다가 원래 모양으로 돌아오지 못하고 늘어나기 시작하는 응력. 구조 설계의 기본 강도입니다.</div>
+    <div><b>Fu</b>인장강도 — 강재가 끊어지기 직전까지 버티는 최대 응력. 볼트·접합부의 파단 검토에 씁니다.</div>
+    <div><b>항복비</b>Fy ÷ Fu. 낮을수록 항복 후 끊어지기까지 여유(변형 능력)가 커서 지진에 유리합니다. SN·SHN 강재는 상한을 정해 둡니다.</div>
+    <div><b>t</b>판두께 (mm). 두꺼울수록 Fy가 조금씩 낮아져서 두께 구간별로 값이 다릅니다.</div>
+    <div><b>MPa</b>응력 단위. 1 MPa = 1 N/mm² ≈ 10.2 kgf/cm²</div>
+    <div><b>A·B·C</b>성능 등급. 뒤로 갈수록 충격 성능 등 요구 조건이 높고, C는 판두께 방향 성능까지 보증합니다.</div>
+    <div><b>강종 숫자</b>SS275 = 항복강도 275 MPa급. 2018년 KS 개정으로 이름이 바뀜 <span class="old">(SS400→SS275, SM490→SM355, SN400→SN275, SN490→SN355)</span></div>
+    <div><b>기호</b>SS 일반구조용 · SM 용접구조용 · SN 건축구조용 · SHN 건축구조용 H형강 · STK·SPSR·STKN 강관·각형강관 · F10T 고장력볼트 · SD 철근</div>
+  </div></div>
   <p class="note">정리값입니다. KS는 개정이 잦으므로 설계 적용 전 KS 원문(e-나라표준인증)과 KDS 14 31 05(강구조 재료) 원문으로 확인하세요.</p>`;
 }
 
