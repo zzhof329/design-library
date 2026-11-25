@@ -384,6 +384,20 @@ svg .lah{fill:#2f6fa8}
 svg .lk{fill:#2f6fa8;font:700 12.5px var(--f-body)}
 svg .pit{fill:none;stroke:var(--ink);stroke-width:1.5}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) svg .conc{fill:#3a434d} :root:not([data-theme="light"]) svg .mort{fill:#4a4a44} :root:not([data-theme="light"]) svg .ck{fill:#7fd0df} :root:not([data-theme="light"]) svg .ce{fill:#7fd0df} }
+.crgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.crcard{display:block;color:inherit;text-decoration:none;margin-top:0!important}
+.crcard:hover{border-color:var(--accent)}
+.crcard h3{margin:8px 0 0}
+.thumb .ld,.thumb .cdot,.thumb .ck,.thumb .ce{display:none}
+.crs{margin:4px 0 0;font-size:14px}
+.crcard .more{display:inline-block;margin-top:6px;font-size:13px;color:var(--accent);font-weight:600}
+.cpts{margin:8px 0 0;padding-left:18px;font-size:14px;line-height:1.55}
+svg .lat{stroke:#c58a12;stroke-width:1.6;fill:none;stroke-linejoin:round}
+svg .ycr{stroke:#d99a1e;stroke-linecap:butt}
+.cgrid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cgrid4 .panel{margin-top:12px}
+@media (max-width:1100px){ .cgrid4{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:560px){ .cgrid4{grid-template-columns:1fr} }
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -424,6 +438,7 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/calc3.js"></script>
 <script src="data/struct.js"></script>
 <script src="data/struct2.js"></script>
+<script src="data/struct4.js"></script>
 <script src="data/links.js"></script>
 <script src="data/sheet.js"></script>
 <script>
@@ -1152,7 +1167,7 @@ function renderStruct(){
   } else if(cur==="grades"){
     body = gradesBody();
   } else {
-    body = `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>접합 방식</th><th>영문</th><th style="min-width:320px">특징</th><th>주로 쓰는 곳</th></tr></thead><tbody>${SD.connTypes.map(c=>`<tr><td class="nw"><b>${esc(c[0])}</b></td><td class="mono nw">${esc(c[1])}</td><td class="txt">${esc(c[2])}</td><td>${esc(c[3])}</td></tr>`).join("")}</tbody></table></div>`;
+    body = connBody();
   }
   return `<div class="shead"><div><h2>구조</h2><p>구조설계의 기본 — 설계법, 하중, 구조 시스템, 철골 접합부, 용접, 크레인, 강재 규격.</p></div></div>
   <div class="psub">${secs.map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="${k}">${n}</button>`).join("")}</div>${body}`;
@@ -1241,6 +1256,121 @@ const CRANE_SVG = {
     + call(60,40,100,22,"지붕보","Roof Beam") + call(200,66,232,22,"행거","Hanger") + call(120,92,40,150,"모노레일 (I형강)","Monorail Beam")
     + call(204,116,240,170,"호이스트","Hoist") + call(340,191,300,250,"차륜 — 하부 플랜지 위","Wheels on Lower Flange","end"), "호이스트", "0 -24 420 314")
 };
+/* ═════════ 크레인 도식 추가 (갠트리·지브·하이드로·크롤러·타워) ═════════ */
+const S4 = window.STRUCT4 || {conn:{main:[],sub:[],note:""}, craneGroups:[]};
+const lat = (x1,y1,x2,y2,w,n) => { const L = Math.hypot(x2-x1,y2-y1), ux = (x2-x1)/L, uy = (y2-y1)/L, nx = -uy*w/2, ny = ux*w/2;
+  let p = `M${x1+nx} ${y1+ny} L${x2+nx} ${y2+ny} M${x1-nx} ${y1-ny} L${x2-nx} ${y2-ny} M${x1+nx} ${y1+ny}`;
+  for(let i=1;i<=n;i++){ const t = i/n, s = i%2 ? -1 : 1; p += ` L${(x1+(x2-x1)*t+s*nx).toFixed(1)} ${(y1+(y2-y1)*t+s*ny).toFixed(1)}`; }
+  return `<path class="lat" d="${p}"/>`; };
+const arrowDn = (x,y1,y2) => `<line class="la" x1="${x}" y1="${y1}" x2="${x}" y2="${y2-8}"/><path class="lah" d="M${x-5} ${y2-9} L${x+5} ${y2-9} L${x} ${y2} Z"/>`;
+const arrowUp = (x,y1,y2) => `<line class="la" x1="${x}" y1="${y1}" x2="${x}" y2="${y2+8}"/><path class="lah" d="M${x-5} ${y2+9} L${x+5} ${y2+9} L${x} ${y2} Z"/>`;
+const arrowH = (x1,x2,y) => { const d = x2 > x1 ? 1 : -1; return `<line class="la" x1="${x1}" y1="${y}" x2="${x2-8*d}" y2="${y}"/><path class="lah" d="M${x2-9*d} ${y-5} L${x2-9*d} ${y+5} L${x2} ${y} Z"/>`; };
+Object.assign(CRANE_SVG, {
+  gantry: () => csv(`<line class="gnd" x1="10" y1="262" x2="410" y2="262"/>
+    <rect class="rail" x="52" y="256" width="44" height="6"/><rect class="rail" x="320" y="256" width="44" height="6"/>
+    <rect class="col" x="66" y="80" width="16" height="160"/><rect class="col" x="334" y="80" width="16" height="160"/>
+    <rect class="crn" x="50" y="240" width="48" height="12"/><rect class="crn" x="318" y="240" width="48" height="12"/>
+    ${[62,86,330,354].map(x=>`<circle class="bt" cx="${x}" cy="253" r="4"/>`).join("")}
+    <rect class="crn" x="24" y="62" width="372" height="18"/><rect class="trl" x="220" y="52" width="40" height="10"/>${hook(240,80,70)}<rect class="bm" x="222" y="172" width="36" height="22"/>`
+    + call(150,71,150,36,"거더","Girder") + call(258,57,300,36,"트롤리·호이스트","Trolley · Hoist")
+    + call(76,170,120,150,"다리 (레그)","Leg") + call(74,246,130,226,"주행 장치","Travel Truck")
+    + call(390,71,404,110,"캔틸레버 (오버행)","Cantilever","end") + call(342,259,300,236,"지상 레일","Ground Rail","end"), "갠트리 크레인"),
+  jib: () => csv(`<line class="gnd" x1="10" y1="262" x2="410" y2="262"/><rect class="conc" x="120" y="262" width="80" height="24"/>
+    <rect class="col" x="152" y="46" width="16" height="216"/><rect class="beam" x="168" y="46" width="214" height="14"/>
+    <line class="hg" x1="168" y1="110" x2="240" y2="60"/><rect class="crn" x="146" y="34" width="28" height="12"/>
+    <path class="dm" stroke-dasharray="4 3" d="M112 40 A48 12 0 1 0 208 40"/><path class="lah" d="M210 40 L200 37 L204 46 Z"/>
+    <rect class="trl" x="336" y="60" width="28" height="12"/>${hook(350,72,80)}<rect class="bm" x="330" y="174" width="40" height="22"/>`
+    + call(160,40,90,30,"선회부","Slewing","end") + call(320,53,320,30,"지브","Jib Arm")
+    + call(204,85,230,150,"보강 브레이스","Knee Brace") + call(336,66,320,100,"호이스트","Hoist","end")
+    + call(160,200,100,200,"기둥 (필라)","Pillar","end") + call(196,274,300,250,"기초","Foundation"), "지브 크레인"),
+  hydro: () => csv(`<line class="gnd" x1="10" y1="262" x2="410" y2="262"/>
+    <rect class="beam" x="56" y="206" width="214" height="20"/>
+    <path class="crn" d="M24 236 V196 Q24 184 36 184 H62 L76 206 V236 Z"/>
+    ${[54,192,228].map(x=>`<circle class="beam" cx="${x}" cy="240" r="14"/><circle class="bt" cx="${x}" cy="240" r="5"/>`).join("")}
+    <rect class="beam" x="84" y="226" width="26" height="6"/><rect class="col" x="93" y="232" width="8" height="24"/><rect class="gp" x="85" y="256" width="24" height="6"/>
+    <rect class="beam" x="246" y="226" width="26" height="6"/><rect class="col" x="255" y="232" width="8" height="24"/><rect class="gp" x="247" y="256" width="24" height="6"/>
+    <rect class="crn" x="152" y="192" width="60" height="14"/><rect class="crn" x="200" y="172" width="18" height="20"/>
+    <line class="ycr" x1="164" y1="200" x2="257" y2="123" style="stroke-width:14"/><line class="ycr" x1="257" y1="123" x2="313" y2="77" style="stroke-width:10"/><line class="ycr" x1="313" y1="77" x2="350" y2="46" style="stroke-width:7"/>
+    <line x1="182" y1="206" x2="222" y2="153" style="stroke:#5a6470;stroke-width:6"/><circle class="bt" cx="350" cy="46" r="5"/>
+    ${hook(350,51,104)}<rect class="bm" x="330" y="178" width="40" height="22"/>
+    <line class="dm" stroke-dasharray="4 3" x1="182" y1="206" x2="182" y2="288"/><line class="dm" stroke-dasharray="4 3" x1="350" y1="200" x2="350" y2="288"/>
+    <line class="dm" x1="182" y1="284" x2="350" y2="284"/>${tl(266,300,"작업 반경 R")}`
+    + call(285,100,230,60,"텔레스코픽 붐","Telescopic Boom","end") + call(200,183,150,150,"유압 실린더","Luffing Cylinder","end")
+    + call(97,259,104,276,"아웃트리거","Outrigger"), "하이드로 크레인", "0 0 420 312"),
+  crawler: () => csv(`<line class="gnd" x1="10" y1="262" x2="410" y2="262"/>
+    <rect class="col" x="60" y="234" width="170" height="26" rx="13"/>${[76,214].map(x=>`<circle class="bt" cx="${x}" cy="247" r="9"/>`).join("")}${[110,145,180].map(x=>`<circle class="bt" cx="${x}" cy="250" r="4"/>`).join("")}
+    <rect class="beam" x="52" y="200" width="40" height="30"/><rect class="crn" x="80" y="196" width="130" height="38"/><rect class="crn" x="196" y="202" width="26" height="28"/>
+    <path class="fr" d="M104 196 L120 168 L136 196"/>${lat(176,200,360,32,12,14)}<line class="rope" x1="120" y1="168" x2="356" y2="34"/><circle class="bt" cx="360" cy="32" r="5"/>
+    ${hook(360,37,113)}<rect class="bm" x="340" y="172" width="40" height="22"/>`
+    + call(258,125,220,100,"래티스 붐","Lattice Boom","end") + call(70,206,96,150,"카운터웨이트","Counterweight","end")
+    + call(150,214,240,222,"상부 선회체","Upper Structure") + call(200,256,250,268,"크롤러 (무한궤도)","Crawler Track"), "크롤러 크레인", "0 0 420 304"),
+  tower: () => csv(`<line class="gnd" x1="10" y1="262" x2="410" y2="262"/><rect class="conc" x="120" y="262" width="80" height="24"/>
+    <rect class="bm" x="206" y="140" width="76" height="122"/>${[164,188,212,236].map(y=>`<line class="ln2" x1="206" y1="${y}" x2="282" y2="${y}"/>`).join("")}
+    <path class="hg" d="M170 180 L206 188 M170 196 L206 188"/>
+    ${lat(160,262,160,72,20,10)}${lat(174,58,404,58,12,12)}${lat(26,58,146,58,12,5)}
+    <rect class="crn" x="146" y="52" width="28" height="14"/><rect class="crn" x="168" y="66" width="18" height="16"/>
+    <path class="fr" d="M160 52 L160 14"/><line class="rope" x1="160" y1="14" x2="330" y2="52"/><line class="rope" x1="160" y1="14" x2="40" y2="52"/>
+    <rect class="beam" x="30" y="64" width="32" height="26"/><rect class="trl" x="296" y="64" width="28" height="8"/>${hook(310,72,96)}<rect class="bm" x="290" y="190" width="40" height="22"/>`
+    + call(380,58,384,104,"지브","Jib","end") + call(46,80,40,100,"평형추","Counterweight")
+    + call(160,130,110,150,"마스트","Mast","end") + call(300,68,270,104,"트롤리","Trolley","end")
+    + call(172,184,138,196,"월 타이","Wall Tie","end") + call(130,274,100,262,"기초","Foundation","end"), "타워크레인")
+});
+
+/* ═════════ 접합 방식 도식 ═════════ */
+function connSvg(pin){
+  const bx = pin ? 86 : 74;
+  let s = `<rect class="col" x="30" y="10" width="44" height="160"/><line class="ln2" x1="40" y1="10" x2="40" y2="170"/><line class="ln2" x1="64" y1="10" x2="64" y2="170"/>
+    <rect class="beam" x="${bx}" y="80" width="${380-bx}" height="8"/><rect class="bweb" x="${bx}" y="88" width="${380-bx}" height="44"/><rect class="beam" x="${bx}" y="132" width="${380-bx}" height="8"/>`;
+  if(!pin){
+    s += `<rect class="stf" x="40" y="80" width="24" height="8"/><rect class="stf" x="40" y="132" width="24" height="8"/>
+      <path class="wl" d="M74 76 L86 76 L82 88 L74 88 Z"/><path class="wl" d="M74 132 L82 132 L86 144 L74 144 Z"/>
+      <rect class="gp" x="74" y="92" width="36" height="36"/>${[99,110,121].map(y=>bolt(96,y)).join("")}
+      <text class="lk" x="230" y="64" text-anchor="middle">휨모멘트 M + 전단력 V 전달</text>`
+      + call(80,80,150,40,"플랜지 용접 (완전용입)","Flange CJP Weld") + call(96,121,130,160,"전단 플레이트 + 볼트","Shear Tab · Bolts");
+  } else {
+    s += `<path class="dm" stroke-dasharray="5 3" d="M87.6 79.3 L381.2 94.7 L378 154.6 L84.5 139.2 Z"/>
+      <rect class="wl" x="74" y="92" width="4" height="36"/><rect class="gp" x="78" y="92" width="40" height="36"/>${[99,110,121].map(y=>bolt(104,y)).join("")}
+      <text class="lk" x="230" y="64" text-anchor="middle">전단력 V만 전달 · 회전 허용</text>${tl(384,172,"보 회전 (점선)","end","wlb2")}`
+      + call(80,84,150,40,"플랜지 연결 없음 (틈)","No Flange Connection") + call(104,121,130,160,"가셋 플레이트 + 볼트","Shear Tab · Bolts");
+  }
+  s += arrowDn(366,26,78) + `<text class="lk" x="376" y="44">P</text>
+    <line class="dm" stroke-dasharray="2 3" x1="10" y1="200" x2="390" y2="200"/>
+    ${tl(95,216,"해석 모델","middle","wlb")}${tl(290,216,"보 휨모멘트도 (등분포하중)","middle","wlb")}
+    <line class="fr" x1="40" y1="226" x2="40" y2="292"/><line class="fr" x1="40" y1="230" x2="150" y2="230"/>
+    <line class="ln2" x1="200" y1="248" x2="380" y2="248"/>`;
+  if(!pin) s += `<path class="wd" d="M40 228 h18 L40 246 Z"/>${tl(98,262,"강절점 (회전 구속)","middle","wlb2")}
+    <path class="crn" d="M200 248 L200 230 Q290 296 380 230 L380 248 Z"/>${tl(196,234,"wL²/12","end","wlb2")}${tl(290,282,"중앙 wL²/24","middle","wlb2")}`;
+  else s += `<circle class="eye" cx="40" cy="230" r="6"/>${tl(98,262,"핀 (회전 자유)","middle","wlb2")}
+    <path class="crn" d="M200 248 Q290 316 380 248 Z"/>${tl(196,252,"0","end","wlb2")}${tl(290,272,"중앙 wL²/8","middle","wlb")}`;
+  return `<svg class="jsvg" viewBox="0 0 400 300" role="img" aria-label="${pin?"핀접합":"강접합"}">${s}</svg>`;
+}
+const CONN_SUB_SVG = {
+  semi: () => wsv(`<rect class="col" x="20" y="8" width="20" height="144"/>
+    <rect class="beam" x="50" y="56" width="182" height="6"/><rect class="bweb" x="50" y="62" width="182" height="36"/><rect class="beam" x="50" y="98" width="182" height="6"/>
+    <rect class="gp" x="40" y="50" width="34" height="6"/><rect class="gp" x="40" y="26" width="6" height="30"/>
+    <rect class="gp" x="40" y="104" width="34" height="6"/><rect class="gp" x="40" y="104" width="6" height="30"/>
+    <circle class="bt" cx="62" cy="53" r="3"/><circle class="bt" cx="62" cy="107" r="3"/><circle class="bt" cx="43" cy="38" r="3"/><circle class="bt" cx="43" cy="122" r="3"/>
+    <line class="ld" x1="68" y1="50" x2="96" y2="34"/>${tl(100,32,"상부 앵글","start")}<line class="ld" x1="68" y1="110" x2="96" y2="126"/>${tl(100,132,"시트 앵글","start")}
+    ${tl(150,152,"모멘트를 일부만 전달","middle","wlb2")}`, "반강접합"),
+  fric: () => wsv(`<rect class="col" x="30" y="60" width="120" height="14"/><rect class="col" x="90" y="74" width="120" height="14"/>
+    <rect class="bt" x="106" y="50" width="28" height="10"/><rect class="bt" x="106" y="88" width="28" height="10"/>
+    <line class="ln2" x1="115" y1="60" x2="115" y2="88" stroke-dasharray="2 2"/><line class="ln2" x1="125" y1="60" x2="125" y2="88" stroke-dasharray="2 2"/>
+    <line class="dfl" x1="92" y1="74" x2="148" y2="74"/>
+    ${arrowDn(120,18,50)}${arrowUp(120,124,98)}${tl(132,30,"조임력 T","start")}
+    ${arrowH(30,6,67)}${arrowH(210,234,81)}${tl(14,54,"P","middle")}${tl(226,104,"P","middle")}
+    ${tl(120,146,"접촉면(빨강) 마찰력으로 힘 전달","middle","wlb2")}`, "고장력볼트 마찰접합"),
+  groove: () => WELD_SVG.groove(),
+  fillet: () => WELD_SVG.fillet()
+};
+function connBody(){
+  const K = S4.conn;
+  const tbl = `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>접합 방식</th><th>영문</th><th style="min-width:320px">특징</th><th>주로 쓰는 곳</th></tr></thead><tbody>${SD.connTypes.map(c=>`<tr><td class="nw"><b>${esc(c[0])}</b></td><td class="mono nw">${esc(c[1])}</td><td class="txt">${esc(c[2])}</td><td>${esc(c[3])}</td></tr>`).join("")}</tbody></table></div>`;
+  return `<div class="jgrid">${K.main.map(c=>`<div class="panel"><h3>${esc(c.n)} <span class="muted mono">${esc(c.en)}</span></h3>${connSvg(c.id==="pin")}
+      <ul class="cpts">${c.pts.map(p=>`<li>${esc(p)}</li>`).join("")}</ul><p class="muted" style="margin:6px 0 0"><b>주로 쓰는 곳</b> ${esc(c.use)}</p></div>`).join("")}</div>
+    <div class="cgrid4">${K.sub.map(c=>`<div class="panel"><h3>${esc(c.n)} <span class="muted mono">${esc(c.en)}</span></h3>${CONN_SUB_SVG[c.id]()}<p style="margin:6px 0;font-size:14px">${esc(c.d)}</p><p class="muted" style="margin:0"><b>주로 쓰는 곳</b> ${esc(c.use)}</p></div>`).join("")}</div>
+    <p class="note">${esc(K.note)}</p><h3 class="subh">한눈에 비교</h3>${tbl}`;
+}
+
 function weldBody(){
   const W = S2.weld, cur = ["types","groove","tests","defects"].includes(S.ws) ? S.ws : "types";
   let b = `<div class="psub lv2">${[["types","용접 종류"],["groove","개선 형상"],["tests","검사법 (비파괴검사)"],["defects","결함 종류"]].map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="weld/${k}">${n}</button>`).join("")}</div>`;
@@ -1254,10 +1384,7 @@ function craneBody(){
   const C = S2.crane, ks = [["cmp","종류 비교"],...C.types.map(t=>[t.id,t.n]),["loads","크레인 하중"]];
   const cur = ks.some(x=>x[0]===S.crs) ? S.crs : "cmp";
   let b = `<div class="psub lv2">${ks.map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="crane/${k}">${esc(n)}</button>`).join("")}</div>`;
-  if(cur==="cmp") b += `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>구분</th>${C.types.map(t=>`<th><a href="#struct/crane/${t.id}">${esc(t.n)}</a><small>${esc(t.en)}</small></th>`).join("")}</tr></thead><tbody>
-      <tr><td class="nw">작동 방식</td>${C.types.map(t=>`<td class="txt">${esc(t.d)}</td>`).join("")}</tr>
-      <tr><td class="nw">건축물 연결</td>${C.types.map(t=>`<td class="txt">${esc(t.conn)}</td>`).join("")}</tr>
-      <tr><td class="nw">용량 · 쓰임</td>${C.types.map(t=>`<td class="txt">${esc(t.use)}</td>`).join("")}</tr></tbody></table></div>`;
+  if(cur==="cmp") b += (S4.craneGroups||[]).map(g=>`<h3 class="subh">${esc(g.n)}</h3><div class="crgrid">${g.ids.map(id=>C.types.find(t=>t.id===id)).filter(Boolean).map(t=>`<a class="panel crcard" href="#struct/crane/${t.id}"><div class="thumb">${CRANE_SVG[t.id]()}</div><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3><p class="crs">${esc(t.s||"")}</p><p class="muted" style="margin:6px 0 0"><b>용량 · 쓰임</b> ${esc(t.use)}</p><span class="more">도식·검토 포인트 보기 →</span></a>`).join("")}</div>`).join("") + `<p class="note">이동식 크레인은 건물에 하중을 주지 않지만, 아웃트리거·궤도 반력이 놓이는 지반이나 슬래브는 설계검토 대상입니다.</p>`;
   else if(cur==="loads") b += `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>하중</th><th style="min-width:420px">내용</th></tr></thead><tbody>${C.loads.map(l=>`<tr><td class="nw"><b>${esc(l[0])}</b></td><td class="txt">${esc(l[1])}</td></tr>`).join("")}</tbody></table></div><p class="note">${esc(C.note)}</p>`;
   else { const t = C.types.find(x=>x.id===cur);
     b += `<div class="ctwo"><div class="panel">${CRANE_SVG[t.id]()}</div><div class="panel"><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3><p style="margin:0 0 8px;font-size:14.5px">${esc(t.d)}</p>
