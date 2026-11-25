@@ -398,6 +398,12 @@ svg .ycr{stroke:#d99a1e;stroke-linecap:butt}
 .cgrid4 .panel{margin-top:12px}
 @media (max-width:1100px){ .cgrid4{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:560px){ .cgrid4{grid-template-columns:1fr} }
+svg .rb{stroke:var(--ink);stroke-width:2.2;fill:none;stroke-linejoin:round}
+svg .rb2{stroke:var(--sub);stroke-width:1}
+svg .pad{fill:#333}
+svg .hole{fill:var(--surface);stroke:var(--ink);stroke-width:.8}
+svg .tb2{fill:#eef2f6;stroke:var(--ink);stroke-width:1.2}
+svg .ins{fill:var(--surface);stroke:var(--line);stroke-width:1}
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -439,6 +445,7 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/struct.js"></script>
 <script src="data/struct2.js"></script>
 <script src="data/struct4.js"></script>
+<script src="data/struct5.js"></script>
 <script src="data/links.js"></script>
 <script src="data/sheet.js"></script>
 <script>
@@ -1362,13 +1369,88 @@ const CONN_SUB_SVG = {
   groove: () => WELD_SVG.groove(),
   fillet: () => WELD_SVG.fillet()
 };
+/* ═════════ 볼트 종류 · Turned Bolt · 콘크리트 접합 ═════════ */
+const S5 = window.STRUCT5 || {bolts:[], boltRows:[], turned:{pts:[]}, rc:{cards:[], rows:[]}};
+function boltSvg(k){
+  const thread = (a,b) => { let s = ""; for(let x=a;x<=b;x+=5) s += `<line class="ln2" x1="${x}" y1="71" x2="${x+3}" y2="89"/>`; return s; };
+  let s = "", gap = k==="c" || k==="ts" || k==="htb";
+  s += gap ? `<rect class="hole" x="80" y="64" width="60" height="32"/>` : "";
+  s += `<rect class="${k==="turned"?"tb2":"bt"}" x="78" y="70" width="${k==="ts"?110:112}" height="20"/>`;
+  s += `<rect class="col" x="80" y="30" width="30" height="${gap?34:40}"/><rect class="col" x="110" y="30" width="30" height="${gap?34:40}"/>`;
+  s += `<rect class="col" x="80" y="${gap?96:90}" width="30" height="${gap?34:40}"/><rect class="col" x="110" y="${gap?96:90}" width="30" height="${gap?34:40}"/>`;
+  s += thread(172, k==="ts"?182:186);
+  s += k==="ts" ? `<path class="bt" d="M80 52 Q50 52 50 80 Q50 108 80 108 Z"/>` : `<rect class="bt" x="56" y="54" width="24" height="52"/><line class="ln2" x1="56" y1="70" x2="80" y2="70"/><line class="ln2" x1="56" y1="90" x2="80" y2="90"/>`;
+  s += `<rect class="bt" x="140" y="58" width="6" height="44"/><rect class="bt" x="146" y="54" width="24" height="52"/><line class="ln2" x1="146" y1="70" x2="170" y2="70"/><line class="ln2" x1="146" y1="90" x2="170" y2="90"/>`;
+  if(k==="ts") s += `<rect class="bt" x="188" y="75" width="4" height="10"/><rect class="trl" x="192" y="72" width="24" height="16"/>${[197,202,207,212].map(x=>`<line class="ln2" x1="${x}" y1="72" x2="${x}" y2="88"/>`).join("")}
+    <line class="ld" x1="204" y1="64" x2="204" y2="72"/>${tl(204,58,"핀테일")}<line class="ld" x1="190" y1="88" x2="190" y2="110"/>${tl(190,122,"파단 홈")}${tl(48,46,"둥근 머리")}${tl(120,150,"핀테일이 끊어지면 체결 완료","middle","wlb2")}`;
+  if(k==="htb") s += `${tl(50,46,"육각 머리")}${tl(174,46,"와셔·너트","start")}${tl(120,150,"토크렌치·너트회전법으로 조임","middle","wlb2")}`;
+  if(k==="turned") s += `<path class="drop" d="M96 70 l-6 -5 v10 Z M124 90 l6 5 v-10 Z" />${tl(110,20,"리머 가공 구멍 — 틈 없음")}${tl(120,150,"몸통이 구멍 벽을 눌러 지압 전달","middle","wlb2")}`;
+  if(k==="c") s += `<line class="dfl" x1="82" y1="66" x2="138" y2="66"/><line class="dfl" x1="82" y1="94" x2="138" y2="94"/>${tl(110,20,"구멍 여유 큼")}${tl(120,150,"조임력 관리 없음 · 가설·2차 부재","middle","wlb2")}`;
+  return wsv(s, k);
+}
+function turnedSvg(){
+  let s = `<rect class="col" x="30" y="10" width="44" height="280"/><line class="ln2" x1="40" y1="10" x2="40" y2="290"/><line class="ln2" x1="64" y1="10" x2="64" y2="290"/>
+    <rect class="gp" x="74" y="150" width="136" height="10"/><path class="gp" d="M74 160 H200 L74 232 Z"/>
+    <rect class="rail" x="80" y="54" width="300" height="8"/>
+    <rect class="beam" x="80" y="62" width="67" height="10"/><rect class="bweb" x="80" y="72" width="67" height="68"/><rect class="beam" x="80" y="140" width="67" height="10"/>
+    <rect class="beam" x="153" y="62" width="227" height="10"/><rect class="bweb" x="153" y="72" width="227" height="68"/><rect class="beam" x="153" y="140" width="227" height="10"/>
+    <rect class="stf" x="141" y="72" width="6" height="68"/><rect class="stf" x="153" y="72" width="6" height="68"/>
+    ${[118,134,166,182].map(x=>`<rect class="tb2" x="${x-3}" y="132" width="6" height="36"/><rect class="bt" x="${x-7}" y="132" width="14" height="8"/><rect class="bt" x="${x-7}" y="160" width="14" height="8"/>`).join("")}
+    <rect class="ins" x="236" y="176" width="158" height="118" rx="8"/>
+    <rect class="col" x="250" y="222" width="62" height="12"/><rect class="col" x="250" y="234" width="62" height="12"/><rect class="hole" x="273" y="222" width="16" height="24"/>
+    <rect class="bt" x="277" y="212" width="8" height="44"/><rect class="bt" x="271" y="214" width="20" height="8"/><rect class="bt" x="271" y="246" width="20" height="8"/>
+    <line class="dfl" x1="274" y1="224" x2="274" y2="244"/><line class="dfl" x1="288" y1="224" x2="288" y2="244"/>
+    <rect class="col" x="330" y="222" width="54" height="12"/><rect class="col" x="330" y="234" width="54" height="12"/>
+    <rect class="tb2" x="353" y="212" width="8" height="44"/><rect class="bt" x="347" y="214" width="20" height="8"/><rect class="bt" x="347" y="246" width="20" height="8"/>
+    ${tl(281,200,"일반 볼트","middle","wlb")}${tl(281,272,"틈 있음","middle","wlb2")}${tl(281,286,"→ 덜컹·마모","middle","wlb2")}
+    ${tl(357,200,"Turned Bolt","middle","wlb")}${tl(357,272,"틈 없음","middle","wlb2")}${tl(357,286,"→ 지압 전달","middle","wlb2")}`;
+  s += call(300,58,300,30,"레일","Rail") + call(230,100,180,30,"런웨이 거더","Runway Girder","end")
+     + call(182,136,226,118,"Turned Bolt","Reamed / Fitted Bolt") + call(120,190,150,250,"브래킷","Bracket");
+  return `<svg class="jsvg" viewBox="0 0 400 300" role="img" aria-label="크레인 거더 Turned Bolt">${s}</svg>`;
+}
+const RC_SVG = {
+  rc: () => wsv(`<path class="conc" d="M30 8 H80 V50 H232 V100 H80 V152 H30 Z"/>
+    <line class="rb" x1="38" y1="8" x2="38" y2="152"/><line class="rb" x1="72" y1="8" x2="72" y2="152"/>
+    ${[20,34,116,130,144].map(y=>`<line class="rb2" x1="34" y1="${y}" x2="76" y2="${y}"/>`).join("")}
+    <path class="rb" d="M228 58 H46 V104"/><path class="rb" d="M228 92 H52 V62"/>
+    ${[100,130,160,190,220].map(x=>`<line class="rb2" x1="${x}" y1="54" x2="${x}" y2="96"/>`).join("")}
+    ${tl(156,36,"한 번에 타설 · 철근 정착","middle")}${tl(158,120,"보 주근 → 기둥에 정착","middle","wlb2")}${tl(156,142,"= 강접합 (모노리식)","middle","wlb")}`, "현장타설 RC"),
+  pc: () => wsv(`<rect class="conc" x="30" y="8" width="40" height="144"/><path class="conc" d="M70 80 H104 V96 L70 122 Z"/>
+    <rect class="conc" x="76" y="42" width="156" height="34"/><rect class="pad" x="82" y="76" width="18" height="4"/>
+    <line class="rb" x1="91" y1="58" x2="91" y2="98"/>
+    ${tl(150,30,"코벨 위에 얹고 다월바로 고정","middle")}<line class="ld" x1="100" y1="80" x2="116" y2="100"/>${tl(118,106,"받침 패드 + 다월바","start","wlb2")}
+    ${tl(118,124,"코벨 (Corbel)","start","wlb2")}${tl(150,146,"= 핀(단순지지)에 가까움","middle","wlb")}`, "프리캐스트 접합"),
+  base: () => wsv(`<rect class="conc" x="20" y="100" width="80" height="36"/><rect class="bp" x="30" y="94" width="60" height="6"/>
+    <rect class="col" x="50" y="10" width="20" height="84"/><line class="ab" x1="38" y1="84" x2="38" y2="130"/><line class="ab" x1="82" y1="84" x2="82" y2="130"/>
+    <rect class="nut" x="33" y="86" width="10" height="8"/><rect class="nut" x="77" y="86" width="10" height="8"/>
+    <rect class="col" x="170" y="10" width="20" height="60"/><rect class="conc" x="130" y="70" width="100" height="66"/>
+    <rect x="170" y="70" width="20" height="58" fill="none" stroke="var(--ink)" stroke-dasharray="3 2"/>
+    ${tl(60,152,"노출형 → 핀 가정","middle","wlb")}${tl(180,152,"매입형 → 고정 가정","middle","wlb")}`, "철골 주각")
+};
+function boltBody(){
+  return `<h3 class="subh">볼트 종류 — TS · TC · 육각 고장력 · Turned · C볼트</h3>
+    <div class="cgrid4">${S5.bolts.map(b=>`<div class="panel"><h3>${esc(b.n)} <span class="muted mono">${esc(b.en)}</span></h3>${boltSvg(b.id)}<p style="margin:6px 0;font-size:14px">${esc(b.d)}</p><p class="muted" style="margin:0"><b>주로 쓰는 곳</b> ${esc(b.use)}</p></div>`).join("")}</div>
+    <div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>볼트</th><th style="min-width:130px">강도</th><th style="min-width:200px">조이는 방법</th><th style="min-width:150px">검사</th><th style="min-width:90px">힘 전달</th></tr></thead><tbody>${S5.boltRows.map(r=>`<tr><td class="nw"><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td class="txt">${esc(r[2])}</td><td class="txt">${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`).join("")}</tbody></table></div>
+    <p class="note">${esc(S5.boltNote)}</p>
+    <h3 class="subh">크레인 거더에 쓰는 Turned Bolt</h3>
+    <div class="ctwo"><div class="panel">${turnedSvg()}</div><div class="panel"><h3>왜 크레인 거더에 쓰나</h3><p style="margin:0 0 8px;font-size:14.5px">${esc(S5.turned.d)}</p>
+      <p class="muted" style="margin:8px 0 2px"><b>설계·시공 포인트</b></p><ul>${S5.turned.pts.map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div></div>`;
+}
+function rcBody(){
+  const R = S5.rc;
+  return `<h3 class="subh">콘크리트 구조의 접합</h3><p style="margin:4px 0 0;font-size:14.5px">${esc(R.intro)}</p>
+    <div class="wgrid">${R.cards.map(c=>`<div class="panel"><h3>${esc(c.n)} <span class="muted mono">${esc(c.en)}</span></h3>${RC_SVG[c.id]()}<p style="margin:6px 0 0;font-size:14px">${esc(c.d)}</p></div>`).join("")}</div>
+    <div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th style="min-width:130px">구분</th><th style="min-width:110px">접합 성격</th><th style="min-width:220px">연결 방법</th><th style="min-width:200px">검토 포인트</th></tr></thead><tbody>${R.rows.map(r=>`<tr><td class="nw"><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td class="txt">${esc(r[2])}</td><td class="txt">${esc(r[3])}</td></tr>`).join("")}</tbody></table></div>
+    <p class="note">${esc(R.note)}</p>`;
+}
+
 function connBody(){
   const K = S4.conn;
   const tbl = `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>접합 방식</th><th>영문</th><th style="min-width:320px">특징</th><th>주로 쓰는 곳</th></tr></thead><tbody>${SD.connTypes.map(c=>`<tr><td class="nw"><b>${esc(c[0])}</b></td><td class="mono nw">${esc(c[1])}</td><td class="txt">${esc(c[2])}</td><td>${esc(c[3])}</td></tr>`).join("")}</tbody></table></div>`;
-  return `<div class="jgrid">${K.main.map(c=>`<div class="panel"><h3>${esc(c.n)} <span class="muted mono">${esc(c.en)}</span></h3>${connSvg(c.id==="pin")}
+  return `<p class="muted" style="margin:12px 0 0">철골 구조의 접합 기준입니다. 볼트 종류와 콘크리트 구조의 접합은 아래쪽에 있습니다.</p><div class="jgrid">${K.main.map(c=>`<div class="panel"><h3>${esc(c.n)} <span class="muted mono">${esc(c.en)}</span></h3>${connSvg(c.id==="pin")}
       <ul class="cpts">${c.pts.map(p=>`<li>${esc(p)}</li>`).join("")}</ul><p class="muted" style="margin:6px 0 0"><b>주로 쓰는 곳</b> ${esc(c.use)}</p></div>`).join("")}</div>
     <div class="cgrid4">${K.sub.map(c=>`<div class="panel"><h3>${esc(c.n)} <span class="muted mono">${esc(c.en)}</span></h3>${CONN_SUB_SVG[c.id]()}<p style="margin:6px 0;font-size:14px">${esc(c.d)}</p><p class="muted" style="margin:0"><b>주로 쓰는 곳</b> ${esc(c.use)}</p></div>`).join("")}</div>
-    <p class="note">${esc(K.note)}</p><h3 class="subh">한눈에 비교</h3>${tbl}`;
+    <p class="note">${esc(K.note)}</p><h3 class="subh">한눈에 비교</h3>${tbl}` + boltBody() + rcBody();
 }
 
 function weldBody(){
