@@ -385,12 +385,14 @@ svg .lk{fill:#2f6fa8;font:700 12.5px var(--f-body)}
 svg .pit{fill:none;stroke:var(--ink);stroke-width:1.5}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) svg .conc{fill:#3a434d} :root:not([data-theme="light"]) svg .mort{fill:#4a4a44} :root:not([data-theme="light"]) svg .ck{fill:#7fd0df} :root:not([data-theme="light"]) svg .ce{fill:#7fd0df} }
 /* 캐드 */
-.cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:12px;margin-top:12px}
+.cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .cadcard h3{margin:0 0 6px;font-family:var(--f-display);font-size:15px}
 .cadt{width:100%}
 .cadt td{padding:4px 6px;white-space:normal;text-align:left!important}
-.cadt td:first-child{width:118px}
+.cadt td:first-child{width:1%;white-space:nowrap;vertical-align:top}
+.cadt td.txt{font-size:14px;line-height:1.5}
+.cadt .cmdn{display:block;font-family:var(--f-mono);font-size:12px;color:var(--sub);margin-top:1px}
 .cadt td.sub{color:var(--sub);font-size:12px;width:110px}
 kbd{font-family:var(--f-mono);font-size:12.5px;font-weight:600;background:var(--surface2);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px;color:var(--ink);white-space:nowrap}
 footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:12px}
@@ -418,6 +420,8 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/tools.js"></script>
 <script src="data/calc2.js"></script>
 <script src="data/struct3.js"></script>
+<script src="data/tools2.js"></script>
+<script src="data/calc3.js"></script>
 <script src="data/struct.js"></script>
 <script src="data/struct2.js"></script>
 <script src="data/links.js"></script>
@@ -990,6 +994,7 @@ function calcRow(c, raw){
   if(!ok) return null;
   const o = c.o.map(x => x[2](r)); return {r, o, w: c.w(r, o)};
 }
+function calcLinks(k){ const L = (window.CALC_LINKS||{})[k] || []; if(!L.length) return ""; return `<div class="panel"><h3>관련 기준 원문</h3><div class="links">${L.map(([n,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener"><b>${esc(n)} ↗</b><small>국가법령정보센터 등 원문 사이트로 이동</small></a>`).join("")}</div></div>`; }
 function calcHead(){ return `<div class="shead"><div><h2>계산</h2><p>설계검토에 쓰는 수치 계산 모음.</p></div></div>
   <div class="psub">${CALC_SECS.map(([k,n,s])=>`<button class="${k===S.cs?"on":""}" data-go="calc" data-sub="${k}">${esc(n)}<small>${esc(s)}</small></button>`).join("")}</div>`; }
 function renderCalc(){
@@ -1165,7 +1170,7 @@ function fillCad(){
   const qq = norm(q), ascii = /^[a-z0-9+→\/ ]+$/i.test(q);
   const hit = r => { if(!qq) return true; if(ascii){ const keys = r[0].toLowerCase().split("/").map(s=>s.replace(/\s+/g,"")); return keys.some(k => k===qq || k.startsWith(qq)) || norm(r[1]).startsWith(qq) || norm(r[2]).includes(qq); } return words.every(w => norm(r.join(" ")).includes(w)); };
   const html = ((S.tl==="excel" ? window.XL : window.CAD)||[]).map(g => { const rows = g.rows.filter(r => hit(r) || (!ascii && words.every(w => norm(g.g).includes(w))));
-    if(!rows.length) return ""; return `<div class="cadcard"><h3>${esc(g.g)}</h3><table class="t cadt"><tbody>${rows.map(r=>`<tr><td><kbd>${hl(r[0],q)}</kbd></td><td class="mono sub">${hl(r[1],q)}</td><td class="txt">${hl(r[2],q)}</td></tr>`).join("")}</tbody></table></div>`; }).join("");
+    if(!rows.length) return ""; return `<div class="cadcard"><h3>${esc(g.g)}</h3><table class="t cadt"><tbody>${rows.map(r=>`<tr><td><kbd>${hl(r[0],q)}</kbd></td><td class="txt">${hl(r[2],q)}${r[1]?`<span class="cmdn">${hl(r[1],q)}</span>`:""}</td></tr>`).join("")}</tbody></table></div>`; }).join("");
   $("#cadgrid").innerHTML = html || `<p class="muted">찾는 단축키가 없습니다.</p>`;
 }
 
@@ -1339,7 +1344,7 @@ function laborBody(){
    <tr><td class="nw"><b>휴일 할증</b><small>일요일·공휴일 작업</small></td><td class="txt">휴일 작업 ${lin("hd","일")} ÷ 대상 기간 ${lin("hp","일")} × 휴일 하루 작업 ${lin("hh","h")} ÷ 8h</td><td class="mono">0.5 × 일수비 × 시간비</td><td class="num sep main" id="lr_h"></td></tr>
   </tbody><tfoot><tr><td colspan="3" style="text-align:right">합계</td><td class="num tot" id="lr_t"></td></tr></tfoot></table></div>
   <div class="tools"><button class="btn" id="lreset">예시로 되돌리기</button><button class="btn" id="lclear">모두 지우기</button></div>
-  <div class="panel"><h3>계산 방법</h3><ul>${(window.LABOR_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>
+  <div class="panel"><h3>계산 방법 · 근거</h3><ul>${(window.LABOR_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>${calcLinks("labor")}
   <div class="panel"><h3>재료 할증률</h3><p style="margin:0;font-size:14px">강재·자재의 재료 할증률(표준품셈)은 <a href="#danjung">단중표</a> 아래 '강재 할증률 기준'에 있습니다. 단중 계산에서도 품셈 할증을 반영합니다.</p></div>`;
 }
 function fillLabor(){
@@ -1358,10 +1363,11 @@ const U_DEF = [{p:"wd", m:"0", l:"0.032", d:"125", u:"0.32"}, {p:"wi", m:"0", l:
 function urows(){ if(!Array.isArray(S.cr.uval)) S.cr.uval = U_DEF.map(x=>({...x})); if(!S.cr.uval.length) S.cr.uval.push({p:"wd", m:"0", l:"", d:"", u:""}); return S.cr.uval; }
 function uvalBody(){
   return `<p class="muted" style="margin:12px 0 0">부위와 단열재를 고르고 두께를 넣으면 열관류율을 계산하고, 기준을 만족하는 최소 두께를 알려줍니다.</p>
+  <p class="note" style="margin-top:8px">기준 U는 <a href="https://www.law.go.kr/행정규칙/건축물의에너지절약설계기준" target="_blank" rel="noopener">건축물의 에너지절약설계기준 [별표1] 지역별 건축물 부위의 열관류율표 ↗</a>에서 지역(중부1·중부2·남부·제주)·부위·용도에 맞는 값을 확인해 입력하세요.</p>
   <div class="tbl-wrap ctbl wide"><table class="t"><thead><tr><th>부위</th><th>단열재</th><th class="in">열전도율<small>W/mK</small></th><th class="in">두께<small>mm</small></th><th class="in">기준 U<small>W/m²K</small></th><th class="sep">열저항 R<small>m²K/W</small></th><th>열관류율 U<small>W/m²K</small></th><th>판정</th><th>필요 최소 두께<small>mm</small></th><th></th></tr></thead><tbody id="ubody"></tbody></table></div>
   <div class="tools"><button class="btn" id="uadd">+ 줄 추가</button><button class="btn" id="ureset">예시로 되돌리기</button><button class="btn" id="uclear">모두 지우기</button></div>
   <div class="panel"><h3>부위별 표면 열전달저항 (m²K/W)</h3><div class="tbl-wrap wide" style="margin-top:6px"><table class="t ctr"><thead><tr><th>부위</th><th>실내측</th><th>실외측</th></tr></thead><tbody>${UP.map(p=>`<tr><td>${esc(p.n)}</td><td class="num">${p.ri}</td><td class="num">${p.ro}</td></tr>`).join("")}</tbody></table></div></div>
-  <div class="panel"><h3>계산 방법</h3><ul>${(window.UNOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`;
+  <div class="panel"><h3>계산 방법</h3><ul>${(window.UNOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>${calcLinks("uval")}`;
 }
 function fillU(){
   const body = $("#ubody"); if(!body) return;
@@ -1390,7 +1396,7 @@ function sewerBody(){
   <div class="tools"><button class="btn" id="wadd">+ 줄 추가</button><button class="btn" id="wreset">예시로 되돌리기</button><button class="btn" id="wclear">모두 지우기</button></div>
   <div class="res3" id="wsum"></div>
   <div class="panel"><h3>기구별 사용량 예시</h3><div class="tbl-wrap wide" style="margin-top:6px"><table class="t ctr"><thead><tr><th>기구</th><th>구분</th><th>1회 사용량 (ℓ)</th><th>시간당 사용 횟수</th></tr></thead><tbody>${FX.map(x=>`<tr><td>${esc(x[0])}</td><td>${esc(x[1])}</td><td class="num">${x[2]}</td><td class="num">${x[3]}</td></tr>`).join("")}</tbody></table></div></div>
-  <div class="panel"><h3>계산 방법</h3><ul>${(window.SEWER_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>`;
+  <div class="panel"><h3>계산 방법</h3><ul>${(window.SEWER_NOTES||[]).map(n=>`<li>${esc(n)}</li>`).join("")}</ul></div>${calcLinks("sewer")}`;
 }
 function fillSewer(){
   const body = $("#wbody"); if(!body) return;
