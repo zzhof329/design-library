@@ -466,6 +466,7 @@ svg .ray2{stroke:#e0a020;stroke-width:1.6;stroke-dasharray:5 3;fill:none}
 .pc2{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}.pc2 ul{margin:2px 0 0;padding-left:16px}
 @media (max-width:420px){ .pc2{grid-template-columns:1fr} }
 .rftbl td.nw small{font-family:var(--f-mono)}
+.rfvs td:first-child,.rftbl td:first-child{font-family:var(--f-body)}
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -510,6 +511,7 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/struct5.js"></script>
 <script src="data/more1.js"></script>
 <script src="data/more2.js"></script>
+<script src="data/more3.js"></script>
 <script src="data/links.js"></script>
 <script src="data/sheet.js"></script>
 <script>
@@ -1241,12 +1243,15 @@ const rfBase = ey => `<rect class="col" x="36" y="${ey}" width="7" height="${200
   ${rfA("M6 180 H72")}${rfA("M394 180 H328")}<text class="lb2 halo" x="50" y="172">급기 (벽 루버)</text>`;
 const rfLv = (xs, ys, dx) => ys.map(y => xs.map(x => `<path class="rfl" d="M${x-dx} ${y} L${x+dx} ${y+5}"/>`).join("")).join("");
 const ROOF_SVG = {
-  rigid: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L170 87 M230 87 L367 121 M170 88 V64 M230 88 V64 M158 69 L200 52 L242 69"/>` + rfLv([170,230],[68,75,82],6)
-    + rfA("M200 182 V96") + rfA("M192 77 H128") + rfA("M208 77 H272") + `<text class="lb halo" x="200" y="42" text-anchor="middle">고정 루버 (늘 열림)</text><text class="lb2 halo" x="124" y="72" text-anchor="end">배기</text><text class="lb2 halo" x="208" y="150">더운 공기 상승</text>`, "고정형 모니터 단면"),
-  pitched: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L150 92 M250 92 L367 121 M150 93 V56 M250 93 V56 M132 64 L200 30 L268 64"/><path class="rfl" d="M134 60 V86 M266 60 V86" style="stroke-width:2.5"/>` + rfLv([150,250],[62,70,78,86],6)
-    + rfA("M200 182 V100") + rfA("M190 74 H112") + rfA("M210 74 H288") + `<text class="lb halo" x="200" y="20" text-anchor="middle">경사 지붕을 얹은 큰 모니터</text><text class="lb2 halo" x="128" y="56" text-anchor="end">빗물막이</text><text class="lb2 halo" x="208" y="150">배기량 큼</text>`, "박공형 모니터 단면"),
-  flat: () => rsv(rfBase(104) + `<path class="rfr" d="M33 104 H160 M240 104 H367 M160 105 V76 M240 105 V76 M150 76 H250"/>` + rfLv([160,240],[80,87,94],6)
-    + rfA("M200 182 V108") + rfA("M192 89 H124") + rfA("M208 89 H276") + `<text class="lb halo" x="200" y="64" text-anchor="middle">평평한 모니터 지붕</text><text class="lb2 halo" x="208" y="150">높이차가 작아 배기 약함</text>`, "평지붕형 모니터 단면"),
+  ridged: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L162 107 M238 107 L367 121"/>`
+    + `<path class="rfr" d="M162 107 L144 58 M238 107 L256 58 M134 62 L200 46 L266 62"/><path class="rfl" d="M162 107 H238 M150 74 H250 M162 107 L200 74 L238 107 M150 74 L200 58 L250 74" style="stroke-width:1"/>`
+    + rfLv([152,248],[80,88,96],6)
+    + rfA("M200 182 V112") + rfA("M190 88 Q150 86 112 78") + rfA("M210 88 Q250 86 288 78")
+    + `<text class="lb halo" x="200" y="30" text-anchor="middle">용마루 위에 크게 솟은 '작은 집'</text><text class="lb2 halo" x="108" y="70" text-anchor="end">측면 루버로 배기</text><text class="lb2 halo" x="208" y="150">가장 높은 곳으로 모인 열기</text><text class="lb2 halo" x="300" y="104">박공 지붕</text>`, "리지드 모니터 단면"),
+  pitched: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L80 115.7 M320 115.7 L367 121"/><path class="rfr" d="M140 109.9 L200 104 L260 109.9" style="stroke-width:2.4"/>`
+    + [[80,115.7,140,109.9],[260,109.9,320,115.7]].map(([x1,y1,x2,y2])=>`<path class="rfr" d="M${x1} ${y1} V${y1-16} L${x2} ${y2-16} V${y2}" style="stroke-width:1.6"/>` + [0,1,2,3,4,5,6].map(i=>{ const x = x1 + (x2-x1)*(i+0.5)/7, y = y1 + (y2-y1)*(i+0.5)/7 - 16; return `<path class="rfl" d="M${x-3} ${y-5} L${x+3} ${y}"/>`; }).join("")).join("")
+    + rfA("M110 176 V88") + rfA("M290 176 V88")
+    + `<text class="lb halo" x="200" y="40" text-anchor="middle">경사면을 따라 낮게 띄운 루버 띠</text><text class="lb2 halo" x="200" y="96" text-anchor="middle">완만한 지붕</text><text class="lb2 halo" x="118" y="150">윗면 루버로 배기</text>`, "피치드 모니터 단면"),
   operable: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L170 87 M230 87 L367 121 M170 88 V64 M230 88 V64 M158 69 L200 52 L242 69"/>`
     + [70,77,84].map(y=>`<path class="rfl" d="M163 ${y} H177" style="stroke-width:2.5"/>`).join("") + `<path class="rfl" d="M230 66 V87" style="stroke-width:4"/><rect class="eq" x="192" y="60" width="16" height="10" rx="2"/>`
     + rfA("M200 182 V96") + rfA("M192 77 H128") + `<text class="lb halo" x="200" y="42" text-anchor="middle">개폐 댐퍼 + 구동부</text><text class="lb2 halo" x="124" y="72" text-anchor="end">열림 → 배기</text><text class="lb2 halo" x="240" y="62">닫힘 (겨울·비)</text>`, "개폐형 모니터 단면"),
@@ -1262,6 +1267,7 @@ function roofBody(){
     <p class="muted" style="margin:0 0 6px"><b>어울리는 지붕</b> ${esc(t.roof)}</p>
     <div class="pc2"><div><b class="okb">장점</b><ul>${t.pros.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><b class="ngb">단점</b><ul>${t.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
     <p class="muted" style="margin:6px 0 0"><b>주로 쓰는 곳</b> ${esc(t.use)}</p></div>`).join("")}</div>
+  ${R.vs ? `<h3 class="subh">리지드 vs 피치드 — 이렇게 구분합니다</h3><div class="tbl-wrap wide"><table class="t ctr rfvs"><thead><tr><th>구분</th><th style="min-width:240px">리지드 모니터 (Ridged)</th><th style="min-width:240px">피치드 모니터 (Pitched)</th></tr></thead><tbody>${R.vs.map(r=>`<tr><td class="nw"><b>${esc(r[0])}</b></td><td class="txt">${esc(r[1])}</td><td class="txt">${esc(r[2])}</td></tr>`).join("")}</tbody></table></div>${R.vsNote ? `<p class="note">${esc(R.vsNote)}</p>` : ""}` : ""}
   <h3 class="subh">한눈에 비교</h3>
   <div class="tbl-wrap wide"><table class="t ctr rftbl"><thead><tr><th>형식</th><th style="min-width:200px">지붕 형상</th><th>배기 능력</th><th>개폐</th><th style="min-width:240px">주로 쓰는 곳</th></tr></thead><tbody>${R.types.map(t=>`<tr><td class="nw"><b>${esc(t.n)}</b><small>${esc(t.en)}</small></td><td class="txt">${esc(t.roof)}</td><td class="nw">${esc(t.cap)}</td><td class="nw">${esc(t.op)}</td><td class="txt">${esc(t.use)}</td></tr>`).join("")}</tbody></table></div>
   <div class="panel"><h3>설계검토 포인트</h3><ul>${R.checks.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
