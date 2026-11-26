@@ -467,6 +467,9 @@ svg .ray2{stroke:#e0a020;stroke-width:1.6;stroke-dasharray:5 3;fill:none}
 @media (max-width:420px){ .pc2{grid-template-columns:1fr} }
 .rftbl td.nw small{font-family:var(--f-mono)}
 .rfvs td:first-child,.rftbl td:first-child{font-family:var(--f-body)}
+.jtsvg{width:120px;height:auto;display:block;margin:0 auto;background:var(--surface2);border-radius:6px}
+.wjt td:first-child,.wjt th:first-child,.rfvs th:first-child,.rftbl th:first-child{font-family:var(--f-body)}
+.wim td.wm{font-size:16px;color:var(--sub);min-width:56px}.wim td.wm.on{color:var(--accent);font-weight:700}
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -512,6 +515,7 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/more1.js"></script>
 <script src="data/more2.js"></script>
 <script src="data/more3.js"></script>
+<script src="data/more4.js"></script>
 <script src="data/links.js"></script>
 <script src="data/sheet.js"></script>
 <script>
@@ -1593,10 +1597,10 @@ function connBody(){
 
 function weldBody(){
   const W = S2.weld, cur = ["types","groove","tests","defects"].includes(S.ws) ? S.ws : "types";
-  let b = `<div class="psub lv2">${[["types","용접 종류"],["groove","개선 형상"],["tests","검사법 (비파괴검사)"],["defects","결함 종류"]].map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="weld/${k}">${n}</button>`).join("")}</div>`;
-  if(cur==="types") b += `<div class="wgrid">${W.types.map(t=>`<div class="panel"><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3>${WELD_SVG[t.id]()}<p style="margin:6px 0;font-size:14px">${esc(t.d)}</p><p class="muted" style="margin:0">${esc(t.p)}</p><p class="muted" style="margin:4px 0 0"><b>주로 쓰는 곳</b> ${esc(t.use)}</p></div>`).join("")}</div>`;
+  let b = `<div class="psub lv2">${[["types","용접 종류"],["groove","개선 형상"],["tests","검사법"],["defects","결함 종류"]].map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="weld/${k}">${n}</button>`).join("")}</div>`;
+  if(cur==="types") b += weldJointHtml() + `<div class="wgrid">${W.types.map(t=>`<div class="panel"><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3>${WELD_SVG[t.id]()}<p style="margin:6px 0;font-size:14px">${esc(t.d)}</p><p class="muted" style="margin:0">${esc(t.p)}</p><p class="muted" style="margin:4px 0 0"><b>주로 쓰는 곳</b> ${esc(t.use)}</p>${t.chk?`<p class="muted" style="margin:4px 0 0"><b>검사</b> ${esc(t.chk)}</p>`:""}</div>`).join("")}</div>`;
   else if(cur==="groove") b += grooveBody();
-  else if(cur==="tests") b += ndtHtml() + `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>약호</th><th>검사법</th><th>영문</th><th>찾는 결함</th><th style="min-width:360px">방법 · 쓰임</th></tr></thead><tbody>${W.tests.map(r=>`<tr><td class="mono nw"><b>${esc(r[0])}</b></td><td class="nw"><b>${esc(r[1])}</b></td><td class="mono nw">${esc(r[2])}</td><td class="nw">${esc(r[3])}</td><td class="txt">${esc(r[4])}</td></tr>`).join("")}</tbody></table></div><p class="note">${esc(W.testNote)}</p>`;
+  else if(cur==="tests") b += weldInspHtml() + ndtHtml() + `<div class="tbl-wrap wide"><table class="t ctr"><thead><tr><th>약호</th><th>검사법</th><th>영문</th><th style="min-width:110px">찾는 결함</th><th style="min-width:360px">방법 · 쓰임</th></tr></thead><tbody>${W.tests.map(r=>`<tr><td class="mono nw"><b>${esc(r[0])}</b></td><td class="nw"><b>${esc(r[1])}</b></td><td class="mono nw">${esc(r[2])}</td><td class="nw">${esc(r[3])}</td><td class="txt">${esc(r[4])}</td></tr>`).join("")}</tbody></table></div><p class="note">${esc(W.testNote)}</p>`;
   else b += `<div class="dgrid">${W.defects.map(d=>`<div class="panel"><svg class="dsvg" viewBox="0 0 160 100" role="img" aria-label="${esc(d.n)}">${DEF_SVG[d.id]||""}</svg><h3>${esc(d.n)} <span class="muted mono">${esc(d.en)}</span></h3><p style="margin:0;font-size:13.5px">${esc(d.d)}</p><p class="muted" style="margin:4px 0 0">대책: ${esc(d.fix)}</p></div>`).join("")}</div><p class="muted" style="margin-top:6px">빨간색이 결함 위치입니다 (맞대기 용접 단면 기준, 각장 부족은 모살 용접).</p>`;
   return b;
 }
@@ -1849,6 +1853,52 @@ const NDT_SVG = {
        <path class="wl" d="M90 52 Q100 46 110 52 L104 78 L96 78 Z"/><circle class="df0" cx="100" cy="64" r="3"/><rect class="film" x="30" y="84" width="140" height="10"/><circle class="spot" cx="100" cy="89" r="3"/>
        ${tl(122,16,"X선·감마선","start","wlb")}${tl(100,106,"필름 — 결함이 진하게 찍힘","middle","wlb2")}`
 };
+Object.assign(NDT_SVG, {
+  ET: `<rect class="col" x="10" y="62" width="180" height="30"/><path class="dfl" d="M112 62 L115 70 L112 78"/>
+       <rect class="probe" x="88" y="30" width="24" height="26" rx="3"/><path class="ln" d="M86 36 h28 M86 42 h28 M86 48 h28" style="stroke-width:1"/>
+       <ellipse class="beam2" cx="100" cy="68" rx="26" ry="5" stroke-dasharray="3 2"/><ellipse class="beam2" cx="100" cy="68" rx="14" ry="3" stroke-dasharray="3 2"/>
+       <rect class="scr" x="140" y="10" width="52" height="34"/><path class="pk" d="M146 34 Q160 34 166 20 Q172 34 186 34"/>
+       ${tl(64,26,"코일 탐촉자","middle","wlb")}${tl(100,106,"균열에서 와전류가 흐트러짐","middle","wlb2")}`,
+  LT: `<rect class="col" x="30" y="44" width="150" height="34" rx="17"/><path class="wl" d="M100 44 h10 v34 h-10 z"/>
+       <circle class="gauge" cx="22" cy="40" r="12"/><path class="ln" d="M22 40 L29 33" style="stroke-width:1.4"/><path class="ln" d="M22 52 V58 H32" style="stroke-width:1.4"/>
+       <circle class="dev" cx="104" cy="38" r="4"/><circle class="dev" cx="110" cy="30" r="3"/><circle class="dev" cx="100" cy="27" r="2.5"/><circle class="dev" cx="107" cy="20" r="2"/>
+       ${tl(22,20,"압력계","middle","wlb2")}${tl(128,24,"거품 = 누설","start","wlb")}${tl(105,98,"안을 가압 + 용접부에 발포액","middle","wlb2")}`,
+  AE: `<rect class="col" x="10" y="54" width="180" height="26"/><path class="dfl" d="M100 80 L103 72 L99 64"/>
+       <path class="beam2" d="M88 60 Q100 46 112 60 M80 58 Q100 34 120 58" stroke-dasharray="3 2"/>
+       <rect class="probe" x="26" y="42" width="18" height="12"/><rect class="probe" x="156" y="42" width="18" height="12"/>
+       <path class="ln" d="M30 90 V82 M100 90 V82 M170 90 V82" style="stroke-width:1.4"/><path class="ln" d="M24 90 H176" style="stroke-width:1.4"/>
+       <path class="ln" d="M100 8 V30" style="stroke-width:2"/><path class="ln" d="M95 24 L100 32 L105 24" style="stroke-width:2"/>
+       ${tl(35,36,"센서","middle","wlb")}${tl(165,36,"센서","middle","wlb")}${tl(108,16,"하중","start","wlb2")}${tl(100,104,"균열이 자라며 내는 소리를 감지","middle","wlb2")}`,
+  NRT: `<rect class="eq" x="84" y="6" width="32" height="14" rx="2"/><path class="ray" d="M100 20 L40 52 M100 20 L100 52 M100 20 L160 52" style="stroke:#2f6fa8"/>
+       <rect class="col" x="30" y="52" width="140" height="26"/><rect x="92" y="58" width="16" height="12" rx="3" style="fill:#7fb3d5;stroke:#2f6fa8"/>
+       <rect class="film" x="30" y="84" width="140" height="10"/><rect x="92" y="85" width="16" height="8" style="fill:#e8eef3"/>
+       ${tl(122,16,"중성자선","start","wlb")}${tl(100,106,"수분·고무 등 가벼운 물질이 드러남","middle","wlb2")}`,
+  IRT: `<rect class="col" x="10" y="64" width="110" height="26"/><path class="ray2" d="M30 30 L40 60 M50 30 L56 60 M70 30 L72 60"/><rect class="eq" x="22" y="14" width="56" height="14" rx="3"/>
+       <rect class="probe" x="132" y="40" width="22" height="16" rx="2"/><path class="ln" d="M132 48 L116 60" style="stroke-dasharray:3 2;stroke-width:1"/>
+       <rect x="160" y="14" width="34" height="50" style="fill:#3b4cc0"/><rect x="160" y="30" width="34" height="18" style="fill:#7b9ff9"/><circle cx="177" cy="39" r="6" style="fill:#f0a35e"/><circle cx="177" cy="39" r="2.5" style="fill:#d62828"/>
+       ${tl(50,10,"가열","middle","wlb2")}${tl(152,34,"적외선 카메라","end","wlb2")}${tl(100,106,"결함부만 온도가 다르게 찍힘","middle","wlb2")}`
+});
+const JT_SVG = {
+  butt: `<rect class="col" x="6" y="25" width="50" height="12"/><rect class="col" x="64" y="25" width="50" height="12"/><path class="wl" d="M52 25 H68 L62 37 H58 Z"/>`,
+  tee: `<rect class="col" x="10" y="42" width="100" height="10"/><rect class="col" x="55" y="6" width="10" height="36"/><path class="wl" d="M55 42 H46 L55 33 Z M65 42 H74 L65 33 Z"/>`,
+  corner: `<rect class="col" x="20" y="10" width="60" height="10"/><rect class="col" x="70" y="20" width="10" height="34"/><path class="wl" d="M70 20 H60 L70 30 Z"/>`,
+  lap: `<rect class="col" x="10" y="30" width="70" height="8"/><rect class="col" x="40" y="22" width="70" height="8"/><path class="wl" d="M40 22 V30 H32 Z M80 30 H88 L80 38 Z"/>`
+};
+function weldJointHtml(){
+  const J = window.WELD_JT; if(!J) return "";
+  return `<div class="panel"><h3>이음 형태와 용접 형태 — '맞대기 용접'과 '개선 용접'은 같은 말일까?</h3><p style="margin:0;font-size:14px">${esc(J.intro)}</p>
+  <div class="tbl-wrap wide"><table class="t ctr wjt"><thead><tr><th>이음 형태</th><th>모양</th><th style="min-width:170px">설명</th><th style="min-width:200px">그루브(개선) 용접</th><th style="min-width:150px">모살 용접</th></tr></thead><tbody>${J.rows.map(r=>`<tr><td class="nw"><b>${esc(r[1])}</b><small>${esc(r[2])}</small></td><td><svg class="jtsvg" viewBox="0 0 120 60" role="img" aria-label="${esc(r[1])}">${JT_SVG[r[0]]||""}</svg></td><td class="txt">${esc(r[3])}</td><td class="txt">${esc(r[4])}</td><td class="txt">${esc(r[5])}</td></tr>`).join("")}</tbody></table></div><p class="muted" style="margin:6px 0 0">${esc(J.note)}</p></div>`;
+}
+function weldInspHtml(){
+  const I = window.WELD_INSP; if(!I) return "";
+  return `<div class="panel"><h3>용접 검사는 모두 비파괴검사일까?</h3><p style="margin:0;font-size:14px">${esc(I.intro)}</p>
+  <div class="tbl-wrap wide"><table class="t ctr wjt"><thead><tr><th>단계</th><th style="min-width:380px">하는 일</th></tr></thead><tbody>${I.stages.map(s=>`<tr><td class="nw"><b>${esc(s[0])}</b></td><td class="txt">${esc(s[1])}</td></tr>`).join("")}</tbody></table></div></div>
+  <h3 class="subh">용접 종류별 검사법</h3>
+  <div class="tbl-wrap wide"><table class="t ctr wjt wim"><thead><tr><th>용접 종류</th>${I.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${I.rows.map(r=>`<tr><td class="nw"><b>${esc(r[0])}</b></td>${r.slice(1).map(v=>`<td class="wm${v==="●"?" on":""}">${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+  <p class="muted" style="margin:6px 0 0">${esc(I.legend)}</p><p class="note">${esc(I.note)}</p>
+  <h3 class="subh">검사법별 원리</h3>`;
+}
+
 function grooveBody(){
   const G = window.GROOVES || [];
   return `<div class="ggrid">${G.map(g=>`<div class="panel gcardx">${grooveSvg(g.id)}<h3>${esc(g.n)} <span class="tk2">${esc(g.t)}</span></h3><p style="margin:0;font-size:13.5px">${esc(g.d)}</p></div>`).join("")}</div><p class="note">${esc(window.GROOVE_NOTE||"")}</p>`;
