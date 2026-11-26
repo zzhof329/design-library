@@ -470,6 +470,20 @@ svg .ray2{stroke:#e0a020;stroke-width:1.6;stroke-dasharray:5 3;fill:none}
 .jtsvg{width:120px;height:auto;display:block;margin:0 auto;background:var(--surface2);border-radius:6px}
 .wjt td:first-child,.wjt th:first-child,.rfvs th:first-child,.rftbl th:first-child{font-family:var(--f-body)}
 .wim td.wm{font-size:16px;color:var(--sub);min-width:56px}.wim td.wm.on{color:var(--accent);font-weight:700}
+.hero2{align-items:center;padding:26px 24px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,var(--surface) 0%,var(--surface2) 100%)}
+.hero2 .eyebrow{margin:0 0 8px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--accent)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.badges span{font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink)}
+.facts2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.facts2 .fact{padding:12px 14px;min-width:0}
+.facts2 .fact b{font-size:26px;line-height:1.1;color:var(--ink)}
+.facts2 .fact b i{font-style:normal;font-size:13px;margin-left:3px;color:var(--sub);font-family:var(--f-body)}
+.facts2 .fact span{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-top:2px}
+.facts2 .fact small{display:block;font-size:11px;color:var(--sub);margin-top:2px}
+.facts2 .fact.big{border-color:var(--accent)}
+.facts2 .fact.big b{color:var(--accent)}
+.homenote{margin:12px 0 0;font-size:12px}
+@media (max-width:720px){.hero2{grid-template-columns:1fr;padding:18px 16px}}
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -744,19 +758,36 @@ function renderSearch(q){
 }
 
 /* ═════════ 홈 ═════════ */
+function homeStats(){
+  const kdsN = CODES.reduce((a,g)=>a+g.items.length,0);
+  const ks = new Set(); GR.forEach(g => (String(g.ks).match(/\d{4}/g)||[]).forEach(n=>ks.add(n)));
+  const law = new Set(Object.values(window.CALC_LINKS||{}).flat().map(x=>x[0]).filter(n=>!/^같은/.test(n)));
+  const pm = window.PROC_MAP||[], procN = pm.reduce((a,g)=>a+(g.subs||[]).reduce((b,s)=>b+(s.items||[]).length,0),0);
+  return {kdsN, ksN:ks.size, lawN:law.size, std:kdsN+ks.size+law.size, procN, stageN:pm.length, words:ABBR.length+(window.TERMS||[]).length, calcN:CALC_SECS.length};
+}
 function renderHome(){
-  return `<section class="hero"><div><h1>제철플랜트 설계검토를 위한<br><em>설계기준</em> 라이브러리</h1>
-  <p>강재 단중·규격, 제철 공정과 설비 약어, KDS·KCS 설계기준을 한곳에서 찾습니다. 위 검색창에 규격·약어·키워드를 입력하세요.</p></div>
-  <div class="facts"><div class="fact"><b>${DJ_TOTAL.toLocaleString()}</b><span>단중 항목</span></div><div class="fact"><b>${ABBR.length}</b><span>설비 약어</span></div><div class="fact"><b>${PROC.length}</b><span>제철 공정</span></div></div></section>
+  const S = homeStats();
+  return `<section class="hero hero2"><div><p class="eyebrow">STEEL PLANT · ARCHITECTURAL DESIGN REVIEW</p>
+  <h1>제철플랜트 건축 설계검토를 위한<br><em>설계기준</em> 라이브러리</h1>
+  <p>국가건설기준(KDS·KCS)과 KS 강재 규격, 관련 법령·고시를 바탕으로 제철 공정 이해부터 구조 검토, 물량 산정까지 설계검토에 필요한 기준과 도구를 한곳에 정리했습니다.</p>
+  <div class="badges"><span>국가건설기준 KDS · KCS</span><span>KS 강재 규격</span><span>건설공사 표준품셈</span><span>법령 · 고시 원문 연결</span></div></div>
+  <div class="facts facts2">
+   <div class="fact big"><b>${S.std}<i>건</i></b><span>설계기준 · 규격</span><small>KDS·KCS ${S.kdsN} · KS ${S.ksN} · 법령·고시 ${S.lawN}</small></div>
+   <div class="fact"><b>${S.procN}<i>개</i></b><span>제철 세부 공정</span><small>제선·제강·압연 등 ${S.stageN}개 단계</small></div>
+   <div class="fact"><b>${S.words}<i>개</i></b><span>설비 약어 · 설계 용어</span><small>공정별·분야별 분류</small></div>
+   <div class="fact"><b>${S.calcN}<i>종</i></b><span>설계 계산 도구</span><small>단중·할증·열관류율·오수량</small></div>
+  </div></section>
+  <div class="sec"><h2>주요 내용</h2></div>
   <div class="cards">
-   <button class="card" data-go="process"><span class="no">01</span><h3>제철 프로세스</h3><p>전체 흐름도와 단계별 도식으로 보는 원료 → 제선 → 제강 → 압연, 공정별 건축 검토 포인트</p></button>
-   <button class="card" data-go="abbr"><span class="no">02</span><h3>설비 약어</h3><p>CGL·RH·TRT 등 제철 설비 약어 ${ABBR.length}개 — 공정별 분류·검색</p></button>
-   <button class="card" data-go="danjung"><span class="no">03</span><h3>단중표 · 중량 계산</h3><p>치수 칸에 숫자만 넣어 찾기, 단면 도식, 표준품셈 할증 포함 중량 계산</p></button>
-   <button class="card" data-go="calc"><span class="no">04</span><h3>계산</h3><p>단중·칼라시트 단중, 노무 할증, 단열재 두께(열관류율), 오수량</p></button>
-   <button class="card" data-go="struct"><span class="no">05</span><h3>구조</h3><p>설계법, 하중, 구조 시스템, 접합부·용접·크레인 도식, 강재 규격</p></button>
-   <button class="card" data-go="tools"><span class="no">06</span><h3>도구</h3><p>AutoCAD 단축키·PDF 가져오기, 엑셀 단축키·자주 쓰는 함수</p></button>
-   <button class="card" data-go="codes"><span class="no">07</span><h3>설계기준·바로가기</h3><p>세움터·법령·KCSC·물가·엔지니어링 대가 등 관련 사이트와 KDS·KCS 코드 체계</p></button>
+   <button class="card" data-go="codes"><span class="no">01</span><h3>설계기준 · 관련 사이트</h3><p>KDS·KCS 코드 체계와 원문 바로가기, 세움터·국가법령정보센터·KCSC 등 인허가·기준·공사비 관련 사이트</p></button>
+   <button class="card" data-go="struct"><span class="no">02</span><h3>구조 검토</h3><p>설계법·하중·구조 시스템, 철골 접합부·볼트·용접·검사법, 크레인, 지붕 환기 모니터 — 도식으로 정리</p></button>
+   <button class="card" data-go="process"><span class="no">03</span><h3>제철 프로세스</h3><p>원료 → 제선 → 제강 → 압연 전체 흐름도와 ${S.procN}개 세부 공정의 설비·역할, 공정별 건축 검토 포인트</p></button>
+   <button class="card" data-go="abbr"><span class="no">04</span><h3>설비 약어 · 설계 용어</h3><p>CGL·RH·TRT 등 제철 설비 약어와 TOS·TOCR·Take Over Point 등 설계 용어 ${S.words}개</p></button>
+   <button class="card" data-go="calc"><span class="no">05</span><h3>설계 계산</h3><p>강재 단중, 칼라시트 단중, 노무 할증, 단열재 두께(열관류율), 오수량 — 근거 기준 원문 링크 포함</p></button>
+   <button class="card" data-go="danjung"><span class="no">06</span><h3>강재 단중표</h3><p>형강·강관·강판 규격별 단중, 단면 도식, 표준품셈 할증을 반영한 중량 계산</p></button>
+   <button class="card" data-go="tools"><span class="no">07</span><h3>업무 도구</h3><p>AutoCAD 단축키·PDF 가져오기, 엑셀 단축키·자주 쓰는 함수</p></button>
   </div>
+  <p class="muted homenote">법정 기준과 공개 규격만 수록하며, 세부 수치는 반드시 해당 기준 원문으로 확인하시기 바랍니다.</p>
   <div class="sec"><h2>자주 찾는 검색</h2><div class="frow">${["H-400x400","SM355","SN355","CGL","RH","소둔","가스홀더","앵커","M20","PL-12","크레인"].map(w=>`<button class="chip" data-q="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`;
 }
 
