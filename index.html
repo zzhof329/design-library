@@ -484,6 +484,13 @@ svg .ray2{stroke:#e0a020;stroke-width:1.6;stroke-dasharray:5 3;fill:none}
 .facts2 .fact.big b{color:var(--accent)}
 .homenote{margin:12px 0 0;font-size:12px}
 @media (max-width:720px){.hero2{grid-template-columns:1fr;padding:18px 16px}}
+.ctbl .t.ipt td.nm{font-family:var(--f-body)}
+.lin select{padding:4px 6px;border:1px solid var(--line);border-radius:5px;background:var(--surface);font-size:13.5px;color:var(--ink)}
+.ipsvg{width:100%;max-width:420px;height:auto;display:block;margin:10px auto 0;background:var(--surface2);border-radius:8px}
+svg .ipl{fill:none;stroke-width:1.8}svg .ipl.s1{stroke:var(--accent)}svg .ipl.s2{stroke:var(--steel)}
+svg .ipd{stroke:none}svg .ipd.s1{fill:var(--accent)}svg .ipd.s2{fill:var(--steel)}
+svg .ipm{fill:var(--surface);stroke-width:2.5}svg .ipm.s1{stroke:var(--accent)}svg .ipm.s2{stroke:var(--steel)}
+svg .ipq{stroke:var(--sub);stroke-width:1;stroke-dasharray:4 3}
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -682,7 +689,7 @@ const TABS = [
   {id:"codes", n:"설계기준·바로가기"}
 ];
 const S = { tab:"home", dj:"H", ff:{}, wt:"", sel:null, len:1, qty:1, extra:true, ab:"", abq:"", pr:PROC[0]?.id, prab:null, gr:0, cc:"bh", st:"methods", cadq:"", al:"", cs:"weight", ws:"types", crs:"cmp", tl:"cad" };
-const CALC_SECS = [["weight","단중 계산","형강·강판·앵커볼트 무게"],["sheet","칼라시트 단중","지붕·벽 골판 (파형·두께)"],["labor","할증 계산","연장·야간·휴일 노무 할증"],["uval","단열재 두께","열관류율·필요 두께"],["sewer","오수량","오수·배수량, 정화조 검토"]];   // 나중에 할증 계산·단열재 두께 계산 등을 여기에 추가
+const CALC_SECS = [["weight","단중 계산","형강·강판·앵커볼트 무게"],["sheet","칼라시트 단중","지붕·벽 골판 (파형·두께)"],["labor","할증 계산","연장·야간·휴일 노무 할증"],["uval","단열재 두께","열관류율·필요 두께"],["sewer","오수량","오수·배수량, 정화조 검토"],["interp","직선보간","표 값 사이 중간 값"]];   // 나중에 할증 계산·단열재 두께 계산 등을 여기에 추가
 function readHash(){
   const h = decodeURIComponent(location.hash.slice(1)); let [t, a, b] = h.split("/");
   if(t==="cad"){ t = "tools"; a = "cad"; }                               // 예전 주소 호환
@@ -775,7 +782,7 @@ function renderHome(){
    <div class="fact big"><b>${S.std}<i>건</i></b><span>설계기준 · 규격</span><small>KDS·KCS ${S.kdsN} · KS ${S.ksN} · 법령·고시 ${S.lawN}</small></div>
    <div class="fact"><b>${S.procN}<i>개</i></b><span>제철 세부 공정</span><small>제선·제강·압연 등 ${S.stageN}개 단계</small></div>
    <div class="fact"><b>${S.words}<i>개</i></b><span>설비 약어 · 설계 용어</span><small>공정별·분야별 분류</small></div>
-   <div class="fact"><b>${S.calcN}<i>종</i></b><span>설계 계산 도구</span><small>단중·할증·열관류율·오수량</small></div>
+   <div class="fact"><b>${S.calcN}<i>종</i></b><span>설계 계산 도구</span><small>단중·할증·열관류율·오수량·보간</small></div>
   </div></section>
   <div class="sec"><h2>주요 내용</h2></div>
   <div class="cards">
@@ -783,7 +790,7 @@ function renderHome(){
    <button class="card" data-go="struct"><span class="no">02</span><h3>구조 검토</h3><p>설계법·하중·구조 시스템, 철골 접합부·볼트·용접·검사법, 크레인, 지붕 환기 모니터 — 도식으로 정리</p></button>
    <button class="card" data-go="process"><span class="no">03</span><h3>제철 프로세스</h3><p>원료 → 제선 → 제강 → 압연 전체 흐름도와 ${S.procN}개 세부 공정의 설비·역할, 공정별 건축 검토 포인트</p></button>
    <button class="card" data-go="abbr"><span class="no">04</span><h3>설비 약어 · 설계 용어</h3><p>CGL·RH·TRT 등 제철 설비 약어와 TOS·TOCR·Take Over Point 등 설계 용어 ${S.words}개</p></button>
-   <button class="card" data-go="calc"><span class="no">05</span><h3>설계 계산</h3><p>강재 단중, 칼라시트 단중, 노무 할증, 단열재 두께(열관류율), 오수량 — 근거 기준 원문 링크 포함</p></button>
+   <button class="card" data-go="calc"><span class="no">05</span><h3>설계 계산</h3><p>강재 단중, 칼라시트 단중, 노무 할증, 단열재 두께(열관류율), 오수량, 직선보간 — 근거 기준 원문 링크 포함</p></button>
    <button class="card" data-go="danjung"><span class="no">06</span><h3>강재 단중표</h3><p>형강·강관·강판 규격별 단중, 단면 도식, 표준품셈 할증을 반영한 중량 계산</p></button>
    <button class="card" data-go="tools"><span class="no">07</span><h3>업무 도구</h3><p>AutoCAD 단축키·PDF 가져오기, 엑셀 단축키·자주 쓰는 함수</p></button>
   </div>
@@ -1156,6 +1163,7 @@ function renderCalc(){
   if(S.cs==="labor") return calcHead() + laborBody();
   if(S.cs==="uval") return calcHead() + uvalBody();
   if(S.cs==="sewer") return calcHead() + sewerBody();
+  if(S.cs==="interp") return calcHead() + interpBody();
   const c = curC();
   return `${calcHead()}
   <p class="muted" style="margin:12px 0 0">단중표에 없는 규격은 치수를 넣어 계산합니다. 표 칸에 바로 입력하세요 (강재 비중 7.85).</p>
@@ -1853,6 +1861,120 @@ document.addEventListener("click", e => {
   const wd = e.target.closest("[data-wdel]"); if(wd){ wrows().splice(+wd.dataset.wdel,1); saveCalc(); fillSewer(); return; }
 });
 
+/* ═════════ 계산: 직선보간 ═════════ */
+const IP_DEF = {x1:"3", y1:"12", x2:"6", y2:"16", x:"4", rm:"up", rd:"1",
+  rows:[["12","0.051","0.038"],["15","0.060","0.041"],["18","0.068","0.043"],["21","0.077","0.045"],["24","0.085","0.047"],["27","0.094","0.049"],["30","0.102","0.051"]], q:"20", trm:"none", trd:"3"};
+function ip(){ if(!S.cr.interp || typeof S.cr.interp!=="object") S.cr.interp = JSON.parse(JSON.stringify(IP_DEF)); const o = S.cr.interp; if(!Array.isArray(o.rows) || !o.rows.length) o.rows = [["","",""]]; return o; }
+const lerp = (x1,y1,x2,y2,x) => y1 + (y2-y1)/(x2-x1)*(x-x1);
+const fv = v => v==null || !isFinite(v) ? "−" : (+(+v).toPrecision(8)).toLocaleString("ko-KR",{maximumFractionDigits:6});
+function rnd(v, m, d){ if(v==null || !isFinite(v) || m==="none") return v; const p = Math.pow(10, +d||0), s = +(v*p).toFixed(9);
+  return (m==="up" ? Math.ceil(s) : m==="down" ? Math.floor(s) : Math.round(s)) / p; }
+const RM = [["none","그대로"],["round","반올림"],["up","올림"],["down","버림"]];
+function rmSel(km, kd){ const o = ip(); return `<span class="lin"><span>끝자리</span><select data-ik="${km}">${RM.map(([k,n])=>`<option value="${k}"${o[km]===k?" selected":""}>${n}</option>`).join("")}</select>
+  <span>소수</span><select data-ik="${kd}">${[0,1,2,3,4].map(n=>`<option value="${n}"${String(o[kd])===String(n)?" selected":""}>${n}자리</option>`).join("")}</select></span>`; }
+function interpBody(){
+  const o = ip(), inp = k => `<input type="text" inputmode="decimal" data-ik="${k}" value="${esc(o[k] ?? "")}" autocomplete="off">`;
+  return `<p class="muted" style="margin:12px 0 0">기준표에 없는 중간 값을 앞뒤 두 값으로 비례해 구합니다. 값을 바꾸면 바로 계산됩니다.</p>
+  <div class="ctwo">
+   <div class="panel"><h3>① 두 값 사이 계산</h3>
+    <p class="muted" style="margin:0">예: 가설재 손율 — 3개월 12 %, 6개월 16 %일 때 4개월 손율 (소수 2위에서 올림해 소수 1위)</p>
+    <div class="tbl-wrap ctbl"><table class="t ipt"><thead><tr><th></th><th class="in">구간 x<small>개월·높이 등</small></th><th class="in">값 y<small>손율·계수 등</small></th></tr></thead><tbody>
+     <tr><td class="nm">작은 쪽 (x₁, y₁)</td><td class="in">${inp("x1")}</td><td class="in">${inp("y1")}</td></tr>
+     <tr><td class="nm">큰 쪽 (x₂, y₂)</td><td class="in">${inp("x2")}</td><td class="in">${inp("y2")}</td></tr>
+     <tr><td class="nm"><b>찾는 x</b></td><td class="in">${inp("x")}</td><td class="num main" id="ipy"></td></tr>
+    </tbody></table></div>
+    <div class="frow" style="margin-top:8px">${rmSel("rm","rd")}</div>
+    <p class="eqline" id="ipeq"></p><p class="muted" id="ipw" style="margin:4px 0 0"></p></div>
+   <div class="panel"><h3>그래프</h3><svg class="ipsvg" id="ipsvg" viewBox="0 0 320 190" role="img" aria-label="직선보간 그래프"></svg></div>
+  </div>
+  <div class="panel"><h3>② 표에서 찾기 — 여러 구간</h3>
+   <p class="muted" style="margin:0">기준표를 그대로 옮겨 넣으면 찾는 x가 들어가는 구간을 자동으로 골라 계산합니다. 값 칸은 2개까지 (값 2는 비워도 됨).</p>
+   <div class="ctwo"><div>
+    <div class="tbl-wrap ctbl"><table class="t"><thead><tr><th class="in">구간 x</th><th class="in">값 1</th><th class="in">값 2</th><th></th></tr></thead><tbody id="ipbody"></tbody></table></div>
+    <div class="tools"><button class="btn" id="iadd">+ 줄 추가</button><button class="btn" id="ireset">예시로 되돌리기</button><button class="btn" id="iclear">모두 지우기</button></div></div>
+    <div><div class="frow" style="margin-top:12px"><span class="lin"><span><b>찾는 x</b></span>${inp("q")}</span>${rmSel("trm","trd")}</div>
+    <div class="res3" id="iprs"></div><p class="eqline" id="ipeq2"></p><p class="muted" id="ipw2" style="margin:4px 0 0"></p>
+    <svg class="ipsvg" id="ipsvg2" viewBox="0 0 320 190" role="img" aria-label="표 직선보간 그래프"></svg></div></div>
+  </div>
+  <div class="panel"><h3>계산 방법</h3><ul>
+   <li><b>y = y₁ + (y₂ − y₁) ÷ (x₂ − x₁) × (x − x₁)</b> — 두 점을 잇는 직선 위에서 x에 해당하는 값을 읽는 방법입니다.</li>
+   <li>표에서 찾을 때는 <b>x가 들어가는 바로 앞뒤 두 값</b>을 씁니다. 표 전체의 첫 값과 끝 값만 쓰면(양 끝점 기준) 중간 값이 직선에서 벗어난 표에서는 결과가 달라지므로, 참고로 함께 보여 줍니다.</li>
+   <li>x가 표 범위 밖이면 가장 가까운 구간을 연장해 계산(외삽)합니다. 기준에서 범위 밖 적용을 허용하는지 먼저 확인하세요.</li>
+   <li>끝자리 처리는 기준에 따릅니다. 예: 손율은 % 소수 2위에서 올림해 소수 1위로.</li>
+   <li>쓰는 곳: 가설재 손율(개월), 풍하중 높이별 계수, 열관류율·단열 표, 공사비 요율표 등 표 값 사이의 중간 값.</li></ul></div>`;
+}
+function ipGraph(id, series, qx, marks){
+  const g = $("#"+id); if(!g) return;
+  const pts = series.flatMap(s=>s.p), xs = pts.map(p=>p[0]).concat(qx!=null?[qx]:[]), ys = pts.map(p=>p[1]).concat(marks.map(m=>m[1]).filter(v=>v!=null&&isFinite(v)));
+  if(pts.length < 2 || !xs.length){ g.innerHTML = `<text class="wlb2" x="160" y="95" text-anchor="middle">값을 넣으면 그래프가 나옵니다</text>`; return; }
+  let x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  if(x1===x0){ x0 -= 1; x1 += 1; } if(y1===y0){ y0 -= 1; y1 += 1; }
+  const dy = (y1-y0)*0.08; y0 -= dy; y1 += dy;
+  const L=44, R=310, T=12, B=160, X = v => L + (v-x0)/(x1-x0)*(R-L), Y = v => B - (v-y0)/(y1-y0)*(B-T);
+  let h = `<path class="dm" d="M${L} ${T} V${B} H${R}"/>`;
+  h += `<text class="wlb2" x="${L}" y="${B+14}" text-anchor="middle">${fv(x0)}</text><text class="wlb2" x="${R}" y="${B+14}" text-anchor="end">${fv(x1)}</text>`;
+  h += `<text class="wlb2" x="${L-4}" y="${B}" text-anchor="end">${fv(+y0.toPrecision(3))}</text><text class="wlb2" x="${L-4}" y="${T+8}" text-anchor="end">${fv(+y1.toPrecision(3))}</text>`;
+  series.forEach(s => { h += `<polyline class="ipl ${s.c}" points="${s.p.map(p=>X(p[0])+","+Y(p[1])).join(" ")}"/>` + s.p.map(p=>`<circle class="ipd ${s.c}" cx="${X(p[0])}" cy="${Y(p[1])}" r="3"/>`).join(""); });
+  if(qx!=null) h += `<path class="ipq" d="M${X(qx)} ${T} V${B}"/><text class="wlb" x="${X(qx)}" y="${B+28}" text-anchor="middle">x = ${fv(qx)}</text>`;
+  marks.forEach(m => { if(m[1]==null || !isFinite(m[1])) return; h += `<circle class="ipm ${m[2]}" cx="${X(m[0])}" cy="${Y(m[1])}" r="5"/><text class="wlb halo" x="${X(m[0])+8}" y="${Y(m[1])-6}">${fv(m[1])}</text>`; });
+  g.innerHTML = h;
+}
+function ipSeg(p, q){ // p: x 오름차순 [[x,y]...], 2개 이상
+  let i = 0; if(q <= p[0][0]) i = 0; else if(q >= p[p.length-1][0]) i = p.length-2; else { while(i < p.length-2 && q > p[i+1][0]) i++; }
+  return [p[i], p[i+1]];
+}
+function fillInterp(){
+  if(!$("#ipy")) return;
+  const o = ip(), a = ["x1","y1","x2","y2","x"].map(k=>num(o[k])), [x1,y1,x2,y2,x] = a;
+  let y = null, w = "";
+  if(a.every(v=>v!=null)){
+    if(x1===x2) w = "두 x 값이 같으면 계산할 수 없습니다.";
+    else { y = lerp(x1,y1,x2,y2,x); if(x < Math.min(x1,x2) || x > Math.max(x1,x2)) w = "찾는 x가 두 값 범위 밖입니다 — 직선을 연장한 값(외삽)입니다."; }
+  }
+  const yr = rnd(y, o.rm, o.rd);
+  $("#ipy").textContent = fv(yr);
+  $("#ipeq").textContent = y==null ? "y = y₁ + (y₂ − y₁) ÷ (x₂ − x₁) × (x − x₁)" : `y = ${fv(y1)} + (${fv(y2)} − ${fv(y1)}) ÷ (${fv(x2)} − ${fv(x1)}) × (${fv(x)} − ${fv(x1)}) = ${fv(y)}${o.rm!=="none" ? " → " + fv(yr) : ""}`;
+  $("#ipw").textContent = w;
+  ipGraph("ipsvg", y==null && !(x1!=null&&y1!=null&&x2!=null&&y2!=null) ? [] : [{c:"s1", p:[[x1,y1],[x2,y2]].sort((m,n)=>m[0]-n[0])}], x, [[x, yr, "s1"]]);
+  // 표
+  const q = num(o.q), res = [], ser = [], marks = []; let eq = "", w2 = "";
+  [1,2].forEach(c => {
+    const p = o.rows.map(r=>[num(r[0]), num(r[c])]).filter(r=>r[0]!=null && r[1]!=null).sort((m,n)=>m[0]-n[0]);
+    if(p.length < 2){ if(c===1) res.push(`<div class="rb"><span>값 1</span><b>−</b> 두 줄 이상 넣으세요</div>`); return; }
+    ser.push({c:"s"+c, p});
+    if(q==null){ res.push(`<div class="rb"><span>값 ${c}</span><b>−</b></div>`); return; }
+    const [A,B] = ipSeg(p, q); let v = null, e2 = null;
+    if(A[0]!==B[0]) v = lerp(A[0],A[1],B[0],B[1],q);
+    const F = p[0], Z = p[p.length-1]; if(F[0]!==Z[0]) e2 = lerp(F[0],F[1],Z[0],Z[1],q);
+    const vr = rnd(v, o.trm, o.trd), er = rnd(e2, o.trm, o.trd);
+    res.push(`<div class="rb hi"><span>값 ${c} — 해당 구간 (${fv(A[0])} ~ ${fv(B[0])})</span><b>${fv(vr)}</b></div><div class="rb"><span>값 ${c} — 참고: 양 끝점 기준</span><b>${fv(er)}</b></div>`);
+    marks.push([q, vr, "s"+c]);
+    if(c===1 && v!=null) eq = `값 1: y = ${fv(A[1])} + (${fv(B[1])} − ${fv(A[1])}) ÷ (${fv(B[0])} − ${fv(A[0])}) × (${fv(q)} − ${fv(A[0])}) = ${fv(v)}${o.trm!=="none" ? " → " + fv(vr) : ""}`;
+    if(c===1 && (q < F[0] || q > Z[0])) w2 = "찾는 x가 표 범위 밖입니다 — 가장 가까운 구간을 연장한 값(외삽)입니다.";
+    if(c===1 && new Set(p.map(r=>r[0])).size < p.length) w2 = (w2 ? w2 + " " : "") + "같은 x 값이 두 번 있습니다 — 표를 확인하세요.";
+  });
+  $("#iprs").innerHTML = res.join(""); $("#ipeq2").textContent = eq || "y = y₁ + (y₂ − y₁) ÷ (x₂ − x₁) × (x − x₁)"; $("#ipw2").textContent = w2;
+  ipGraph("ipsvg2", ser, q, marks);
+}
+function fillInterpRows(){
+  const body = $("#ipbody"); if(!body) return;
+  body.innerHTML = ip().rows.map((r,i)=>`<tr>${[0,1,2].map(c=>`<td class="in"><input type="text" inputmode="decimal" data-ir="${i}" data-ic="${c}" value="${esc(r[c] ?? "")}" autocomplete="off"></td>`).join("")}<td><button class="btn sm" data-idel="${i}" title="이 줄 삭제">×</button></td></tr>`).join("");
+  fillInterp();
+}
+document.addEventListener("input", e => {
+  const k = e.target.closest?.("input[data-ik]"); if(k){ ip()[k.dataset.ik] = k.value; saveCalc(); fillInterp(); return; }
+  const r = e.target.closest?.("input[data-ir]"); if(r){ ip().rows[+r.dataset.ir][+r.dataset.ic] = r.value; saveCalc(); fillInterp(); return; }
+});
+document.addEventListener("change", e => {
+  const k = e.target.closest?.("select[data-ik]"); if(k){ ip()[k.dataset.ik] = k.value; saveCalc(); fillInterp(); }
+});
+document.addEventListener("click", e => {
+  if(e.target.closest("#iadd")){ ip().rows.push(["","",""]); saveCalc(); fillInterpRows(); return; }
+  if(e.target.closest("#ireset")){ const o = ip(); o.rows = JSON.parse(JSON.stringify(IP_DEF.rows)); o.q = IP_DEF.q; saveCalc(); render(); return; }
+  if(e.target.closest("#iclear")){ const o = ip(); o.rows = [["","",""],["","",""]]; o.q = ""; saveCalc(); render(); return; }
+  const d = e.target.closest("[data-idel]"); if(d){ ip().rows.splice(+d.dataset.idel,1); saveCalc(); fillInterpRows(); return; }
+});
+
 /* ═════════ 용접: 개선 형상 · 비파괴검사 원리 ═════════ */
 const GV = {
   I1: [`M10 40 H98 V76 H10 Z`,`M102 40 H190 V76 H102 Z`,`M96 40 Q100 32 104 40 L102 76 L98 76 Z`],
@@ -1957,7 +2079,7 @@ function render(){
   else if(S.tab==="process"){ v.innerHTML = renderProcess(); fillPrDesc(); }
 
   else if(S.tab==="codes") v.innerHTML = renderCodes();
-  else if(S.tab==="calc"){ v.innerHTML = renderCalc(); fillCalcTable(); fillSheet(); fillLabor(); fillU(); fillSewer(); }
+  else if(S.tab==="calc"){ v.innerHTML = renderCalc(); fillCalcTable(); fillSheet(); fillLabor(); fillU(); fillSewer(); fillInterpRows(); }
   else if(S.tab==="struct") v.innerHTML = renderStruct();
   else if(S.tab==="tools"){ v.innerHTML = renderTools(); fillCad(); bindLocal("#cadq", val => { S.cadq = val; fillCad(); }); }
 }
