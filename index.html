@@ -431,6 +431,41 @@ svg .ins{fill:var(--surface);stroke:var(--line);stroke-width:1}
 .ptbl2 td{cursor:pointer}.ptbl2 tr:hover td:not(.grp){background:var(--accent-soft)}
 .ptbl2 td.grp{font-weight:700;background:var(--surface2);cursor:default}
 .ptbl2 tr.cur td:not(.grp){background:var(--accent-soft)}
+.pnav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.pnav button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:var(--f-display);font-weight:600;font-size:13.5px;color:var(--ink)}
+.pnav button:hover{border-color:var(--accent)}
+.pnav button.on{background:var(--steel);color:var(--steel-ink);border-color:var(--steel)}
+.pnav .n{font-family:var(--f-mono);color:var(--accent);font-size:11.5px;margin-right:5px}.pnav button.on .n{color:inherit;opacity:.8}
+.pnav .pg{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:4px;background:var(--surface2);border-radius:10px}
+.pnav .pgl{font-size:12px;font-weight:700;color:var(--sub);padding:0 4px 0 6px}
+.pmg{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.pmh{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.pmh b{font-family:var(--f-display);font-size:19px;color:var(--accent)}
+.pmh .en{font-family:var(--f-mono);font-size:12px;color:var(--sub)}
+.pmh .d{font-size:14px}
+.pmh .flow{margin-left:auto;font-size:12.5px;background:var(--accent-soft);color:var(--accent);border-radius:20px;padding:2px 10px;font-weight:600}
+.pms h4{margin:12px 0 6px;font-family:var(--f-display);font-size:14.5px}
+.pms h4 small{font-weight:400;color:var(--sub);font-size:12.5px;margin-left:8px;font-family:var(--f-body)}
+.pcgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.pcard{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5;display:flex;flex-direction:column}
+.pcard[data-pr]{cursor:pointer}.pcard[data-pr]:hover,.pcard[data-pr]:focus-visible{border-color:var(--accent);outline:none;box-shadow:0 0 0 2px var(--accent-soft)}
+.pch b{font-family:var(--f-display);font-size:15.5px}.pch span{font-family:var(--f-mono);font-size:11.5px;color:var(--sub);margin-left:6px}
+.pcard p{margin:4px 0 6px;flex:1}
+.peq{font-size:13px}.peq b{display:block;font-size:11.5px;color:var(--sub)}
+.pio{display:flex;align-items:stretch;gap:6px;margin-top:8px;font-size:12.5px}
+.pio span{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+.pio span.o{border-color:var(--accent);background:var(--accent-soft)}
+.pio i{font-style:normal;color:var(--accent);font-weight:700;align-self:center}
+.pnext{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}.rgrid .panel{margin-top:12px}
+.rfsvg{width:100%;max-width:380px;height:auto;display:block;margin:4px auto 6px;background:var(--surface2);border-radius:8px}
+svg .rfr{stroke:var(--ink);stroke-width:2.4;fill:none;stroke-linejoin:round}
+svg .rfl{stroke:var(--ink);stroke-width:1.4;fill:none}
+svg .rfh{fill:#f0a35e;opacity:.55}
+svg .ray2{stroke:#e0a020;stroke-width:1.6;stroke-dasharray:5 3;fill:none}
+.pc2{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}.pc2 ul{margin:2px 0 0;padding-left:16px}
+@media (max-width:420px){ .pc2{grid-template-columns:1fr} }
+.rftbl td.nw small{font-family:var(--f-mono)}
 /* 캐드 */
 .cadgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:12px;margin-top:12px}
 .cadcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
@@ -474,6 +509,7 @@ footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid va
 <script src="data/struct4.js"></script>
 <script src="data/struct5.js"></script>
 <script src="data/more1.js"></script>
+<script src="data/more2.js"></script>
 <script src="data/links.js"></script>
 <script src="data/sheet.js"></script>
 <script>
@@ -634,7 +670,7 @@ function readHash(){
   if(t==="calc" && a && CALCS.some(c=>c.id===a)){ b = a; a = "weight"; } // 예전 주소 호환
   S.tab = TABS.some(x=>x.id===t) ? t : "home";
   if(t==="danjung" && a && DJG.some(g=>g.k===a)){ if(S.dj!==a){ S.ff={}; S.wt=""; S.sel=null; } S.dj = a; }
-  if(t==="process" && a && PROC.some(p=>p.id===a)) S.pr = a;
+  if(t==="process") S.pr = (a && PROC.some(p=>p.id===a)) ? a : "";
   if(t==="abbr"){ S.ab = (a && (ACATS[a] || a==="terms")) ? a : ""; S.tc = a==="terms" && b && (window.TERM_CATS||{})[b] ? b : ""; }
   if(t==="calc"){ if(a && CALC_SECS.some(x=>x[0]===a)) S.cs = a; if(b && CALCS.some(c=>c.id===b)) S.cc = b; }
   if(t==="tools" && a){ if(S.tl !== a) S.cadq = ""; S.tl = a; }
@@ -941,22 +977,30 @@ const STAGE = {
 };
 function stageSvg(id){ return `<svg viewBox="0 0 640 214" role="img" aria-label="${esc(PROC.find(p=>p.id===id)?.name||"")} 도식"><defs><marker id="stp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahp"/></marker></defs>${STAGE[id] ? STAGE[id]() : ""}</svg>`; }
 
-function procTable(cur){
-  const T = window.PROC_TABLE || []; if(!T.length) return "";
-  let h = "", i = 0;
-  while(i < T.length){ const g = T[i][0]; let j = i; while(j < T.length && T[j][0]===g) j++;
-    for(let k=i;k<j;k++){ const r = T[k]; h += `<tr class="${r[5]===cur?"cur":""}" data-pr="${r[5]}" tabindex="0">${k===i?`<td class="grp" rowspan="${j-i}">${esc(g)}</td>`:""}<td class="nw"><b>${esc(r[1])}</b></td><td class="txt">${esc(r[2])}</td><td class="txt">${esc(r[3])}</td><td class="txt">${esc(r[4])}</td></tr>`; }
-    i = j; }
-  return `<div class="panel"><h3>공정별 주요 설비 · 들어가는 것 · 나오는 것 <span class="muted" style="font-weight:400;font-size:13px">— 줄을 누르면 해당 공정 설명으로 갑니다</span></h3><div class="tbl-wrap wide"><table class="t ctr ptbl2"><thead><tr><th>구분</th><th>공정</th><th style="min-width:220px">주요 설비</th><th style="min-width:180px">들어가는 것 (Input)</th><th style="min-width:220px">나오는 것 · 제품 (Output)</th></tr></thead><tbody>${h}</tbody></table></div></div>`;
+const PNAV = [["제선",[["raw","원료 처리"],["sinter","소결·코크스"],["iron","고로·FINEX"]]],["제강",[["steel","제강·연주"]]],["압연",[["hot","열간압연"],["cold","냉연·도금"]]],["에너지",[["util","에너지·환경"]]]];
+function procNav(){
+  return `<div class="pnav"><button class="pall${!S.pr?" on":""}" data-go="process">전체 보기</button>${PNAV.map(([g,xs])=>`<div class="pg"><span class="pgl">${g}</span>${xs.map(([id,n])=>`<button class="${S.pr===id?"on":""}" data-go="process" data-sub="${id}"><span class="n">${PROC.find(p=>p.id===id)?.no||""}</span>${n}</button>`).join("")}</div>`).join("")}</div>`;
+}
+window.addEventListener("hashchange", () => { if(S.tab==="process") window.scrollTo({top:0}); });
+const PITEMS = () => (window.PROC_MAP||[]).flatMap(g=>g.subs.flatMap(s=>s.items));
+function pcard(it, link){
+  return `<div class="pcard"${link?` data-pr="${it[6]}" tabindex="0" role="button" title="${esc(it[0])} 자세히 보기"`:""}><div class="pch"><b>${esc(it[0])}</b><span>${esc(it[1])}</span></div><p>${esc(it[2])}</p><div class="peq"><b>주요 설비</b>${esc(it[3])}</div><div class="pio"><span>${esc(it[4])}</span><i>→</i><span class="o">${esc(it[5])}</span></div></div>`;
+}
+function procMap(){
+  return (window.PROC_MAP||[]).map(g=>`<section class="pmg"><div class="pmh"><b>${esc(g.k)}</b><span class="en">${esc(g.en)}</span><span class="d">${esc(g.d)}</span><span class="flow">${esc(g.flow)}</span></div>${g.subs.map(s=>`<div class="pms"><h4>${esc(s.n)}<small>${esc(s.d)}</small></h4><div class="pcgrid">${s.items.map(it=>pcard(it,true)).join("")}</div></div>`).join("")}</section>`).join("");
 }
 function renderProcess(){
-  const p = PROC.find(x=>x.id===S.pr) || PROC[0];
-  const chips = p.abbr.filter(k => abbrMap[k]);
-  return `<div class="shead"><div><h2>제철 프로세스</h2><p>철광석이 강판이 되기까지 — 흐름도에서 공정을 누르면 아래에 설명과 도식이 나옵니다.</p></div></div>
-  <div class="panel"><h3>전체 흐름</h3><div class="ovw">${overview(p.id)}</div></div>${procTable(p.id)}
-  <div class="panel"><div class="stage-h"><span class="no">${p.no}</span><h3>${esc(p.name)}</h3><span class="en">${esc(p.en)}</span></div>
+  const head = `<div class="shead"><div><h2>제철 프로세스</h2><p>철광석이 강판이 되기까지 — '전체 보기'에서 흐름을 훑고, 공정 버튼을 누르면 그 공정만 자세히 봅니다.</p></div></div>${procNav()}`;
+  const p = PROC.find(x=>x.id===S.pr);
+  if(!p) return head + `<div class="panel"><h3>전체 흐름 <span class="muted" style="font-weight:400;font-size:13px">— 상자를 누르면 그 공정으로 갑니다</span></h3><div class="ovw">${overview("")}</div></div>
+  <h3 class="subh">공정 한눈에 보기 <span class="muted" style="font-weight:400;font-size:13px">— 큰 단계 → 세부 공정 순서. 카드를 누르면 설명·도식으로 갑니다</span></h3>${procMap()}
+  <p class="note">공정 설명·도식은 일반 공개 지식 기준의 개념도입니다. 개별 설비의 사양·배치는 해당 프로젝트 설계도서를 따르세요.</p>`;
+  const chips = p.abbr.filter(k => abbrMap[k]), its = PITEMS().filter(it=>it[6]===p.id);
+  const i = PROC.indexOf(p), prev = PROC[i-1], next = PROC[i+1];
+  return head + `<div class="panel"><div class="stage-h"><span class="no">${p.no}</span><h3>${esc(p.name)}</h3><span class="en">${esc(p.en)}</span></div>
     <div class="easy">${esc(p.easy)}</div><div class="like"><b>쉽게 말하면</b>${esc(p.like)}</div>
     <div class="io"><div class="bx"><b>들어가는 것</b><div>${p.in.map(esc).join("<br>")}</div></div><span class="to">→</span><div class="bx out"><b>나오는 것</b><div>${p.out.map(esc).join("<br>")}</div></div></div></div>
+  ${its.length ? `<div class="panel"><h3>이 단계의 세부 공정 <span class="muted" style="font-weight:400">${its.length}</span></h3><div class="pcgrid">${its.map(it=>pcard(it,false)).join("")}</div></div>` : ""}
   <div class="panel"><h3>${esc(p.name)} 도식</h3><div class="stg">${stageSvg(p.id)}</div>
     <div class="steps">${p.flow.map((f,i)=>(i?`<i>→</i>`:"")+`<span>${esc(f)}</span>`).join("")}</div></div>
   <div class="two"><div class="panel"><h3>알아두면 좋은 것</h3><ul>${p.facts.map(f=>`<li>${esc(f)}</li>`).join("")}</ul></div>
@@ -965,6 +1009,7 @@ function renderProcess(){
    <div class="abchips">${chips.map(k=>`<button class="abchip${S.prab===k?" on":""}" data-prab="${esc(k)}">${esc(k)}</button>`).join("")}</div>
    <div class="abdesc" id="prdesc"></div>
    <p class="muted" style="margin:8px 0 0"><a href="#abbr/${p.cat}">${esc(ACATS[p.cat]||"")} 약어 전체 보기 →</a></p></div>
+  <div class="pnext">${prev?`<button class="btn" data-go="process" data-sub="${prev.id}">← ${prev.no} ${esc(prev.name)}</button>`:`<span></span>`}<button class="btn" data-go="process">전체 보기</button>${next?`<button class="btn" data-go="process" data-sub="${next.id}">${next.no} ${esc(next.name)} →</button>`:`<span></span>`}</div>
   <p class="note">공정 설명·도식은 일반 공개 지식 기준의 개념도입니다. 개별 설비의 사양·배치는 해당 프로젝트 설계도서를 따르세요.</p>`;
 }
 function fillPrDesc(){
@@ -1188,8 +1233,43 @@ function loadsSvg(){
   s += `<text class="lk" x="160" y="200">L 활하중 · T 온도</text>`;
   return s + `</svg>`;
 }
+/* ═════════ 구조: 지붕 환기 (모니터) ═════════ */
+const rsv = (b,l) => `<svg class="rfsvg" viewBox="0 0 400 214" role="img" aria-label="${l}"><defs><marker id="rfa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahp"/></marker></defs>${b}</svg>`;
+const rfA = d => `<path class="fa" d="${d}" marker-end="url(#rfa)"/>`;
+const rfBase = ey => `<rect class="col" x="36" y="${ey}" width="7" height="${200-ey}"/><rect class="col" x="357" y="${ey}" width="7" height="${200-ey}"/><line class="gnd" x1="8" y1="200" x2="392" y2="200"/>
+  <rect class="rfh" x="150" y="186" width="100" height="14" rx="2"/><text class="lb2" x="200" y="197" text-anchor="middle">열원 (설비·용강)</text>
+  ${rfA("M6 180 H72")}${rfA("M394 180 H328")}<text class="lb2 halo" x="50" y="172">급기 (벽 루버)</text>`;
+const rfLv = (xs, ys, dx) => ys.map(y => xs.map(x => `<path class="rfl" d="M${x-dx} ${y} L${x+dx} ${y+5}"/>`).join("")).join("");
+const ROOF_SVG = {
+  rigid: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L170 87 M230 87 L367 121 M170 88 V64 M230 88 V64 M158 69 L200 52 L242 69"/>` + rfLv([170,230],[68,75,82],6)
+    + rfA("M200 182 V96") + rfA("M192 77 H128") + rfA("M208 77 H272") + `<text class="lb halo" x="200" y="42" text-anchor="middle">고정 루버 (늘 열림)</text><text class="lb2 halo" x="124" y="72" text-anchor="end">배기</text><text class="lb2 halo" x="208" y="150">더운 공기 상승</text>`, "고정형 모니터 단면"),
+  pitched: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L150 92 M250 92 L367 121 M150 93 V56 M250 93 V56 M132 64 L200 30 L268 64"/><path class="rfl" d="M134 60 V86 M266 60 V86" style="stroke-width:2.5"/>` + rfLv([150,250],[62,70,78,86],6)
+    + rfA("M200 182 V100") + rfA("M190 74 H112") + rfA("M210 74 H288") + `<text class="lb halo" x="200" y="20" text-anchor="middle">경사 지붕을 얹은 큰 모니터</text><text class="lb2 halo" x="128" y="56" text-anchor="end">빗물막이</text><text class="lb2 halo" x="208" y="150">배기량 큼</text>`, "박공형 모니터 단면"),
+  flat: () => rsv(rfBase(104) + `<path class="rfr" d="M33 104 H160 M240 104 H367 M160 105 V76 M240 105 V76 M150 76 H250"/>` + rfLv([160,240],[80,87,94],6)
+    + rfA("M200 182 V108") + rfA("M192 89 H124") + rfA("M208 89 H276") + `<text class="lb halo" x="200" y="64" text-anchor="middle">평평한 모니터 지붕</text><text class="lb2 halo" x="208" y="150">높이차가 작아 배기 약함</text>`, "평지붕형 모니터 단면"),
+  operable: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L170 87 M230 87 L367 121 M170 88 V64 M230 88 V64 M158 69 L200 52 L242 69"/>`
+    + [70,77,84].map(y=>`<path class="rfl" d="M163 ${y} H177" style="stroke-width:2.5"/>`).join("") + `<path class="rfl" d="M230 66 V87" style="stroke-width:4"/><rect class="eq" x="192" y="60" width="16" height="10" rx="2"/>`
+    + rfA("M200 182 V96") + rfA("M192 77 H128") + `<text class="lb halo" x="200" y="42" text-anchor="middle">개폐 댐퍼 + 구동부</text><text class="lb2 halo" x="124" y="72" text-anchor="end">열림 → 배기</text><text class="lb2 halo" x="240" y="62">닫힘 (겨울·비)</text>`, "개폐형 모니터 단면"),
+  vent: () => rsv(rfBase(120) + `<path class="rfr" d="M33 121 L200 80 L367 121"/>` + [130,270].map(x=>`<path class="rfl" d="M${x} 97 V86"/><ellipse class="eq" cx="${x}" cy="76" rx="12" ry="11"/><path class="rfl" d="M${x-11} 72 Q${x} 80 ${x+11} 72 M${x-11} 80 Q${x} 88 ${x+11} 80"/>`).join("")
+    + rfA("M130 62 V36") + rfA("M270 62 V36") + rfA("M186 176 Q140 150 132 104") + rfA("M214 176 Q260 150 268 104") + `<text class="lb halo" x="200" y="40" text-anchor="middle">터빈·원형 환기구</text><text class="lb2 halo" x="200" y="150" text-anchor="middle">점 배치</text>`, "루프 벤틸레이터 단면"),
+  saw: () => rsv(rfBase(120) + `<path class="rfr" d="M36 120 V86 L117 120 V86 L198 120 V86 L279 120 V86 L360 120"/>` + [36,117,198,279].map(x=>`<path class="wt" d="M${x+3} 89 V117" style="stroke-width:3"/>`).join("")
+    + `<path class="ray2" d="M70 40 L113 92 M151 40 L194 92 M232 40 L275 92"/>` + rfA("M200 182 V126") + `<text class="lb halo" x="330" y="40" text-anchor="end">북측 수직 창 (채광)</text><text class="lb2 halo" x="208" y="150">창을 열어 환기</text>`, "톱날 지붕 단면")
+};
+function roofBody(){
+  const R = window.ROOF_MON || {types:[], checks:[]};
+  return `<p style="margin:12px 0 0;font-size:14.5px">${esc(R.intro)}</p>
+  <div class="rgrid">${R.types.map(t=>`<div class="panel"><h3>${esc(t.n)} <span class="muted mono">${esc(t.en)}</span></h3>${ROOF_SVG[t.id]()}<p style="margin:6px 0;font-size:14px">${esc(t.d)}</p>
+    <p class="muted" style="margin:0 0 6px"><b>어울리는 지붕</b> ${esc(t.roof)}</p>
+    <div class="pc2"><div><b class="okb">장점</b><ul>${t.pros.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><b class="ngb">단점</b><ul>${t.cons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+    <p class="muted" style="margin:6px 0 0"><b>주로 쓰는 곳</b> ${esc(t.use)}</p></div>`).join("")}</div>
+  <h3 class="subh">한눈에 비교</h3>
+  <div class="tbl-wrap wide"><table class="t ctr rftbl"><thead><tr><th>형식</th><th style="min-width:200px">지붕 형상</th><th>배기 능력</th><th>개폐</th><th style="min-width:240px">주로 쓰는 곳</th></tr></thead><tbody>${R.types.map(t=>`<tr><td class="nw"><b>${esc(t.n)}</b><small>${esc(t.en)}</small></td><td class="txt">${esc(t.roof)}</td><td class="nw">${esc(t.cap)}</td><td class="nw">${esc(t.op)}</td><td class="txt">${esc(t.use)}</td></tr>`).join("")}</tbody></table></div>
+  <div class="panel"><h3>설계검토 포인트</h3><ul>${R.checks.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>
+  <p class="note">${esc(R.note||"")}</p>`;
+}
+
 function renderStruct(){
-  const secs = [["methods","설계법"],["loads","하중"],["systems","구조 시스템"],["joints","철골 접합부"],["conn","접합 방식"],["weld","용접"],["crane","크레인"],["grades","강재 규격"]];
+  const secs = [["methods","설계법"],["loads","하중"],["systems","구조 시스템"],["joints","철골 접합부"],["conn","접합 방식"],["weld","용접"],["crane","크레인"],["roof","지붕 환기"],["grades","강재 규격"]];
   const cur = secs.some(x=>x[0]===S.st) ? S.st : "methods";
   let body = "";
   if(cur==="methods"){
@@ -1221,12 +1301,14 @@ function renderStruct(){
     body = weldBody();
   } else if(cur==="crane"){
     body = craneBody();
+  } else if(cur==="roof"){
+    body = roofBody();
   } else if(cur==="grades"){
     body = gradesBody();
   } else {
     body = connBody();
   }
-  return `<div class="shead"><div><h2>구조</h2><p>구조설계의 기본 — 설계법, 하중, 구조 시스템, 철골 접합부, 용접, 크레인, 강재 규격.</p></div></div>
+  return `<div class="shead"><div><h2>구조</h2><p>구조설계의 기본 — 설계법, 하중, 구조 시스템, 철골 접합부, 용접, 크레인, 지붕 환기, 강재 규격.</p></div></div>
   <div class="psub">${secs.map(([k,n])=>`<button class="${k===cur?"on":""}" data-go="struct" data-sub="${k}">${n}</button>`).join("")}</div>${body}`;
 }
 
